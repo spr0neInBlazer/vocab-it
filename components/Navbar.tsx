@@ -11,6 +11,14 @@ import {
 import React from 'react';
 import { HiGlobeAlt, HiUserCircle, HiFolder, HiSun, HiMoon, HiPlus } from "react-icons/hi2";
 import { useTheme } from 'next-themes';
+import { Atma } from 'next/font/google';
+import Link from 'next/link';
+
+const atma = Atma({
+  weight: ['400', '500', '600'],
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export default function Navbar() {
   const { setTheme } = useTheme();
@@ -25,7 +33,7 @@ export default function Navbar() {
             height={64}
             alt='logo'
           />
-          <p className="text-white text-3xl font-bold">Vocab It</p>
+          <Link href={'/'} className={`${atma.className} text-white text-4xl font-bold`}>Vocab It</Link>
         </div>
         <div>
           <Menubar className="bg-transparent dark:bg-transparent border-none">
@@ -50,7 +58,9 @@ export default function Navbar() {
               </MenubarTrigger>
 
               <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark">
-                <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">Account</MenubarItem>
+                <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
+                  <Link href={'/profile/profile'}>Account</Link>
+                </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
 

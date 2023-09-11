@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <Layout>
       <Head>
-        <title>Vocab It</title>
+        <title>Vocab It - self-managed vocabularies</title>
       </Head>
       <div className="w-full flex justify-between items-center">
         <Image 

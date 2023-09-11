@@ -1,0 +1,25 @@
+Features:
+- create/edit/delete vocabularies
+- regulate lessons frequency
+- graphic stats
+- achievements
+
+Account page:
+- Name (edit name)
+- (?) User achievements
+- Vocabularies (create vocab button):
+  - No vocabularies yet
+  - list of vocabularies:
+    - start a lesson, edit button, delete button
+- Lessons:
+  - set schedule
+  - words per lesson
+- User stats
+
+Vocabulary:
+- edit button/ delete button
+- stats (words in total)
+- list of words:
+  - word:
+    - edit button, delete button
+- (?) assess word's learning progress (red - bad, orange - average, green - good, gray - learnt)
