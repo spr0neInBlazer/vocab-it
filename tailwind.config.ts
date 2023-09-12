@@ -44,13 +44,10 @@ module.exports = {
           dark: '#F8F5EC'
         },
         customHighlight: '#6A6576',
+        customHighlight2: '#837E90',
+        btnBg: '#048B47',
+        hoverBtnBg: '#03723B',
       },
-      // fontFamily: {
-      //   atma: ['Atma', 'sans']
-      // },
-      // fontWeight: {
-      //   atma: ['400', '500', '600']
-      // }
     },
   },
   plugins: [require("tailwindcss-animate")],

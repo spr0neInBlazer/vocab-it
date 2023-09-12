@@ -1,7 +1,9 @@
 Features:
 - create/edit/delete vocabularies
 - regulate lessons frequency
-- graphic stats
+- graph stats
+- sound effects
+- alerts/notifications
 - achievements
 
 Account page:
@@ -12,8 +14,10 @@ Account page:
   - list of vocabularies:
     - start a lesson, edit button, delete button
 - Lessons:
-  - set schedule
-  - words per lesson
+  - Current Schedule:
+    - (select option):
+      - every day, every 2 days, every 3 days, once a week
+    - words per lesson
 - User stats
 
 Vocabulary:
@@ -23,3 +27,6 @@ Vocabulary:
   - word:
     - edit button, delete button
 - (?) assess word's learning progress (red - bad, orange - average, green - good, gray - learnt)
+
+
+Footer

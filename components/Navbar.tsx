@@ -18,7 +18,7 @@ const atma = Atma({
   weight: ['400', '500', '600'],
   subsets: ['latin'],
   display: 'swap',
-})
+});
 
 export default function Navbar() {
   const { setTheme } = useTheme();
