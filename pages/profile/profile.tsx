@@ -1,4 +1,9 @@
-import React, {useState} from 'react';
+'use client'
+
+import React, { useState } from 'react';
+import VocabList from '@/components/VocabList';
+import useVocabStore from '@/lib/store';
+
 import Layout from "@/components/Layout";
 import Head from "next/head";
 import {
@@ -8,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { HiPencilSquare, HiTrash, HiPlus } from "react-icons/hi2";
+import { HiPencilSquare, HiPlus } from "react-icons/hi2";
 
 const SCHEDULE_OPTIONS = ['every day', 'every 2 days', 'every 3 days', 'once a week'];
 
@@ -17,6 +22,10 @@ export default function Profile() {
   const [isEditUserName, setIsEditUserName] = useState<boolean>(false);
   const [wordsPerLesson, setWordsPerLesson] = useState<number>(10);
   const [isEditWords, setIsEditWords] = useState<boolean>(false);
+  const [isAddVocab, setIsAddVocab] = useState<boolean>(false);
+  const [newVocab, setNewVocab] = useState<string>('');
+  const vocabs = useVocabStore(state => state.vocabs);
+  const addVocab = useVocabStore(state => state.addVocab);
 
   function updateUsername(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -30,6 +39,28 @@ export default function Profile() {
     if (!isNaN(wordsPerLesson) && wordsPerLesson % 1 === 0) {
       setIsEditWords(false);
     }
+  }
+
+  function createVocab(e: React.SyntheticEvent) {
+    e.preventDefault();
+
+    // if the title is empty or only consists of spaces
+    if (newVocab.length === 0 || !/\S/.test(newVocab)) {
+      alert('Title is required');
+    } 
+    // if there's an existing vocab with the entered title
+    else if (vocabs?.find(v => v.title === newVocab)) {
+      alert('A vocabulary with this title already exists');
+    } else {
+      setIsAddVocab(false);
+      addVocab(newVocab);
+    }
+    setNewVocab('');
+  }
+
+  function cancelAddVocab() {
+    setIsAddVocab(false);
+    setNewVocab('');
   }
 
   return (
@@ -61,31 +92,20 @@ export default function Profile() {
 
         <article>
           <h2 className='text-3xl font-bold dark:text-customText-dark mb-4'>Vocabularies</h2>
-          <table className="w-full my-3">
-            <thead>
-              <tr>
-                <th className="w-3/5 text-left pl-2">Name</th>
-                <th className="text-left">Words</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
-                <td className="py-3 pl-2">English</td>
-                <td className="py-3">69</td>
-                <td><button className="text-white rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors">Start Lesson</button></td>
-                <td className="py-3"><button><HiPencilSquare /></button></td>
-                <td className="py-3"><button><HiTrash /></button></td>
-              </tr>
-              <tr className="border-b rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
-                <td className="py-3 pl-2">French</td>
-                <td className="py-3">420</td>
-                <td><button className="text-white rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors">Start Lesson</button></td>
-                <td className="py-3"><button><HiPencilSquare /></button></td>
-                <td className="py-3"><button><HiTrash /></button></td>
-              </tr>
-            </tbody>
-          </table>
-          <button className="flex gap-1 items-center rounded-lg py-1 px-3 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"><HiPlus /> Add Vocabulary</button>
+          <VocabList />
+          {isAddVocab ? (
+            <form className="flex gap-3 my-3 w-2/12 justify-between items-center" onSubmit={createVocab}>
+              <input className="text-lg px-2 rounded" value={newVocab} onChange={(e) => setNewVocab(e.target.value)} size={20} autoFocus />
+              <input className="dark:bg-customText-dark dark:text-black cursor-pointer px-3 py-1 rounded" type="submit" value="Create" />
+              <button className="dark:bg-customText-dark dark:text-black cursor-pointer px-3 py-1 rounded" onClick={cancelAddVocab}>Cancel</button>
+            </form>
+            ) : (
+            <button className="flex gap-1 items-center rounded-lg py-1 px-3 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
+              onClick={() => setIsAddVocab(true)}
+            >
+              <HiPlus /> Add Vocabulary
+            </button>
+          )}
           <div className="h-px w-full dark:bg-mainBg-dark mt-3 mb-5" />
         </article>
 
