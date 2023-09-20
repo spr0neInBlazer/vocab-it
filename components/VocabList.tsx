@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Vocab } from '@/lib/types';
+import { Vocab2 } from '@/lib/types';
 import useVocabStore from '@/lib/store';
 
 import VocabListRow from './VocabListRow';
@@ -39,8 +39,8 @@ export default function VocabList() {
           </tr>
         </thead>
         <tbody>
-          {vocabs.map((vocab: Vocab) => {
-            return <VocabListRow key={vocab.id} vocab={vocab} />
+          {vocabs.map((vocab: Vocab2) => {
+            return <VocabListRow key={vocab.title} vocab={vocab} />
           })}
         </tbody>
       </table>

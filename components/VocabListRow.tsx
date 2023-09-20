@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Vocab } from '@/lib/types';
+import { Vocab2 } from '@/lib/types';
 import useVocabStore from '@/lib/store';
 
 import Link from 'next/link';
@@ -7,7 +7,8 @@ import { HiPencilSquare, HiTrash } from "react-icons/hi2";
 
 // update id with the title
 
-export default function VocabListRow({ vocab }: { vocab: Vocab }) {
+export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
+  console.log(vocab)
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(vocab.title);
   const vocabs = useVocabStore(state => state.vocabs);
@@ -25,16 +26,15 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
     else if (vocabs?.find(v => v.title === title) && title !== vocab.title) {
       alert('A vocabulary with this title already exists');
     } else {
-      editVocabTitle(vocab.id, title);
+      editVocabTitle(vocab.title, title);
       setIsEditTitle(false);
     }
     setTitle('');
   }
 
   return (
-    <tr key={vocab.id} className="border-b rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
-    {isEditTitle ?
-      (
+    <tr key={vocab.title} className="border-b rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
+    {isEditTitle ? (
         <>
           <td className="py-3 pl-2">
             <form onSubmit={updateTitle}>
@@ -50,14 +50,14 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
       ) : (
         <>
           <td className="py-3 pl-2">
-            <Link href={`/vocabularies/${encodeURIComponent(vocab.id)}`} className="hover:underline">
+            <Link href={`/vocabularies/${encodeURIComponent(vocab.title)}`} className="hover:underline">
               {vocab.title}
             </Link>
           </td>
           <td className="py-3">{vocab.words ? vocab.words.length : 0}</td>
           <td><button className="text-white rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors">Start Lesson</button></td>
           <td className="py-3"><button onClick={() => setIsEditTitle(true)}><HiPencilSquare /></button></td>
-          <td className="py-3"><button onClick={() => deleteVocab(vocab.id)}><HiTrash /></button></td>
+          <td className="py-3"><button onClick={() => deleteVocab(vocab.title)}><HiTrash /></button></td>
         </>
       )}
     </tr>

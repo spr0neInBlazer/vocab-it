@@ -7,3 +7,4 @@ This is a web app for learning languages by creating your own vocabularies.
 - Tailwind CSS
 - TypeScript
 - Shadcn
+- Zustand

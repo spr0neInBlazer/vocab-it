@@ -1,12 +1,14 @@
-import Layout from '@/components/Layout'
 import Head from 'next/head'
 import Image from 'next/image'
 import React from 'react'
 import {HiOutlineArrowDownCircle} from "react-icons/hi2";
 
+// FCP: 1.205s -> .932s
+// TTFB: .308s -> .103s
+
 export default function Home() {
   return (
-    <Layout>
+    <>
       <Head>
         <title>Vocab It - self-managed vocabularies</title>
       </Head>
@@ -25,7 +27,7 @@ export default function Home() {
       <button className="absolute w-12 h-12 bottom-2 inset-x-2/4 hover:drop-shadow-xl">
         <HiOutlineArrowDownCircle className="w-12 h-12 text-customText-light dark:text-customText-dark" />
       </button>
-    </Layout>
+    </>
   )
 }
 // Light

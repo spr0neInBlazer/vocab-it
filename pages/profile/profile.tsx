@@ -1,10 +1,6 @@
-'use client'
-
 import React, { useState } from 'react';
 import VocabList from '@/components/VocabList';
-import useVocabStore from '@/lib/store';
 
-import Layout from "@/components/Layout";
 import Head from "next/head";
 import {
   Select,
@@ -14,6 +10,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { HiPencilSquare, HiPlus } from "react-icons/hi2";
+import useVocabStore from '@/lib/store';
+
+// FCP: 1.915s -> 1.363s
+// TTFB: .362s -> .213s
 
 const SCHEDULE_OPTIONS = ['every day', 'every 2 days', 'every 3 days', 'once a week'];
 
@@ -63,13 +63,21 @@ export default function Profile() {
     setNewVocab('');
   }
 
+  // function clearLocalStorage() {
+  //   localStorage.removeItem("vi_english");
+  //   localStorage.removeItem("vi_french");
+  //   localStorage.removeItem("vocabs");
+  // }
+
   return (
-    <Layout>
+    <>
       <Head>
         <title>Account</title>
       </Head>
+      {/* <button className="bg-red-500 p-2" onClick={clearLocalStorage}>Clear Local Storage</button> */}
+
       <section className="w-11/12 lg:w-4/5 mx-auto mt-32 mb-6 py-5 px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight">
-        <h1 className='text-4xl text-center font-semibold dark:text-customText-dark mb-4'>Your profile</h1>
+        <h1 className='text-4xl text-center font-semibold dark:text-customText-dark mb-4'>My profile</h1>
         <article>
           <h2 className='text-3xl font-bold dark:text-customText-dark mb-4'>Username</h2>
           {isEditUserName ? (
@@ -92,7 +100,7 @@ export default function Profile() {
 
         <article>
           <h2 className='text-3xl font-bold dark:text-customText-dark mb-4'>Vocabularies</h2>
-          <VocabList />
+          <VocabList key="VocabList" />
           {isAddVocab ? (
             <form className="flex gap-3 my-3 w-2/12 justify-between items-center" onSubmit={createVocab}>
               <input className="text-lg px-2 rounded" value={newVocab} onChange={(e) => setNewVocab(e.target.value)} size={20} autoFocus />
@@ -117,7 +125,7 @@ export default function Profile() {
               <SelectValue placeholder="frequency" />
             </SelectTrigger>
             <SelectContent className="dark:border-customHighlight dark:bg-mainBg-dark">
-              {SCHEDULE_OPTIONS.map(option => {
+              {SCHEDULE_OPTIONS.map((option, index) => {
                 return <SelectItem className="capitalize hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight dark:focus:bg-customHighlight" key={option} value={option}>{option}</SelectItem>
               })}
             </SelectContent>
@@ -140,6 +148,6 @@ export default function Profile() {
             )}
         </article>
       </section>
-    </Layout>
+    </>
   )
 }
