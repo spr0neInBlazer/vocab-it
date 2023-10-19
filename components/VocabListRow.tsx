@@ -5,10 +5,7 @@ import useVocabStore from '@/lib/store';
 import Link from 'next/link';
 import { HiPencilSquare, HiTrash } from "react-icons/hi2";
 
-// update id with the title
-
 export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
-  console.log(vocab)
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(vocab.title);
   const vocabs = useVocabStore(state => state.vocabs);
@@ -55,7 +52,9 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
             </Link>
           </td>
           <td className="py-3">{vocab.words ? vocab.words.length : 0}</td>
-          <td><button className="text-white rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors">Start Lesson</button></td>
+          <td>
+            <Link href={`/lesson/${encodeURIComponent(vocab.title)}`} className="text-white rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors">Start Lesson</Link>
+          </td>
           <td className="py-3"><button onClick={() => setIsEditTitle(true)}><HiPencilSquare /></button></td>
           <td className="py-3"><button onClick={() => deleteVocab(vocab.title)}><HiTrash /></button></td>
         </>

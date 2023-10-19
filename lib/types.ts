@@ -28,3 +28,10 @@ export interface WordStore {
   initialWordsFetch: (title: string) => void,
   addWord: (word: string, translation: string) => void,
 }
+
+export interface Answer {
+  userAnswer: string,
+  isCorrect: boolean,
+  word?: string,
+  correctAnswer?: string
+}

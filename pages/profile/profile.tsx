@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import VocabList from '@/components/VocabList';
 
 import Head from "next/head";
@@ -11,21 +11,28 @@ import {
 } from "@/components/ui/select"
 import { HiPencilSquare, HiPlus } from "react-icons/hi2";
 import useVocabStore from '@/lib/store';
+import useLessonStore from '@/lib/lessonStore';
+import useStore from '@/hooks/useStore';
+import { usePreferencesStore } from '@/lib/preferencesStore';
 
 // FCP: 1.915s -> 1.363s
 // TTFB: .362s -> .213s
+
+// disable start lesson button if wordsPerLesson is 0.
 
 const SCHEDULE_OPTIONS = ['every day', 'every 2 days', 'every 3 days', 'once a week'];
 
 export default function Profile() {
   const [userName, setUserName] = useState<string>('testname');
   const [isEditUserName, setIsEditUserName] = useState<boolean>(false);
-  const [wordsPerLesson, setWordsPerLesson] = useState<number>(10);
+  const [wordsPerLesson, setWordsPerLesson] = useState<number>(0);
   const [isEditWords, setIsEditWords] = useState<boolean>(false);
   const [isAddVocab, setIsAddVocab] = useState<boolean>(false);
   const [newVocab, setNewVocab] = useState<string>('');
   const vocabs = useVocabStore(state => state.vocabs);
   const addVocab = useVocabStore(state => state.addVocab);
+  const vocabStore = useVocabStore(state => state);
+  const preferenceStore = useStore(usePreferencesStore, (state) => state);
 
   function updateUsername(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -36,8 +43,13 @@ export default function Profile() {
 
   function updateWordsAmount(e: React.SyntheticEvent) {
     e.preventDefault();
-    if (!isNaN(wordsPerLesson) && wordsPerLesson % 1 === 0) {
+    if (!isNaN(wordsPerLesson) && wordsPerLesson % 1 === 0 
+      && wordsPerLesson > 0 && preferenceStore) {
+      preferenceStore.updateLessonVolume(wordsPerLesson);
       setIsEditWords(false);
+    } else {
+      setWordsPerLesson(1);
+      alert("Enter valid amount of words");
     }
   }
 
@@ -62,6 +74,12 @@ export default function Profile() {
     setIsAddVocab(false);
     setNewVocab('');
   }
+
+  useEffect(() => {
+    if (preferenceStore) {
+      setWordsPerLesson(preferenceStore.lessonVolume);
+    }
+  }, [preferenceStore]);
 
   // function clearLocalStorage() {
   //   localStorage.removeItem("vi_english");

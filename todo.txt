@@ -1,10 +1,12 @@
 Features:
 - create/edit/delete vocabularies
+- input validations
 - regulate lessons frequency
-- graph stats
 - sound effects
 - alerts/notifications
 - achievements
+---------------
+- graph stats
 
 Account page:
 - Name (edit name)

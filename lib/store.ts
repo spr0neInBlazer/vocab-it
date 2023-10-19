@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Vocab2, Word } from "./types";
 
-const prefix: string = "vi_";
+export const prefix: string = "vi_";
 
 interface VocabStore {
   vocabs: Vocab2[] | null,
@@ -11,7 +11,12 @@ interface VocabStore {
   editVocabTitle: (oldTitle: string, newTitle: string) => void,
   addWord: (vocabTitle: string, word: string, translation: string) => void,
   deleteWord: (vocabTitle: string, word: string) => void,
+  editWord: (vocabTitle: string, wordIdx: number, word: string, translation: string) => void,
+  // lessonVolume: number,
+  // updateLessonVolume: (newVolume: number) => void,
 }
+
+const INITIAL_AMOUNT: number = 3;
 
 const useVocabStore = create<VocabStore>(set => ({
   vocabs: null,
@@ -100,7 +105,32 @@ const useVocabStore = create<VocabStore>(set => ({
       }
       return state;
     }) 
-  }
+  },
+
+  editWord: (vocabTitle: string, wordIdx: number, word: string, translation: string) => {
+    set((state: VocabStore) => {
+      const vocabToEditWordIn: Vocab2 | undefined = state.vocabs?.find(v => v.title === vocabTitle);
+      if (vocabToEditWordIn) {
+        vocabToEditWordIn.words[wordIdx].word = word;
+        vocabToEditWordIn.words[wordIdx].translation = translation;
+        localStorage.removeItem((prefix + vocabTitle));
+        localStorage.setItem((prefix + vocabTitle), JSON.stringify(vocabToEditWordIn));
+      }
+      return state;
+    })
+  },
+
+  // lessonVolume: settingsExist ? JSON.parse(settingsExist).lessonVolume : INITIAL_AMOUNT,
+  // updateLessonVolume: (newVolume: number) => {
+  //   set((state: VocabStore) => {
+  //     const settingsExist = localStorage.getItem("vocab-it");
+  //     if (settingsExist) {
+  //       localStorage.removeItem("vocab-it")
+  //     }
+  //     localStorage.setItem("vocab-it", JSON.stringify({ lessonVolume: newVolume }));
+  //     return {...state, lessonVolume: newVolume};
+  //   })
+  // },
 }))
 
 // {title: vi_vocab1, words: [{w: w, t: t}]}
