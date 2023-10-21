@@ -11,14 +11,11 @@ import {
 } from "@/components/ui/select"
 import { HiPencilSquare, HiPlus } from "react-icons/hi2";
 import useVocabStore from '@/lib/store';
-import useLessonStore from '@/lib/lessonStore';
 import useStore from '@/hooks/useStore';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 
 // FCP: 1.915s -> 1.363s
 // TTFB: .362s -> .213s
-
-// disable start lesson button if wordsPerLesson is 0.
 
 const SCHEDULE_OPTIONS = ['every day', 'every 2 days', 'every 3 days', 'once a week'];
 

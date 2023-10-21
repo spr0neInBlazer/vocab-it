@@ -21,15 +21,15 @@ export default function LessonResult({allAnswers, words}: ResultProps) {
   const wrongAnswers: Answer[] = allAnswers.filter(a => !a.isCorrect);
   const answeredCorrectly: number = allAnswers.length - wrongAnswers.length;
 
+  // "w-11/12 lg:w-3/5 mx-auto mt-32 mb-6 p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight text-center"
   return (
     <section 
-      className="w-11/12 lg:w-3/5 mx-auto mt-32 mb-6 p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight text-center"
+      className="w-full p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight text-center"
     >
       <h1 className="text-3xl">Lesson Complete</h1>
       <h2 className="text-2xl text-center my-3">You&#39;ve correctly translated</h2>
       <p>{answeredCorrectly}/{words.length} words</p>
       {wrongAnswers.length > 0 && (
-      <>
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger>View mistakes</AccordionTrigger>
@@ -47,8 +47,8 @@ export default function LessonResult({allAnswers, words}: ResultProps) {
                   return (
                     <TableRow key={a.word} className="text-left">
                       <TableCell className="font-medium">{a.word}</TableCell>
-                      <TableCell>{a.userAnswer}</TableCell>
-                      <TableCell>{a.correctAnswer}</TableCell>
+                      <TableCell className="text-red-500 dark:text-red-300">{a.userAnswer}</TableCell>
+                      <TableCell className="text-green-600 dark:text-green-300">{a.correctAnswer}</TableCell>
                     </TableRow>
                   )
                 })}
@@ -57,8 +57,7 @@ export default function LessonResult({allAnswers, words}: ResultProps) {
             </AccordionContent>
           </AccordionItem>
         </Accordion>      
-      </>
-      )}
+      )} 
     </section>
   )
 }

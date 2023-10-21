@@ -5,13 +5,20 @@ import { Word, Answer } from '@/lib/types';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 
 import Head from 'next/head';
+import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import LessonResult from '@/components/LessonResult';
 import HintButton from '@/components/HintButton';
-
-// display wrong answers in the end
-// add "try again" and "back to profile" buttons to lesson end page
-// end lesson button
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const initialWordIdx: number = 1;
 
@@ -24,6 +31,7 @@ export default function Lesson() {
   const [answer, setAnswer] = useState<string>('');
   const [allAnswers, setAllAnswers] = useState<Answer[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [endLesson, setEndLesson] = useState<boolean>(false);
   const router = useRouter();
 
   function randomizeWords(array: Word[], volume: number): Word[] {
@@ -64,6 +72,16 @@ export default function Lesson() {
     setCurrWord(currWord + 1);
     setAnswer('');
   }
+
+  function restartLesson() {
+    setCurrWord(1);
+    setAllAnswers([]);
+    const vocab = localStorage.getItem((prefix + router.query.id));
+    if (vocab) {
+      const fetchedWords = JSON.parse(vocab).words;
+      setWords(randomizeWords(fetchedWords, lessonVolume));
+    }
+  }
   
   // fetch lessonStore
   // update lessonVolume from lessonStore
@@ -103,6 +121,13 @@ export default function Lesson() {
     }
   }, [router.query.id, preferenceStore, isLoading, words]);
 
+  // when user ends the lesson, redirect to profile page
+  useEffect(() => {
+    if (endLesson) {
+      router.push('/profile/profile');
+    }
+  }, [endLesson, router]);
+
   if (isLoading) {
     return (
       <>
@@ -121,7 +146,22 @@ export default function Lesson() {
         <Head>
           <title>Lesson</title>
         </Head>
-        <LessonResult allAnswers={allAnswers} words={words} />
+        <div className="w-11/12 lg:w-3/5 mx-auto mt-32 mb-6">
+          <LessonResult allAnswers={allAnswers} words={words} />
+          <div className="flex justify-between mt-5 px-3">
+            <button className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
+              onClick={restartLesson}  
+            >
+              Start Again
+            </button>
+            <button className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
+            >
+              <Link href="/profile/profile">
+                Back to Profile
+              </Link>
+            </button>
+          </div>
+        </div>
       </>
     )
   }
@@ -156,6 +196,31 @@ export default function Lesson() {
           </section>
         )}
         <div className="flex justify-between mt-5 px-3">
+          <AlertDialog>
+            <AlertDialogTrigger 
+              className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
+            >
+              End Lesson
+            </AlertDialogTrigger>
+            <AlertDialogContent className="flex flex-col items-center justify-center">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure you want to end this lesson?</AlertDialogTitle>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel 
+                  className="font-semibold bg-secondaryBg-light dark:bg-secondaryBg-light hover:bg-hoverSecondaryBg dark:hover:bg-hoverSecondaryBg text-white hover:text-white dark:border-white"
+                >
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  className="font-semibold bg-btnBg dark:bg-btnBg hover:bg-hoverBtnBg dark:hover:bg-hoverBtnBg text-white dark:text-white hover:text-white border dark:border-white"
+                  onClick={() => setEndLesson(true)}
+                >
+                  OK
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <button className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
             onClick={registerAnswer}
           >

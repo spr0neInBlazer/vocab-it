@@ -39,21 +39,40 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
             </form>
           </td>
           <td className="py-3">{vocab.words ? vocab.words.length : 0}</td>
-          <td><button className="dark:bg-customText-dark dark:text-black cursor-pointer px-3 py-1 rounded" onClick={updateTitle}>Save</button></td>
+          <td>
+            <button className="dark:bg-customText-dark dark:text-black cursor-pointer px-3 py-1 rounded" onClick={updateTitle}>Save</button>
+          </td>
           <td className="py-3">
-            <button className="dark:bg-customText-dark dark:text-black cursor-pointer px-3 py-1 rounded" onClick={() => setIsEditTitle(false)}>Cancel</button>
+            <button className="dark:bg-customText-dark dark:text-black cursor-pointer px-3 py-1 rounded" onClick={() => setIsEditTitle(false)}>
+              Cancel
+            </button>
           </td>
         </>
       ) : (
         <>
           <td className="py-3 pl-2">
-            <Link href={`/vocabularies/${encodeURIComponent(vocab.title)}`} className="hover:underline">
+            <Link 
+              href={`/vocabularies/${encodeURIComponent(vocab.title)}`} 
+              className="underline hover:text-customText-light/80 dark:hover:text-customText-dark/80"
+            >
               {vocab.title}
             </Link>
           </td>
           <td className="py-3">{vocab.words ? vocab.words.length : 0}</td>
           <td>
-            <Link href={`/lesson/${encodeURIComponent(vocab.title)}`} className="text-white rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors">Start Lesson</Link>
+            {vocab.words.length > 0 ? (
+              <button className="text-white rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors">
+                <Link 
+                  href={`/lesson/${encodeURIComponent(vocab.title)}`} 
+                >
+                  Start Lesson
+                </Link>
+              </button>
+            ) : (
+              <button className="text-slate-400 rounded py-1 px-3 bg-btnBg/90 transition-colors cursor-default">
+                Start Lesson
+              </button>
+            )}
           </td>
           <td className="py-3"><button onClick={() => setIsEditTitle(true)}><HiPencilSquare /></button></td>
           <td className="py-3"><button onClick={() => deleteVocab(vocab.title)}><HiTrash /></button></td>

@@ -1,11 +1,14 @@
-Features:
-- create/edit/delete vocabularies
+- create 2nd part of the home page
+- light/dark compatibility
 - input validations
-- regulate lessons frequency
+- responsiveness
+
+Features:
 - sound effects
 - alerts/notifications
-- achievements
 ---------------
+- regulate lessons frequency
+- achievements
 - graph stats
 
 Account page:
@@ -32,3 +35,8 @@ Vocabulary:
 
 
 Footer
+
+Ideas for test cases:
+Vocabs navbar:
+- when no vocabs exist yet
+- invalid title / valid title 
