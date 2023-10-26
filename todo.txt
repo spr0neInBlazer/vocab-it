@@ -2,6 +2,7 @@
 - light/dark compatibility
 - input validations
 - responsiveness
+- add default vocab with words for demonstration 
 
 Features:
 - sound effects
@@ -10,6 +11,17 @@ Features:
 - regulate lessons frequency
 - achievements
 - graph stats
+
+Home page:
+(bottom screen):
+
+- What is Vocab It?
+Vocab It empowers your language learning without any restrictions, while keeping it user-friendly.
+- How to use it?
+  - Create a new vocabulary
+  - add the words you want to practice
+  - Practice them
+  Start Now
 
 Account page:
 - Name (edit name)

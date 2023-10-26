@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Atma } from 'next/font/google';
+// import { Atma } from 'next/font/google';
+import { atma } from '@/lib/globals';
 import { useTheme } from 'next-themes';
 import { Vocab2 } from '@/lib/types';
 import useVocabStore from '@/lib/store';
@@ -18,11 +19,11 @@ import { HiGlobeAlt, HiUserCircle, HiFolder, HiSun, HiMoon, HiPlus } from "react
 import Link from 'next/link';
 import NewVocabDialog from './NewVocabDialog';
 
-const atma = Atma({
-  weight: ['400', '500', '600'],
-  subsets: ['latin'],
-  display: 'swap',
-});
+// const atma = Atma({
+//   weight: ['400', '500', '600'],
+//   subsets: ['latin'],
+//   display: 'swap',
+// });
 
 export default function Navbar() {
   const vocabs = useVocabStore(state => state.vocabs);

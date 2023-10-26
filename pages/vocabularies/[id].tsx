@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useVocabStore from '@/lib/store';
 import { Word } from '@/lib/types';
@@ -8,13 +8,15 @@ import Link from 'next/link';
 import { HiArrowLongLeft, HiPencilSquare, HiPlus, HiTrash } from "react-icons/hi2";
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SingleWord from '@/components/SingleWord';
+import { NextPageWithLayout } from '../_app';
+import Layout from '@/components/Layout';
 
 // FCP: 1.9s -> 1.5s
 // TTFB: 1s -> .167s
 
 // add skeletons if the words exist
 
-export default function Vocabulary() {
+const Vocabulary: NextPageWithLayout = () => {
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
   const [title, setTitle] = useState<string | null>(null);
   const [isAddWord, setIsAddWord] = useState<boolean>(false);
@@ -169,3 +171,9 @@ export default function Vocabulary() {
     </>
   )
 }
+
+Vocabulary.getLayout = function getLayout(page: ReactElement) {
+  return (<Layout>{page}</Layout>)
+}
+
+export default Vocabulary;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { prefix } from '@/lib/store';
 import { useRouter } from 'next/router';
 import { Word, Answer } from '@/lib/types';
@@ -19,10 +19,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { NextPageWithLayout } from '../_app';
+import Layout from '@/components/Layout';
 
 const initialWordIdx: number = 1;
 
-export default function Lesson() {
+const Lesson: NextPageWithLayout = () => {
   const preferenceStore = usePreferencesStore(state => state);
 
   const [lessonVolume, setLessonVolume] = useState<number>(0);
@@ -236,3 +238,9 @@ export default function Lesson() {
     </>
   )
 }
+
+Lesson.getLayout = function getLayout(page: ReactElement) {
+  return (<Layout>{page}</Layout>)
+}
+
+export default Lesson;

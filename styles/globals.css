@@ -2,3 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 @import url('https://fonts.googleapis.com/css2?family=Atma:wght@400;500;600&display=swap');
+
+body {
+  transition: transform .3s ease-in-out;
+}
+
+.animated-btn {
+  background: linear-gradient(270deg, #a2678a, #4d3c77, #F05454);
+  background-size: 600% 600%;
+
+  -webkit-animation: animateGradient 5s ease infinite;
+  -moz-animation: animateGradient 2s ease infinite;
+  -o-animation: animateGradient 5s ease infinite;
+  animation: animateGradient 5s ease infinite;
+}
+
+@-webkit-keyframes animateGradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@-moz-keyframes animateGradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@-o-keyframes animateGradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes animateGradient {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}

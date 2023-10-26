@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import VocabList from '@/components/VocabList';
 
 import Head from "next/head";
@@ -13,13 +13,15 @@ import { HiPencilSquare, HiPlus } from "react-icons/hi2";
 import useVocabStore from '@/lib/store';
 import useStore from '@/hooks/useStore';
 import { usePreferencesStore } from '@/lib/preferencesStore';
+import { NextPageWithLayout } from '../_app';
+import Layout from '@/components/Layout';
 
 // FCP: 1.915s -> 1.363s
 // TTFB: .362s -> .213s
 
 const SCHEDULE_OPTIONS = ['every day', 'every 2 days', 'every 3 days', 'once a week'];
 
-export default function Profile() {
+const Profile: NextPageWithLayout = () => {
   const [userName, setUserName] = useState<string>('testname');
   const [isEditUserName, setIsEditUserName] = useState<boolean>(false);
   const [wordsPerLesson, setWordsPerLesson] = useState<number>(0);
@@ -166,3 +168,11 @@ export default function Profile() {
     </>
   )
 }
+
+Profile.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>{page}</Layout>
+  )
+}
+
+export default Profile;
