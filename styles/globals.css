@@ -7,7 +7,7 @@ body {
   transition: transform .3s ease-in-out;
 }
 
-.animated-btn {
+.animated-btn:hover {
   background: linear-gradient(270deg, #a2678a, #4d3c77, #F05454);
   background-size: 600% 600%;
 

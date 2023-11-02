@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import { Atma } from 'next/font/google';
 import { atma } from '@/lib/globals';
 import { useTheme } from 'next-themes';
 import { Vocab2 } from '@/lib/types';
@@ -18,12 +17,6 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { HiGlobeAlt, HiUserCircle, HiFolder, HiSun, HiMoon, HiPlus } from "react-icons/hi2";
 import Link from 'next/link';
 import NewVocabDialog from './NewVocabDialog';
-
-// const atma = Atma({
-//   weight: ['400', '500', '600'],
-//   subsets: ['latin'],
-//   display: 'swap',
-// });
 
 export default function Navbar() {
   const vocabs = useVocabStore(state => state.vocabs);
@@ -44,7 +37,6 @@ export default function Navbar() {
 
   useEffect(() => {
     if (vocabs) {
-      // console.log(vocabs)
       setIsFetching(false);
     } else {
       setIsFetching(true);
@@ -80,8 +72,8 @@ export default function Navbar() {
                   ) : (
                     vocabs?.map((v: Vocab2) => {
                       return (
-                        <MenubarItem key={v.title} className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
-                          <Link href={`/vocabularies/${encodeURIComponent(v.title)}`} className="flex items-center">
+                        <MenubarItem key={v._id} className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
+                          <Link href={`/vocabularies/${encodeURIComponent(v._id)}`} className="flex items-center">
                             <HiFolder className="mr-2" /> {v.title}
                           </Link>
                         </MenubarItem>)
@@ -139,7 +131,12 @@ export default function Navbar() {
               </MenubarMenu>
             </Menubar>
 
-            <NewVocabDialog vocabTitle={vocabTitle} setVocabTitle={setVocabTitle} invalidInputMsg={invalidInputMsg} setInvalidInputMsg={setInvalidInputMsg} />
+            <NewVocabDialog 
+              vocabTitle={vocabTitle} 
+              setVocabTitle={setVocabTitle} 
+              invalidInputMsg={invalidInputMsg} 
+              setInvalidInputMsg={setInvalidInputMsg} 
+            />
           </Dialog>
         </div>
       </div>

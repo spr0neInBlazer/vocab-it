@@ -45,6 +45,7 @@ module.exports = {
         },
         customHighlight: '#6A6576',
         customHighlight2: '#837E90',
+        customHighlight3: 'hsl(26, 92%, 52%)',
         btnBg: '#048B47',
         hoverBtnBg: '#03723B',
         hoverSecondaryBg: 'hsl(0, 84%, 60%)',

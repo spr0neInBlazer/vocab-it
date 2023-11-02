@@ -9,24 +9,15 @@ import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import LessonResult from '@/components/LessonResult';
 import HintButton from '@/components/HintButton';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { NextPageWithLayout } from '../_app';
 import Layout from '@/components/Layout';
+import EndLessonDialog from '@/components/EndLessonDialog';
+import { Progress } from "@/components/ui/progress"
 
 const initialWordIdx: number = 1;
 
 const Lesson: NextPageWithLayout = () => {
   const preferenceStore = usePreferencesStore(state => state);
-
   const [lessonVolume, setLessonVolume] = useState<number>(0);
   const [words, setWords] = useState<Word[]>([]);
   const [currWord, setCurrWord] = useState<number>(initialWordIdx);
@@ -78,7 +69,7 @@ const Lesson: NextPageWithLayout = () => {
   function restartLesson() {
     setCurrWord(1);
     setAllAnswers([]);
-    const vocab = localStorage.getItem((prefix + router.query.id));
+    const vocab = localStorage.getItem(router.query.id as string);
     if (vocab) {
       const fetchedWords = JSON.parse(vocab).words;
       setWords(randomizeWords(fetchedWords, lessonVolume));
@@ -96,7 +87,7 @@ const Lesson: NextPageWithLayout = () => {
   // fetch words from local storage and randomize them 
   useEffect(() => {
     if (localStorage && router.query.id) {
-      const vocab = localStorage.getItem((prefix + router.query.id));
+      const vocab = localStorage.getItem((router.query.id as string));
       if (vocab) {
         const fetchedWords = JSON.parse(vocab).words;
         setWords(fetchedWords);
@@ -148,16 +139,16 @@ const Lesson: NextPageWithLayout = () => {
         <Head>
           <title>Lesson</title>
         </Head>
-        <div className="w-11/12 lg:w-3/5 mx-auto mt-32 mb-6">
+        <div className="w-11/12 lg:w-3/5 mx-auto mb-6">
           <LessonResult allAnswers={allAnswers} words={words} />
           <div className="flex justify-between mt-5 px-3">
-            <button className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
+            <button 
+              className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors"
               onClick={restartLesson}  
             >
               Start Again
             </button>
-            <button className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
-            >
+            <button className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors">
               <Link href="/profile/profile">
                 Back to Profile
               </Link>
@@ -173,22 +164,29 @@ const Lesson: NextPageWithLayout = () => {
       <Head>
         <title>Lesson</title>
       </Head>
-      <div className="w-11/12 lg:w-3/5 mx-auto mt-32 mb-6">
+      <div className="w-11/12 lg:w-3/5 mx-auto mb-6">
         <p className="mx-3">{currWord}/{lessonVolume}</p>
+        <Progress
+          className="my-3"
+          value={Math.round(((currWord - 1) / lessonVolume) * 100)} 
+        />
         {words.length > 0 && (
-          <section className="w-full p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight">
+          <section className="w-full p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300">
             <div>
               <h2 className="text-2xl">Word:</h2>
               <p className="text-3xl text-center my-3">{words[currWord-1].translation}</p>
             </div>
-            <div className="h-px my-5 w-full dark:bg-mainBg-dark" />
+            <div className="h-px my-5 w-full bg-zinc-400 dark:bg-mainBg-dark" />
             <div>
               <div className="flex justify-between">
                 <h2 className="text-2xl">Enter translation:</h2>
                 <HintButton word={words[currWord-1].word} />
               </div>
               <form className="my-3 flex justify-center" onSubmit={submitAnswer}>
-                <input className="text-2xl leading-10 text-center rounded" type="text" value={answer} 
+                <input 
+                  className="text-2xl leading-10 text-center rounded border border-zinc-400" 
+                  type="text" 
+                  value={answer} 
                   onChange={(e) => setAnswer(e.target.value)} 
                   placeholder="Your answer" 
                   autoFocus 
@@ -198,37 +196,15 @@ const Lesson: NextPageWithLayout = () => {
           </section>
         )}
         <div className="flex justify-between mt-5 px-3">
-          <AlertDialog>
-            <AlertDialogTrigger 
-              className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
-            >
-              End Lesson
-            </AlertDialogTrigger>
-            <AlertDialogContent className="flex flex-col items-center justify-center">
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure you want to end this lesson?</AlertDialogTitle>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel 
-                  className="font-semibold bg-secondaryBg-light dark:bg-secondaryBg-light hover:bg-hoverSecondaryBg dark:hover:bg-hoverSecondaryBg text-white hover:text-white dark:border-white"
-                >
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  className="font-semibold bg-btnBg dark:bg-btnBg hover:bg-hoverBtnBg dark:hover:bg-hoverBtnBg text-white dark:text-white hover:text-white border dark:border-white"
-                  onClick={() => setEndLesson(true)}
-                >
-                  OK
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-          <button className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
+          <EndLessonDialog setEndLesson={setEndLesson} />
+          <button 
+            className="w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors"
             onClick={registerAnswer}
           >
             Skip
           </button>
-          <button className="flex gap-1 items-center rounded-lg py-2 px-4 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
+          <button 
+            className="w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
             onClick={registerAnswer}  
           >
             OK

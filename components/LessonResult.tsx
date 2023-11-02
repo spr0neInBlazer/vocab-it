@@ -5,7 +5,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -21,18 +20,15 @@ export default function LessonResult({allAnswers, words}: ResultProps) {
   const wrongAnswers: Answer[] = allAnswers.filter(a => !a.isCorrect);
   const answeredCorrectly: number = allAnswers.length - wrongAnswers.length;
 
-  // "w-11/12 lg:w-3/5 mx-auto mt-32 mb-6 p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight text-center"
   return (
-    <section 
-      className="w-full p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight text-center"
-    >
+    <section className="w-full p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight text-center">
       <h1 className="text-3xl">Lesson Complete</h1>
       <h2 className="text-2xl text-center my-3">You&#39;ve correctly translated</h2>
-      <p>{answeredCorrectly}/{words.length} words</p>
+      <p className="text-xl"><span className="font-semibold">{answeredCorrectly}/{words.length}</span> words</p>
       {wrongAnswers.length > 0 && (
         <Accordion type="single" collapsible>
           <AccordionItem value="item-1">
-            <AccordionTrigger>View mistakes</AccordionTrigger>
+            <AccordionTrigger className="text-lg">View mistakes</AccordionTrigger>
             <AccordionContent>
               <Table className="text-lg">
                 <TableHeader>

@@ -10,6 +10,7 @@ export interface Vocab {
 }
 
 export interface Vocab2 {
+  _id: string,
   title: string,
   words: Word[]
 }
@@ -35,3 +36,5 @@ export interface Answer {
   word?: string,
   correctAnswer?: string
 }
+
+export type CheckSingleEditFunction = () => boolean;

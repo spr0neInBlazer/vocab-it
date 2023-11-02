@@ -1,27 +1,24 @@
-- create 2nd part of the home page
-- light/dark compatibility
+Done:
+- improve light/dark mode styling
+- add Arial Rounded font
+
+---------------------
 - input validations
+- exit edit mode on Esc press
 - responsiveness
+- error page
+- alerts/notifications
+- sound effects
+- optimization
 - add default vocab with words for demonstration 
 
-Features:
-- sound effects
-- alerts/notifications
----------------
+Features (needs back-end):
 - regulate lessons frequency
 - achievements
 - graph stats
-
-Home page:
-(bottom screen):
-
-- What is Vocab It?
-Vocab It empowers your language learning without any restrictions, while keeping it user-friendly.
-- How to use it?
-  - Create a new vocabulary
-  - add the words you want to practice
-  - Practice them
-  Start Now
+Other possible features:
+- make bg word cloud move with the mouse
+- allow adding multiple translations
 
 Account page:
 - Name (edit name)
@@ -45,10 +42,12 @@ Vocabulary:
     - edit button, delete button
 - (?) assess word's learning progress (red - bad, orange - average, green - good, gray - learnt)
 
-
-Footer
-
 Ideas for test cases:
 Vocabs navbar:
 - when no vocabs exist yet
 - invalid title / valid title 
+Vocab:
+- too long title
+- when going to other pages with edit mode on, cancel edit mode on page load
+Profile page:
+- forbid editing more than one field at once

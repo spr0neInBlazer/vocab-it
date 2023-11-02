@@ -4,6 +4,13 @@ import useVocabStore from '@/lib/store';
 
 import VocabListRow from './VocabListRow';
 import { Skeleton } from './ui/skeleton';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { HiMiniQuestionMarkCircle } from "react-icons/hi2";
 
 export default function VocabList() {
   const vocabs = useVocabStore(state => state.vocabs);
@@ -35,12 +42,25 @@ export default function VocabList() {
         <thead>
           <tr>
             <th className="w-3/5 text-left pl-2">Name</th>
-            <th className="text-left">Words</th>
+            <th className="flex items-center gap-1 justify-start">
+              Words
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger className="cursor-default">
+                    <HiMiniQuestionMarkCircle />
+                  </TooltipTrigger>
+                  <TooltipContent className="dark:border-customHighlight dark:bg-mainBg-dark">
+                    <p className="font-thin text-sm italic"> <span className="not-italic">Recommended:</span> <span className="font-semibold">50</span> words max per 1 vocabulary</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+            </th>
           </tr>
         </thead>
         <tbody>
           {vocabs.map((vocab: Vocab2) => {
-            return <VocabListRow key={vocab.title} vocab={vocab} />
+            return <VocabListRow key={vocab._id} vocab={vocab} />
           })}
         </tbody>
       </table>
