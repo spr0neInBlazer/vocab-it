@@ -29,15 +29,15 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
   function enterEditUsernameMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
     if (isOnlyEdit) {
-      // setIsEditUserName(true);
       toggleIsEditUsername(); // to true
     } else {
       alert('Please finish editing the other field');
     }
   }
 
-  function checkForAbort(e: KeyboardEvent) {
+  function checkForAbort(e: React.KeyboardEvent) {
     if (e.key === "Escape") {
+      setUserName(preferenceStore.profileName);
       toggleIsEditUsername();
     }
   }
@@ -50,16 +50,16 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
 
   return (
     <article>
-      <h2 className='text-3xl font-bold dark:text-customText-dark mb-4'>Username</h2>
+      <h2 className='text-xl mobile:text-2xl md:text-3xl font-bold dark:text-customText-dark mb-4'>Username</h2>
       {isEditUsername ? (
         <form className="flex gap-3 my-3 w-2/12 justify-between items-center" onSubmit={updateUsername}>
           <input 
             className="text-lg px-2 border rounded" 
             value={userName} 
             onChange={(e) => setUserName(e.target.value)}
-            // onKeyDown={checkForAbort}
+            onKeyDown={checkForAbort}
             size={10}
-            maxLength={10} 
+            maxLength={10}
             autoFocus 
           />
           <Button 
@@ -70,7 +70,7 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
           </Button>
         </form>
       ) : (
-        <div className="flex my-3 w-2/12 justify-between items-center">
+        <div className="flex gap-1 my-3 w-fit sm:w-2/12 justify-between items-center">
           <p className="text-lg dark:text-customText-dark">{userName}</p>
           <button 
             className="dark:text-customText-dark py-1"

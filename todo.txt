@@ -1,10 +1,10 @@
 Done:
 - improve light/dark mode styling
 - add Arial Rounded font
-
----------------------
 - input validations
 - exit edit mode on Esc press
+
+---------------------
 - responsiveness
 - error page
 - alerts/notifications
@@ -17,7 +17,7 @@ Features (needs back-end):
 - achievements
 - graph stats
 Other possible features:
-- make bg word cloud move with the mouse
+- make bg word cloud move with the mouse (3d effect)
 - allow adding multiple translations
 
 Account page:

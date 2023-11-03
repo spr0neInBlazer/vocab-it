@@ -4,7 +4,7 @@ import useVocabStore from '@/lib/store';
 import useProfileStore from '@/lib/profileStore';
 
 import Link from 'next/link';
-import { HiPencilSquare, HiTrash } from "react-icons/hi2";
+import { HiPencilSquare, HiTrash, HiCheckCircle, HiMiniXCircle } from "react-icons/hi2";
 
 export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
@@ -52,6 +52,13 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
     setTitle(vocab.title);
   }
 
+  function checkForAbort(e: React.KeyboardEvent) {
+    if (e.key === "Escape") {
+      setTitle(vocab.title);
+      setIsEditTitle(false);
+    }
+  }
+
   return (
     <tr key={vocab._id} className="border-b rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
       {isEditTitle ? (
@@ -59,10 +66,13 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
           <td className="py-3 pl-2">
             <form onSubmit={updateTitle}>
               <input 
-                className="leading-8 px-2" 
+                className="leading-8 px-2 rounded" 
                 type="text" 
                 value={title} 
-                onChange={(e) => setTitle(e.target.value)} 
+                size={10}
+                maxLength={15}
+                onChange={(e) => setTitle(e.target.value)}
+                onKeyDown={checkForAbort} 
                 autoFocus 
               />
             </form>
@@ -70,18 +80,20 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
           <td className="py-3">{vocab.words ? vocab.words.length : 0}</td>
           <td>
             <button 
-              className="bg-btnBg hover:bg-hoverBtnBg text-white cursor-pointer px-3 py-1 rounded" 
+              className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`} 
               onClick={updateTitle}
-            >
-              Save
+            >              
+              <p className="hidden mobile:inline">Save</p>
+              <HiCheckCircle className="inline mobile:hidden text-btnBg hover:text-hoverBtnBg h-8 w-8" /> 
             </button>
           </td>
           <td className="py-3">
             <button 
-              className="bg-secondaryBg-light hover:bg-secondaryBg-light/80 text-white cursor-pointer px-3 py-1 rounded" 
+              className={`rounded-full bg-white mobile:bg-secondaryBg-light mobile:hover:bg-secondaryBg-light/80 mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`} 
               onClick={() => setIsEditTitle(false)}
             >
-              Cancel
+              <p className="hidden mobile:inline">Cancel</p>
+              <HiMiniXCircle className="inline mobile:hidden text-secondaryBg-light hover:text-secondaryBg-light/80 h-8 w-8" />
             </button>
           </td>
         </>
@@ -97,19 +109,17 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
           </td>
           <td className="py-3">{vocab.words ? vocab.words.length : 0}</td>
           <td>
-            {vocab.words.length > 0 ? (
-              <button className="text-white rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors">
+            <button className={`${vocab.words.length > 0 ? 'text-white' : 'text-gray-300 cursor-default'} text-sm sm:text-base rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors`}>
+              {vocab.words.length > 0 ? (
                 <Link 
                   href={`/lesson/${encodeURIComponent(vocab._id)}`} 
                 >
-                  Start Lesson
+                  Start <span className="hidden mobile:inline">Lesson</span>
                 </Link>
-              </button>
-            ) : (
-              <button className="text-gray-300 rounded py-1 px-3 bg-btnBg/80 transition-colors cursor-default">
-                Start Lesson
-              </button>
-            )}
+              ) : (
+                <p>Start <span className="hidden mobile:inline">Lesson</span></p>
+              )}
+            </button>
           </td>
           <td className="py-3"><button onClick={enterEditTitleMode}><HiPencilSquare /></button></td>
           <td className="py-3"><button onClick={() => deleteVocab(vocab._id)}><HiTrash /></button></td>

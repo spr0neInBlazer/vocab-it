@@ -129,7 +129,7 @@ const Vocabulary: NextPageWithLayout = () => {
       <Head>
         <title>Vocabulary Details</title>
       </Head>
-      <section className="w-11/12 lg:w-3/5 mx-auto mb-6 py-5 px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight flex flex-col border border-zinc-400 dark:border-zinc-300">
+      <section className="w-11/12 lg:w-3/5 mx-auto mb-6 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight flex flex-col border border-zinc-400 dark:border-zinc-300">
         {(isEditTitle && title) ? (
           <form 
             className="flex relative justify-center gap-2 items-center" 
@@ -164,15 +164,15 @@ const Vocabulary: NextPageWithLayout = () => {
               className="absolute left-0 flex gap-1 items-center rounded-full py-1 px-3 hover:bg-slate-100 dark:hover:bg-customHighlight2"
               href="/profile/profile"
             >
-              <HiArrowLongLeft /> Profile
+              <HiArrowLongLeft /> <p className="text-sm mobile:text-base">Profile</p>
             </Link>
-            <h1 className="text-4xl font-semibold dark:text-customText-dark mb-4">
+            <h1 className="text-xl mobile:text-3xl md:text-4xl font-semibold dark:text-customText-dark mb-4">
               {title ? title : "Loading..."}
             </h1>
-            {title !== null && <button onClick={enterEditTitleMode}><HiPencilSquare /></button>}
+            {title !== null && <button className="mb-4" onClick={enterEditTitleMode}><HiPencilSquare /></button>}
           </div>
         )}
-        <p className="text-lg text-center">
+        <p className="text-sm mobile:text-lg text-center">
           {words.length === 1 ? '1 word' : `${words.length} words`}
         </p>
         <div className="my-5 flex justify-between">
@@ -190,7 +190,7 @@ const Vocabulary: NextPageWithLayout = () => {
           <AlertDialog>
             <AlertDialogTrigger className="flex gap-1 items-center rounded-lg py-1 px-3 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg transition-colors"
             >
-              <HiTrash /> Delete Vocabulary
+              <HiTrash /> Delete <span className="hidden mobile:inline">Vocabulary</span>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
@@ -207,12 +207,12 @@ const Vocabulary: NextPageWithLayout = () => {
           </AlertDialog>
         </div>
         {words.length > 0 ? (
-          <section className="w-3/4 mx-auto">
+          <section className="w-full sm:w-3/4 mx-auto">
             <div className="flex px-6 my-2">
               <p className="font-bold w-1/2">Word</p>
               <p className="font-bold w-1/2">Translation</p>
             </div>
-            <ScrollArea className="h-[210px] rounded-md border px-4 py-3">
+            <ScrollArea className="h-[210px] rounded-md border px-2 sm:px-4 py-3">
               {words.map(w => {
                 return (
                   <SingleWord 

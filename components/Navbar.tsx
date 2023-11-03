@@ -46,16 +46,18 @@ export default function Navbar() {
   return (
     <nav className="bg-secondaryBg-light dark:bg-secondaryBg-dark py-5 absolute top-0 left-0 right-0 transition-colors">
       <div className="w-4/5 mx-auto flex justify-between items-center">
-        <div className="flex items-center">
-          <Image 
-            className="-rotate-12"
-            src="/images/vocab-logo.png"
-            width={64}
-            height={64}
-            alt='logo'
-          />
-          <Link href={'/'} className={`${atma.className} text-white text-4xl font-bold`}>Vocab It</Link>
-        </div>
+        {/* <div className="flex items-center"> */}
+          <Link href={'/'} className="flex items-center" title="Vocab It - a language learning app">
+            <Image 
+              className="-rotate-12"
+              src="/images/vocab-logo.png"
+              width={64}
+              height={64}
+              alt='logo'
+            />
+            <p className={`${atma.className} text-white text-4xl font-bold hidden sm:inline`}>Vocab It</p>
+          </Link>
+        {/* </div> */}
         <div>
           <Dialog>
             <Menubar className="bg-transparent dark:bg-transparent border-none">
@@ -64,7 +66,7 @@ export default function Navbar() {
                   className="p-1 rounded-md active:bg-transparent focus:bg-transparent dark:active:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white">
                   <HiGlobeAlt className="w-8 h-8 text-white" />
                 </MenubarTrigger>
-                <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark">
+                <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
                   {isFetching ? (
                     <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
                       <HiFolder className="mr-2" /> LOADING...
@@ -96,7 +98,7 @@ export default function Navbar() {
                   <HiUserCircle className="w-8 h-8 fill-white" />
                 </MenubarTrigger>
 
-                <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark">
+                <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
                   <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
                     <Link href={'/profile/profile'}>Account</Link>
                   </MenubarItem>
@@ -110,7 +112,7 @@ export default function Navbar() {
                   <HiMoon className="w-8 h-8 fill-white absolute rotate-90 scale-0 transition-all dark:-rotate-0 dark:scale-100" />
                 </MenubarTrigger>
 
-                <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark">
+                <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
                   <MenubarItem 
                     className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight"
                     onClick={() => setTheme("light")}

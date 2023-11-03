@@ -13,7 +13,7 @@ import {
 export default function EndLessonDialog({ setEndLesson }: { setEndLesson: React.Dispatch<React.SetStateAction<boolean>>}) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="w-28 flex items-center justify-center rounded-lg py-2 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg transition-colors">
+      <AlertDialogTrigger className="w-16 text-sm mobile:text-base mobile:w-28 flex items-center justify-center rounded-lg py-2 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg transition-colors">
         End Lesson
       </AlertDialogTrigger>
       <AlertDialogContent className="flex flex-col items-center justify-center">

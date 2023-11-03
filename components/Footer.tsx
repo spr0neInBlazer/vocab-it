@@ -4,9 +4,8 @@ import { HiOutlineExternalLink } from "react-icons/hi";
 
 export default function Footer() {
   return (
-    // absolute bottom-0 left-0 right-0
-    <footer className="py-8 transition-colors bg-zinc-800 text-gray-300">
-      <div className="w-full sm:w-4/5 mx-auto flex justify-between">
+    <footer className="py-5 mobile:py-8 transition-colors bg-zinc-800 text-gray-300 text-center">
+      <div className="w-11/12 flex-col mobile:flex-row sm:w-4/5 mx-auto flex gap-3 justify-between">
         <div>
           <p className="text-xl">Vocab It</p>
           <p>Developed by Savvy Itch</p>
@@ -20,7 +19,7 @@ export default function Footer() {
         </div>
         <div>
           <h3 className="text-xl font-semibold mb-2">Contact</h3>
-          <ul>
+          <ul className="flex flex-col items-center mobile:items-start">
             <li>
               <Link className="flex items-center gap-1 hover:text-white transition-colors" href="https://github.com/savvy-itch/vocab-it">
                 GitHub <HiOutlineExternalLink />

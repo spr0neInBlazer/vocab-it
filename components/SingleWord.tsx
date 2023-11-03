@@ -65,7 +65,7 @@ export default function SingleWord({ word, vocab }: SingleWordProps) {
   }
 
   return (
-    <article>
+    <article className="text-sm mobile:text-base">
       {isEditSingleWord ? (
         <form 
           className="flex justify-between my-1 p-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors"

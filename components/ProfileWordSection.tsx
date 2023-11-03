@@ -36,6 +36,13 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
     }
   }
 
+  function checkForAbort(e: React.KeyboardEvent) {
+    if (e.key === "Escape") {
+      setWordsPerLesson(preferenceStore.lessonVolume);
+      toggleIsEditWordAmount(); // to false
+    }
+  }
+
   useEffect(() => {
     if (preferenceStore) {
       setWordsPerLesson(preferenceStore.lessonVolume);
@@ -44,7 +51,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
 
   return (
     <article>
-      <h2 className='text-3xl font-bold dark:text-customText-dark mb-4'>Lessons</h2>
+      <h2 className='text-xl mobile:text-2xl md:text-3xl font-bold dark:text-customText-dark mb-4'>Lessons</h2>
       {/* Lesson schedule feature to add when back-end is implemented */}
       {/* <h3 className="text-xl font-bold dark:text-customText-dark mb-4">Your current schedule:</h3>
       <Select>
@@ -57,7 +64,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
           })}
         </SelectContent>
       </Select> */}
-      <h3 className="text-xl font-bold dark:text-customText-dark my-4">Words per lesson:</h3>
+      <h3 className="text-base mobile:text-lg md:text-xl font-bold dark:text-customText-dark my-4">Words per lesson:</h3>
       {isEditWordAmount ? (
         <form className="my-3 max-w-max" onSubmit={updateWordsAmount}>
           <div className="flex gap-3 justify-between items-center">
@@ -65,6 +72,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
               className="text-lg text-center leading-9 px-2 rounded border border-zinc-400 dark:border-zinc-300" 
               value={wordsPerLesson} 
               onChange={(e) => setWordsPerLesson(Number(e.target.value))} 
+              onKeyDown={checkForAbort}
               size={5}
               maxLength={3}
               autoFocus 
@@ -79,7 +87,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
           <p className="text-xs italic mt-2">Enter a number between 5 and 50</p>
         </form>
       ) : (
-        <div className="flex my-3 w-2/12 justify-between items-center">
+        <div className="flex my-3 w-1/2 mobile:w-1/3 sm:w-2/12 gap-2 items-center">
           <p className="text-lg text-center font-semibold dark:text-customText-dark border dark:bg-mainBg-dark px-2 py-1 w-20 rounded">
             {wordsPerLesson}
           </p>

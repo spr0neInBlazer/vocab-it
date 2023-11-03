@@ -38,10 +38,10 @@ export default function VocabList() {
 
   if (vocabs.length > 0) {
     return (
-      <table className="w-full my-3">
+      <table className="w-full my-3 text-sm mobile:text-base">
         <thead>
           <tr>
-            <th className="w-3/5 text-left pl-2">Name</th>
+            <th className="w-1/3 sm:w-3/5 text-left pl-2">Name</th>
             <th className="flex items-center gap-1 justify-start">
               Words
               <TooltipProvider>
@@ -67,5 +67,5 @@ export default function VocabList() {
     )
   }
 
-  return <p className="text-center text-xl font-bold my-5">No vocabularies</p>
+  return <p className="text-center text-base sm:text-xl font-bold my-5">No vocabularies</p>
 }

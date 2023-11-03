@@ -50,6 +50,9 @@ module.exports = {
         hoverBtnBg: '#03723B',
         hoverSecondaryBg: 'hsl(0, 84%, 60%)',
       },
+      screens: {
+        mobile: '400px',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
