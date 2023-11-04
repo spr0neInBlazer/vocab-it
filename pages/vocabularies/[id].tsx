@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useVocabStore from '@/lib/store';
 import { Vocab2, Word } from '@/lib/types';
+import { useToast } from '@/components/ui/use-toast';
 
 import { NextPageWithLayout } from '../_app';
 import Head from 'next/head';
@@ -24,6 +25,8 @@ import {
 import { Button } from '@/components/ui/button';
 import useProfileStore from '@/lib/profileStore';
 import VocabAddWordForm from '@/components/VocabAddWordForm';
+import Footer from '@/components/Footer';
+import { Toaster } from '@/components/ui/toaster';
 
 // FCP: 1.9s -> 1.5s
 // TTFB: 1s -> .167s
@@ -50,6 +53,8 @@ const Vocabulary: NextPageWithLayout = () => {
     toggleIsAddWord,
     toggleIsEditWord,
   } = useProfileStore(state => state);
+  const [errorMsg, setErrorMsg] = useState<string>('');
+  const { toast } = useToast();
 
   function checkSingleEdit() {
     if (isEditUsername || isEditWordAmount || isAddVocab || isEditWord) {
@@ -60,20 +65,30 @@ const Vocabulary: NextPageWithLayout = () => {
 
   function updateTitle(e: React.SyntheticEvent) {
     e.preventDefault();
-    if (!title) return;
+    
+    if (title === null) return;
     // if the title is empty or only consists of spaces
     if (title.length === 0 || !/\S/.test(title)) {
-      alert('Enter a valid title');
+      setErrorMsg('Enter a valid title');
     } else if (vocabs?.some(v => v.title === title && v._id !== router.query.id)) {
-      alert('A vocabulary with this title already exists');
+      setErrorMsg('A vocabulary with this title already exists');
     } else {
       editVocabTitle(router.query.id as string, title);
       setIsEditTitle(false);
+      toast({
+        variant: 'default',
+        description: "Vocabulary title has been updated",
+      });
+      setErrorMsg('');
     }
   }
 
   function deleteVocab() {
     deleteStoreVocab(router.query.id as string);
+    toast({
+      variant: 'default',
+      description: "Vocabulary has been successfully deleted",
+    });
     router.push('/profile/profile');
   }
 
@@ -129,66 +144,66 @@ const Vocabulary: NextPageWithLayout = () => {
       <Head>
         <title>Vocabulary Details</title>
       </Head>
-      <section className="w-11/12 lg:w-3/5 mx-auto mb-6 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight flex flex-col border border-zinc-400 dark:border-zinc-300">
-        {(isEditTitle && title) ? (
-          <form 
-            className="flex relative justify-center gap-2 items-center" 
-            onSubmit={updateTitle}
+      <section className="w-11/12 lg:w-3/5 mx-auto mb-6 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight flex flex-col border border-zinc-400 dark:border-zinc-300 shadow-2xl">
+        <div className="grid grid-rows-2 sm:grid-cols-3 gap-3 w-full items-start">
+          <Link
+            className="w-fit flex gap-1 items-center rounded-full py-1 px-3 hover:bg-slate-100 dark:hover:bg-customHighlight2 border border-zinc-400 dark:border-zinc-300"
+            href="/profile/profile"
           >
-            <Link 
-              className="absolute left-0 flex gap-1 items-center rounded-full py-1 px-3 hover:bg-slate-100 dark:hover:bg-customHighlight2"
-              href="/profile/profile"
-            >
-              <HiArrowLongLeft /> Profile
-            </Link>
-            <div className="flex justify-between items-center gap-2">
-              <input 
-                className="text-2xl pl-2 leading-10 border border-slate-600 rounded" type="text" 
-                size={15}
-                maxLength={15}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)} 
-                autoFocus 
-              />
-              <Button 
-                className="bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 text-white dark:text-white"
+            <HiArrowLongLeft /> Profile
+          </Link>
+          {(isEditTitle && title !== null) ? (
+            <div className="col-span-2 justify-self-center sm:justify-self-start">
+              <form 
+                className="flex justify-center gap-2 items-center" 
                 onSubmit={updateTitle}
               >
-                Save
-              </Button>
+                <div className="flex justify-between items-center gap-2">
+                  <input 
+                    className="text-2xl pl-2 leading-10 border border-slate-600 rounded" type="text" 
+                    size={10}
+                    maxLength={15}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)} 
+                    autoFocus 
+                  />
+                  <Button 
+                    className="bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 text-white dark:text-white"
+                    onSubmit={updateTitle}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </form>
+              <p className="text-sm text-red-800 min-h-4">{errorMsg}</p>
             </div>
-          </form>
-        ) : (
-          <div className="flex relative justify-center gap-2 items-center">
-            <Link 
-              className="absolute left-0 flex gap-1 items-center rounded-full py-1 px-3 hover:bg-slate-100 dark:hover:bg-customHighlight2"
-              href="/profile/profile"
-            >
-              <HiArrowLongLeft /> <p className="text-sm mobile:text-base">Profile</p>
-            </Link>
-            <h1 className="text-xl mobile:text-3xl md:text-4xl font-semibold dark:text-customText-dark mb-4">
-              {title ? title : "Loading..."}
-            </h1>
-            {title !== null && <button className="mb-4" onClick={enterEditTitleMode}><HiPencilSquare /></button>}
-          </div>
-        )}
-        <p className="text-sm mobile:text-lg text-center">
+          ) : (
+            <div className="justify-self-center flex gap-2">
+              <h1 className="text-2xl mobile:text-3xl md:text-4xl font-semibold dark:text-customText-dark">
+                {title !== null ? title : "Loading..."}
+              </h1>
+              {title !== null && <button onClick={enterEditTitleMode}><HiPencilSquare /></button>}
+            </div>
+          )}
+        </div>
+
+        <p className="mobile:text-lg text-center">
           {words.length === 1 ? '1 word' : `${words.length} words`}
         </p>
         <div className="my-5 flex justify-between">
           {(words.length > 0 && router.query.id) ? (
-            <button className="text-white rounded-lg py-1 px-3 font-semibold bg-btnBg hover:bg-hoverBtnBg transition-colors">
+            <button className="text-white rounded-lg py-2 px-3 font-semibold bg-btnBg hover:bg-hoverBtnBg transition-colors">
               <Link href={`/lesson/${encodeURIComponent(router.query.id as string)}`}>
                 Start Lesson
               </Link>
             </button>
           ) : (
-            <button className="text-gray-300 rounded-lg py-1 px-3 font-semibold bg-btnBg/80 transition-colors cursor-default">
+            <button className="text-gray-300 rounded-lg py-2 px-3 font-semibold bg-btnBg/80 transition-colors cursor-default">
               Start Lesson
             </button>
           )}
           <AlertDialog>
-            <AlertDialogTrigger className="flex gap-1 items-center rounded-lg py-1 px-3 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg transition-colors"
+            <AlertDialogTrigger className="flex gap-1 items-center rounded-lg py-2 px-3 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg transition-colors"
             >
               <HiTrash /> Delete <span className="hidden mobile:inline">Vocabulary</span>
             </AlertDialogTrigger>
@@ -233,6 +248,8 @@ const Vocabulary: NextPageWithLayout = () => {
           checkSingleEdit={checkSingleEdit}
         />
       </section>
+      <Toaster />
+      <Footer />
     </>
   )
 }

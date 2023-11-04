@@ -3,6 +3,7 @@ import { CheckSingleEditFunction } from '@/lib/types';
 import useProfileStore from '@/lib/profileStore';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
+import { useToast } from './ui/use-toast';
 
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
@@ -14,6 +15,8 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
     isEditWordAmount, 
     toggleIsEditWordAmount,
   } = useProfileStore(state => state);
+  const [errorMsg, setErrorMsg] = useState<string>('');
+  const { toast } = useToast();
 
   function updateWordsAmount(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -21,9 +24,14 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
       && wordsPerLesson > 0 && preferenceStore) {
       preferenceStore.updateLessonVolume(wordsPerLesson);
       toggleIsEditWordAmount(); // to false
+      toast({
+        variant: 'default',
+        description: "Words per lesson amount has been updated",
+      });
+      setErrorMsg('');
     } else {
       setWordsPerLesson(1);
-      alert("Enter valid amount of words");
+      setErrorMsg("Enter valid amount of words");
     }
   }
 
@@ -40,6 +48,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
     if (e.key === "Escape") {
       setWordsPerLesson(preferenceStore.lessonVolume);
       toggleIsEditWordAmount(); // to false
+      setErrorMsg('');
     }
   }
 
@@ -84,7 +93,11 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
               Update
             </Button>
           </div>
-          <p className="text-xs italic mt-2">Enter a number between 5 and 50</p>
+          {errorMsg.length > 0 ? (
+            <p className="text-xs italic mt-2">Enter a number between 5 and 50</p>
+          ) : (
+            <p className="text-xs text-red-800 mt-2">{errorMsg}</p>
+          )}
         </form>
       ) : (
         <div className="flex my-3 w-1/2 mobile:w-1/3 sm:w-2/12 gap-2 items-center">

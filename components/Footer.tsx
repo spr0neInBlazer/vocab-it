@@ -7,8 +7,8 @@ export default function Footer() {
     <footer className="py-5 mobile:py-8 transition-colors bg-zinc-800 text-gray-300 text-center">
       <div className="w-11/12 flex-col mobile:flex-row sm:w-4/5 mx-auto flex gap-3 justify-between">
         <div>
-          <p className="text-xl">Vocab It</p>
-          <p>Developed by Savvy Itch</p>
+          <p className="text-xl text-center mobile:text-left">Vocab It</p>
+          <p className="text-center mobile:text-left">Developed by Savvy Itch</p>
         </div>
         <div>
           <h3 className="text-xl font-semibold mb-2">References</h3>

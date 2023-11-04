@@ -5,6 +5,18 @@ import useProfileStore from '@/lib/profileStore';
 
 import Link from 'next/link';
 import { HiPencilSquare, HiTrash, HiCheckCircle, HiMiniXCircle } from "react-icons/hi2";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from './ui/use-toast';
 
 export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
@@ -17,6 +29,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
     isEditWordAmount,
     isAddVocab,
   } = useProfileStore(state => state);
+  const {toast} = useToast();
 
   // only allow one field editing at a time
   function checkSingleEdit() {
@@ -48,6 +61,10 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
     } else {
       editVocabTitle(vocab._id, title);
       setIsEditTitle(false);
+      toast({
+        variant: 'default',
+        description: "Vocabulary title has been successfully updated",
+      });
     }
     setTitle(vocab.title);
   }
@@ -57,6 +74,14 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
       setTitle(vocab.title);
       setIsEditTitle(false);
     }
+  }
+
+  function deleteVocabFromStore() {
+    deleteVocab(vocab._id);
+    toast({
+      variant: 'default',
+      description: "Vocabulary has been deleted",
+    });
   }
 
   return (
@@ -121,8 +146,27 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
               )}
             </button>
           </td>
-          <td className="py-3"><button onClick={enterEditTitleMode}><HiPencilSquare /></button></td>
-          <td className="py-3"><button onClick={() => deleteVocab(vocab._id)}><HiTrash /></button></td>
+          <td className="py-3">
+            <button className="text-base" onClick={enterEditTitleMode}><HiPencilSquare /></button></td>
+          <td className="py-3">
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <HiTrash />
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure you want to delete this vocabulary?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={deleteVocabFromStore}>OK</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </td>
         </>
       )}
     </tr>

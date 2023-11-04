@@ -44,20 +44,18 @@ export default function Navbar() {
   }, [vocabs]);
 
   return (
-    <nav className="bg-secondaryBg-light dark:bg-secondaryBg-dark py-5 absolute top-0 left-0 right-0 transition-colors">
+    <nav className="bg-secondaryBg-light dark:bg-secondaryBg-dark py-2 sm:py-5 absolute top-0 left-0 right-0 transition-colors">
       <div className="w-4/5 mx-auto flex justify-between items-center">
-        {/* <div className="flex items-center"> */}
-          <Link href={'/'} className="flex items-center" title="Vocab It - a language learning app">
-            <Image 
-              className="-rotate-12"
-              src="/images/vocab-logo.png"
-              width={64}
-              height={64}
-              alt='logo'
-            />
-            <p className={`${atma.className} text-white text-4xl font-bold hidden sm:inline`}>Vocab It</p>
-          </Link>
-        {/* </div> */}
+        <Link href={'/'} className="flex items-center" title="Vocab It - a language learning app">
+          <Image 
+            className="-rotate-12"
+            src="/images/vocab-logo.png"
+            width={64}
+            height={64}
+            alt='logo'
+          />
+          <p className={`${atma.className} text-white text-4xl font-bold hidden sm:inline`}>Vocab It</p>
+        </Link>
         <div>
           <Dialog>
             <Menubar className="bg-transparent dark:bg-transparent border-none">
@@ -75,7 +73,7 @@ export default function Navbar() {
                     vocabs?.map((v: Vocab2) => {
                       return (
                         <MenubarItem key={v._id} className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
-                          <Link href={`/vocabularies/${encodeURIComponent(v._id)}`} className="flex items-center">
+                          <Link href={`/vocabularies/${encodeURIComponent(v._id)}`} className="flex items-center w-full">
                             <HiFolder className="mr-2" /> {v.title}
                           </Link>
                         </MenubarItem>)
@@ -100,7 +98,7 @@ export default function Navbar() {
 
                 <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
                   <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
-                    <Link href={'/profile/profile'}>Account</Link>
+                    <Link className="w-full" href={'/profile/profile'}>Account</Link>
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>

@@ -45,11 +45,11 @@ const Home: NextPageWithLayout = () => {
       </Head>
       {/* upper screen */}
       <div>
-        <section className="relative w-full h-screen transition ease-in-out duration-300 z-10"
+        <section className="relative w-full h-[100dvh] transition ease-in-out duration-300 z-10"
           ref={topSectionRef}
         >
           <Navbar />
-          <div className="h-screen sm:w-4/5 mx-auto flex gap-2 justify-center flex-col sm:flex-row sm:justify-between items-center">
+          <div className="h-[100dvh] sm:w-4/5 mx-auto flex gap-2 justify-center flex-col sm:flex-row sm:justify-between items-center">
             {isMounted && (
               <Image 
                 src={theme === "dark" ? '/images/vocab-hero-dark.svg' : '/images/vocab-hero.svg'}
@@ -59,7 +59,7 @@ const Home: NextPageWithLayout = () => {
                 alt="lady learning"
               />
             )}
-            <div className="text-2xl mobile:text-3xl sm:text-5xl font-bold text-customText-light dark:text-customText-dark w-11/12 text-center sm:text-left">
+            <div className="text-3xl sm:text-5xl font-bold text-customText-light dark:text-customText-dark w-11/12 mobile:w-auto text-center sm:text-left">
               <p>
                 <span className="text-customHighlight3">Build</span> vocabularies
               </p>
@@ -68,7 +68,6 @@ const Home: NextPageWithLayout = () => {
               </p>
             </div>
           </div>
-          {/* 400 */}
           <button 
             className="absolute w-12 h-12 bottom-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 rounded-full" 
             onClick={goDown}
@@ -84,10 +83,10 @@ const Home: NextPageWithLayout = () => {
         </section>
 
         {/* bottom screen */}
-        <section className="relative w-11/12 sm:w-4/5 flex flex-col justify-between mx-auto pt-10 pb-5 sm:pb-10 h-screen transition ease-in-out duration-300 text-customText-light dark:text-customText-dark"
+        <section className="relative w-11/12 h-screen sm:w-4/5 flex flex-col justify-between mx-auto pt-24 mobile:pt-10 pb-5 sm:pb-10 transition ease-in-out duration-300 text-customText-light dark:text-customText-dark"
           ref={bottomSectionRef}
         >
-          <button className="absolute w-12 h-12 top-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 rounded-full z-50"
+          <button className="absolute w-12 h-12 top-16 mobile:top-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 rounded-full z-50"
             onClick={goUp}
           >
             <HiOutlineArrowUpCircle className="w-12 h-12 text-customText-light dark:text-customText-dark" />
@@ -95,8 +94,8 @@ const Home: NextPageWithLayout = () => {
 
           <div className="w-full h-[60%] flex flex-col justify-between">
             <div className="w-full md:w-3/4 lg:w-2/4">
-              <h2 className="text-xl mobile:text-3xl md:text-5xl font-bold text-customHighlight3 mt-7 mb-4 text-center sm:text-left">What is Vocab It?</h2>
-              <p className="text-base mobile:text-xl sm:text-2xl font-semibold break-words">
+              <h2 className="text-2xl mobile:text-3xl md:text-5xl font-bold text-customHighlight3 mt-7 mb-4 text-center sm:text-left">What is Vocab It?</h2>
+              <p className="text-lg mobile:text-xl sm:text-2xl font-semibold break-words">
                 <span className={`${atma.className} font-bold`}>Vocab It</span> empowers your language learning without any restrictions, while keeping it user-friendly.</p>
             </div>
             <div className="flex w-full flex-col sm:flex-row justify-between items-center">
@@ -108,8 +107,8 @@ const Home: NextPageWithLayout = () => {
                 alt="lady studying"
               />
               <div className="w-full sm:w-auto">
-                <h2 className="text-xl mobile:text-3xl md:text-5xl text-customHighlight3 font-bold mt-7 mb-4 text-center sm:text-left">How to use it?</h2>
-                <ol className="text-base mobile:text-xl sm:text-2xl font-semibold break-words list-decimal list-inside">
+                <h2 className="text-2xl mobile:text-3xl md:text-5xl text-customHighlight3 font-bold mt-7 mb-4 text-center sm:text-left">How to use it?</h2>
+                <ol className="text-lg mobile:text-xl sm:text-2xl font-semibold break-words list-decimal list-inside">
                   <li className="my-2">Create new vocabularies</li>
                   <li className="my-2">Add words you want to learn</li>
                   <li className="my-2">Practice them at your pace</li>
@@ -120,7 +119,7 @@ const Home: NextPageWithLayout = () => {
           </div>
           <div className="flex justify-center">
             <Link href={`/profile/profile`}>
-              <button className="animated-btn bg-secondaryBg-light flex gap-1 items-center rounded-lg py-2 lg:py-4 px-8 font-semibold text-white text-md lg:text-xl transition hover:animated-btn hover:scale-105">
+              <button className="animated-btn bg-secondaryBg-light flex gap-1 items-center rounded-lg py-3 lg:py-4 px-8 font-semibold text-white text-md lg:text-xl transition hover:animated-btn hover:scale-105">
                 START NOW
               </button>
             </Link>

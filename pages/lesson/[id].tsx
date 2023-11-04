@@ -143,12 +143,12 @@ const Lesson: NextPageWithLayout = () => {
           <LessonResult allAnswers={allAnswers} words={words} />
           <div className="flex justify-between mt-5 px-3">
             <button 
-              className="flex gap-1 items-center rounded-lg py-2 px-2 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors"
+              className="flex gap-1 items-center rounded-lg p-3 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors"
               onClick={restartLesson}  
             >
               Start Again
             </button>
-            <button className="flex gap-1 items-center rounded-lg py-2 px-2 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors">
+            <button className="flex gap-1 items-center rounded-lg p-3 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors">
               <Link href="/profile/profile">
                 Back to Profile
               </Link>
@@ -171,7 +171,7 @@ const Lesson: NextPageWithLayout = () => {
           value={Math.round(((currWord - 1) / lessonVolume) * 100)} 
         />
         {words.length > 0 && (
-          <section className="w-full p-4 sm:p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300">
+          <section className="w-full p-4 sm:p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
             <div>
               <h2 className="text-xl mobile:text-2xl">Word:</h2>
               <p className="text-2xl mobile:text-3xl text-center my-3">{words[currWord-1].translation}</p>

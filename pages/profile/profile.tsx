@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import useProfileStore from '@/lib/profileStore';
 import ProfileAddVocabSection from '@/components/ProfileAddVocabSection';
 import ProfileWordSection from '@/components/ProfileWordSection';
+import { Toaster } from '@/components/ui/toaster';
 
 // FCP: 1.915s -> 1.363s
 // TTFB: .362s -> .213s
@@ -66,12 +67,13 @@ const Profile: NextPageWithLayout = () => {
         <title>Account</title>
       </Head>
 
-      <section className="w-11/12 lg:w-3/5 mx-auto mb-10 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300">
-        <h1 className='text-xl mobile:text-3xl md:text-4xl text-center font-semibold dark:text-customText-dark mb-4'>My profile</h1>
+      <section className="w-11/12 lg:w-3/5 mx-auto mb-10 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
+        <h1 className='text-2xl mobile:text-3xl md:text-4xl text-center font-semibold dark:text-customText-dark mb-4'>My profile</h1>
         <NoSSR checkSingleEdit={checkSingleEdit} />
         <ProfileAddVocabSection checkSingleEdit={checkSingleEdit} />
         <ProfileWordSection checkSingleEdit={checkSingleEdit} />
       </section>
+      <Toaster />
       <Footer />
     </>
   )

@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: ReactNode}) {
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <div className="bg-mainBg-light dark:bg-mainBg-dark transition-colors">
           <Navbar />
-          <main className={`${arialRounded.className} min-h-screen mx-auto flex flex-col justify-between pt-[10rem]`}>{children}</main>
+          <main className={`${arialRounded.className} min-h-screen mx-auto flex flex-col justify-between pt-28 mobile:pt-[10rem]`}>{children}</main>
         </div>
       </ThemeProvider>
     </>

@@ -11,6 +11,7 @@ export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words
   const [translation, setTranslation] = useState<string>('');
   const addWordToStore = useVocabStore(state => state.addWord);
   const { isAddWord, toggleIsAddWord} = useProfileStore(state => state);
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
   function enterAddWordMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
@@ -26,16 +27,17 @@ export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words
 
     // if the title is empty or only consists of spaces
     if (newWord.length === 0 || !/\S/.test(newWord)) {
-      alert('Please enter a valid word');
+      setErrorMsg('Please enter a valid word');
     } else if (translation.length === 0 || !/\S/.test(translation)) {
-      alert('Please enter a valid translation');
+      setErrorMsg('Please enter a valid translation');
     } else if (words.some(w => w.word === newWord)) {
-      alert('This word already exists in the vocabulary.')
+      setErrorMsg('This word already exists in the vocabulary.')
     } else {
       toggleIsAddWord(); // to false
       if (typeof id === "string") {
         addWordToStore(id, newWord, translation);
       }
+      setErrorMsg('');
     }
     setNewWord('');
     setTranslation('');
@@ -45,6 +47,7 @@ export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words
     toggleIsAddWord(); // to false
     setNewWord('');
     setTranslation('');
+    setErrorMsg('');
   }
   
   function checkForAbort(e: React.KeyboardEvent) {
@@ -55,59 +58,62 @@ export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words
 
   if (isAddWord) {
     return (
-      <form 
-        className="flex w-full sm:max-w-[70%] flex-col sm:flex-row gap-3 mb-3 mt-6 justify-between items-start sm:items-end" 
-        onSubmit={addWord}
-      >
-        <div className="flex flex-col sm:flex-row justify-center gap-2 w-80% sm:w-fit">
-          <div className="flex flex-col gap-2">
-            <Label>Word</Label>
-            <input 
-              className="text-base sm:text-lg px-2 leading-9 border border-slate-600 rounded" 
-              value={newWord} 
-              onChange={(e) => setNewWord(e.target.value)} 
-              onKeyDown={checkForAbort}
-              size={15}
-              maxLength={30}
-              placeholder="Enter word"
-              autoFocus 
-            />
+      <>
+        <form 
+          className="flex w-full sm:max-w-[70%] flex-col sm:flex-row gap-3 mb-3 mt-6 justify-between items-start sm:items-end" 
+          onSubmit={addWord}
+        >
+          <div className="flex flex-col sm:flex-row justify-center gap-2 w-80% sm:w-fit">
+            <div className="flex flex-col gap-2">
+              <Label>Word</Label>
+              <input 
+                className="text-base sm:text-lg px-2 leading-9 border border-slate-600 rounded" 
+                value={newWord} 
+                onChange={(e) => setNewWord(e.target.value)} 
+                onKeyDown={checkForAbort}
+                size={15}
+                maxLength={30}
+                placeholder="Enter word"
+                autoFocus 
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label>Translation</Label>
+              <input 
+                className="text-base sm:text-lg px-2 leading-9 border border-slate-600 rounded" 
+                value={translation} 
+                onChange={(e) => setTranslation(e.target.value)} 
+                onKeyDown={checkForAbort}
+                size={15} 
+                maxLength={30}
+                placeholder="Enter translation"
+              />
+            </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <Label>Translation</Label>
-            <input 
-              className="text-base sm:text-lg px-2 leading-9 border border-slate-600 rounded" 
-              value={translation} 
-              onChange={(e) => setTranslation(e.target.value)} 
-              onKeyDown={checkForAbort}
-              size={15} 
-              maxLength={30}
-              placeholder="Enter translation"
-            />
+          <div className="flex gap-2">
+            <button 
+              className="text-white bg-btnBg hover:bg-hoverBtnBg px-3 py-2 rounded"
+              onClick={addWord}
+            >
+              Create
+            </button>
+            <button 
+              className="bg-secondaryBg-light hover:bg-hoverSecondaryBg text-white px-3 py-2 rounded" 
+              onClick={cancelAddWord}
+            >
+              Cancel
+            </button>
           </div>
-        </div>
-        <div className="flex gap-2">
-          <button 
-            className="text-white bg-btnBg hover:bg-hoverBtnBg px-3 py-1 rounded"
-            onClick={addWord}
-          >
-            Create
-          </button>
-          <button 
-            className="bg-secondaryBg-light hover:bg-hoverSecondaryBg text-white px-3 py-1 rounded" 
-            onClick={cancelAddWord}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+        </form>
+        <p className="text-sm text-red-800 min-h-4">{errorMsg}</p>
+      </>
     )
   }
 
   return (
     <div>
       <button 
-        className="flex gap-1 items-center justify-center mobile:justify-start w-full mobile:w-fit rounded-lg mt-5 py-1 px-3 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors" 
+        className="flex gap-1 items-center justify-center mobile:justify-start w-full mobile:w-fit rounded-lg mt-5 py-2 px-3 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors" 
         onClick={enterAddWordMode}
       >
         <HiPlus /> Add Word

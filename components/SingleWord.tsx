@@ -102,8 +102,8 @@ export default function SingleWord({ word, vocab }: SingleWordProps) {
           <p className="w-1/2">{word.word}</p>
           <p className="w-1/4">{word.translation}</p>
           <div className="flex gap-1">
-            <button onClick={enterEditWordMode}><HiPencilSquare /></button>
-            <button onClick={() => deleteWord(vocab._id as string, word.word)}><HiTrash /></button>
+            <button className="text-base" onClick={enterEditWordMode}><HiPencilSquare /></button>
+            <button className="text-base" onClick={() => deleteWord(vocab._id as string, word.word)}><HiTrash /></button>
           </div>
         </div>
       )}

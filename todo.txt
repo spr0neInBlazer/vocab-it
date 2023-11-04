@@ -3,13 +3,20 @@ Done:
 - add Arial Rounded font
 - input validations
 - exit edit mode on Esc press
+- responsiveness:
+  + scroll on mobile screen (try dvh)
+  + home down button doesn't show
+  ? light theme doesn't work correctly (only in Opera)
+  + make fonts bigger
+  + navbar "Account" link works only on the text and not on the field 
+- error page
 
 ---------------------
-- responsiveness
-- error page
 - alerts/notifications
 - sound effects
 - optimization
+- refactor the code (DRY & move code to components)
+- remove unused code (UI)
 - add default vocab with words for demonstration 
 
 Features (needs back-end):
@@ -19,6 +26,7 @@ Features (needs back-end):
 Other possible features:
 - make bg word cloud move with the mouse (3d effect)
 - allow adding multiple translations
+- allow uploading words as a file (e.g CSV)
 
 Account page:
 - Name (edit name)
