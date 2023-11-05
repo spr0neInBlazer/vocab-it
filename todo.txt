@@ -10,10 +10,12 @@ Done:
   + make fonts bigger
   + navbar "Account" link works only on the text and not on the field 
 - error page
+- alerts/notifications
+
+- fix editVocabTitlebug;
+- sound effects
 
 ---------------------
-- alerts/notifications
-- sound effects
 - optimization
 - refactor the code (DRY & move code to components)
 - remove unused code (UI)

@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Vocab2 } from '@/lib/types';
 import useVocabStore from '@/lib/store';
 import useProfileStore from '@/lib/profileStore';
+import useSound from 'use-sound';
+import { useStore } from 'zustand';
+import { usePreferencesStore } from '@/lib/preferencesStore';
 
 import Link from 'next/link';
 import { HiPencilSquare, HiTrash, HiCheckCircle, HiMiniXCircle } from "react-icons/hi2";
@@ -17,6 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from './ui/use-toast';
+import { errorSound, successSound } from '@/lib/globals';
 
 export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
@@ -28,12 +32,17 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
     isEditUsername,
     isEditWordAmount,
     isAddVocab,
+    isEditVocabTitle,
+    toggleIsEditVocabTitle
   } = useProfileStore(state => state);
   const {toast} = useToast();
+  const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
+  const [playError] = useSound(errorSound, { volume: 0.25 });
+  const [playSuccess] = useSound(successSound, { volume: 0.25 });
 
   // only allow one field editing at a time
   function checkSingleEdit() {
-    if (isEditUsername || isEditWordAmount || isAddVocab) {
+    if (isEditUsername || isEditWordAmount || isAddVocab || isEditVocabTitle) {
       return false;
     }
     return true;
@@ -44,6 +53,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
     if (isOnlyEdit) {
       setIsEditTitle(true);
     } else {
+      if (soundOn) playError();
       alert('Please finish editing the other field');
     }
   }
@@ -53,10 +63,12 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
 
     // if the title is empty or only consists of spaces
     if (title.length === 0 || !/\S/.test(title)) {
+      if (soundOn) playError();
       alert('Enter valid title');
     } 
     // if there's an existing vocab with new title
     else if (vocabs?.some(v => v._id !== vocab._id && v.title === title)) {
+      if (soundOn) playError();
       alert('A vocabulary with this title already exists');
     } else {
       editVocabTitle(vocab._id, title);
@@ -65,6 +77,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
         variant: 'default',
         description: "Vocabulary title has been successfully updated",
       });
+      if (soundOn) playSuccess();
     }
     setTitle(vocab.title);
   }
@@ -82,7 +95,12 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
       variant: 'default',
       description: "Vocabulary has been deleted",
     });
+    if (soundOn) playSuccess();
   }
+
+  useEffect(() => {
+    toggleIsEditVocabTitle();
+  }, [isEditTitle])
 
   return (
     <tr key={vocab._id} className="border-b rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">

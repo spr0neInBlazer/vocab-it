@@ -4,6 +4,8 @@ import useProfileStore from '@/lib/profileStore';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import { useToast } from './ui/use-toast';
+import useSound from 'use-sound';
+import { errorSound, successSound } from '@/lib/globals';
 
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
@@ -17,6 +19,8 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
   const [userName, setUserName] = useState<string>(preferenceStore?.profileName || 'testname');
   const [errorMsg, setErrorMsg] = useState<string>('');
   const { toast } = useToast();
+  const [playError] = useSound(errorSound, { volume: 0.25 });
+  const [playSuccess] = useSound(successSound, { volume: 0.25 });
 
   function updateUsername(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -28,9 +32,10 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
         variant: 'default',
         description: "Username has been successfully updated",
       });
+      if (preferenceStore.soundOn) playSuccess();
       setErrorMsg('');
     } else {
-      // alert('Please enter a valid username')
+      if (preferenceStore.soundOn) playError();
       setErrorMsg('Please enter a valid username');
     } 
   }
@@ -40,6 +45,7 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
     if (isOnlyEdit) {
       toggleIsEditUsername(); // to true
     } else {
+      if (preferenceStore.soundOn) playError();
       alert('Please finish editing the other field');
     }
   }

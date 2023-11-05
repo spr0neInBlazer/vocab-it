@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { CheckSingleEditFunction } from '@/lib/types';
 import useProfileStore from '@/lib/profileStore';
 import useVocabStore from '@/lib/store';
+import { useStore } from 'zustand';
+import { errorSound, successSound } from '@/lib/globals';
+import useSound from 'use-sound';
+import { usePreferencesStore } from '@/lib/preferencesStore';
 
 import VocabList from '@/components/VocabList';
 import { HiPlus, HiCheckCircle, HiMiniXCircle } from "react-icons/hi2";
@@ -16,12 +20,16 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
   } = useProfileStore(state => state);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const { toast } = useToast();
+  const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
+  const [playError] = useSound(errorSound, { volume: 0.25 });
+  const [playSuccess] = useSound(successSound, { volume: 0.25 });
 
   function enterAddVocabMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
     if (isOnlyEdit) {
       toggleIsAddVocab(); // to true;
     } else {
+      if (soundOn) playError();
       alert('Please finish editing the other field');
     }
   }
@@ -31,10 +39,12 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
 
     // if the title is empty or only consists of spaces
     if (newVocab.length === 0 || !/\S/.test(newVocab)) {
+      if (soundOn) playError();
       setErrorMsg('Title is required');
     } 
     // if there's an existing vocab with the entered title
     else if (vocabs?.some(v => v.title === newVocab)) {
+      if (soundOn) playError();
       setErrorMsg('A vocabulary with this title already exists');
     } else {
       toggleIsAddVocab(); // to false
@@ -43,6 +53,7 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
         variant: 'default',
         description: "Vocabulary has been successfully added",
       });
+      if (soundOn) playSuccess();
       setErrorMsg('');
     }
     setNewVocab('');

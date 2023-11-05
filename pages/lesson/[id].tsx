@@ -1,8 +1,8 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { prefix } from '@/lib/store';
 import { useRouter } from 'next/router';
 import { Word, Answer } from '@/lib/types';
 import { usePreferencesStore } from '@/lib/preferencesStore';
+import useSound from 'use-sound';
 
 import Head from 'next/head';
 import Link from 'next/link';
@@ -13,6 +13,7 @@ import { NextPageWithLayout } from '../_app';
 import Layout from '@/components/Layout';
 import EndLessonDialog from '@/components/EndLessonDialog';
 import { Progress } from "@/components/ui/progress"
+import { clickSound } from '@/lib/globals';
 
 const initialWordIdx: number = 1;
 
@@ -26,6 +27,7 @@ const Lesson: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [endLesson, setEndLesson] = useState<boolean>(false);
   const router = useRouter();
+  const [playClick] = useSound(clickSound, { volume: 0.25 });
 
   function randomizeWords(array: Word[], volume: number): Word[] {
     let randomizedWords: Word[] = [];
@@ -41,6 +43,7 @@ const Lesson: NextPageWithLayout = () => {
   function submitAnswer(e: React.SyntheticEvent) {
     e.preventDefault();
     registerAnswer();
+    if (preferenceStore.soundOn) playClick();
   }
 
   function registerAnswer() {

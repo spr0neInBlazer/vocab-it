@@ -28,7 +28,7 @@ export default function LessonResult({allAnswers, words}: ResultProps) {
       <h2 className="text-xl mobile:text-2xl text-center my-3">You&#39;ve correctly translated</h2>
       <p className="text-2xl">
         <span 
-          className={`${successPercentage > 33 ? successPercentage > 66 ? 'text-green-600' : 'text-orange-500' : 'text-red-500'} font-semibold`}
+          className={`${successPercentage > 33 ? successPercentage > 67 ? 'text-green-600' : 'text-orange-500' : 'text-red-500'} font-semibold`}
         >
           {answeredCorrectly}/{words.length}
         </span> words

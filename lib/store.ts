@@ -77,6 +77,7 @@ const useVocabStore = create<VocabStore>(set => ({
       })
       const vocabToEdit: Vocab2 | undefined = state.vocabs?.find(v => v._id === id);
       if (vocabToEdit) {
+        vocabToEdit.title = newTitle;
         localStorage.removeItem(id);
         localStorage.setItem(id, JSON.stringify(vocabToEdit));
       }

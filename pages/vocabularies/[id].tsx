@@ -3,11 +3,16 @@ import { useRouter } from 'next/router';
 import useVocabStore from '@/lib/store';
 import { Vocab2, Word } from '@/lib/types';
 import { useToast } from '@/components/ui/use-toast';
+import useSound from 'use-sound';
+import { successSound } from '@/lib/globals';
+import { useStore } from 'zustand';
+import { usePreferencesStore } from '@/lib/preferencesStore';
+import useProfileStore from '@/lib/profileStore';
 
 import { NextPageWithLayout } from '../_app';
 import Head from 'next/head';
 import Link from 'next/link';
-import { HiArrowLongLeft, HiPencilSquare, HiTrash } from "react-icons/hi2";
+import { HiArrowLongLeft, HiTrash } from "react-icons/hi2";
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SingleWord from '@/components/SingleWord';
 import Layout from '@/components/Layout';
@@ -22,22 +27,19 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from '@/components/ui/button';
-import useProfileStore from '@/lib/profileStore';
 import VocabAddWordForm from '@/components/VocabAddWordForm';
 import Footer from '@/components/Footer';
 import { Toaster } from '@/components/ui/toaster';
+import VocabTitleSection from '@/components/VocabTitleSection';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // FCP: 1.9s -> 1.5s
 // TTFB: 1s -> .167s
 
 const Vocabulary: NextPageWithLayout = () => {
-  const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
-  const [title, setTitle] = useState<string | null>(null);
   const router = useRouter();
   const vocabs = useVocabStore(state => state.vocabs);
   const initialFetch = useVocabStore(state => state.initialFetch);
-  const editVocabTitle = useVocabStore(state => state.editVocabTitle);
   const deleteStoreVocab = useVocabStore(state => state.deleteVocab);
   const [words, setWords] = useState<Word[]>([]);
   const [currVocab, setCurrVocab] = useState<Vocab2>();
@@ -47,40 +49,23 @@ const Vocabulary: NextPageWithLayout = () => {
     isAddVocab,
     isAddWord,
     isEditWord,
+    isEditVocabTitle,
     toggleIsEditUsername,
     toggleIsEditWordAmount,
     toggleIsAddVocab,
     toggleIsAddWord,
     toggleIsEditWord,
+    toggleIsEditVocabTitle
   } = useProfileStore(state => state);
-  const [errorMsg, setErrorMsg] = useState<string>('');
   const { toast } = useToast();
+  const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
+  const [playSuccess] = useSound(successSound, { volume: 0.25 });
 
   function checkSingleEdit() {
-    if (isEditUsername || isEditWordAmount || isAddVocab || isEditWord) {
+    if (isAddWord || isEditWord || isEditVocabTitle) {
       return false;
     }
     return true;
-  }
-
-  function updateTitle(e: React.SyntheticEvent) {
-    e.preventDefault();
-    
-    if (title === null) return;
-    // if the title is empty or only consists of spaces
-    if (title.length === 0 || !/\S/.test(title)) {
-      setErrorMsg('Enter a valid title');
-    } else if (vocabs?.some(v => v.title === title && v._id !== router.query.id)) {
-      setErrorMsg('A vocabulary with this title already exists');
-    } else {
-      editVocabTitle(router.query.id as string, title);
-      setIsEditTitle(false);
-      toast({
-        variant: 'default',
-        description: "Vocabulary title has been updated",
-      });
-      setErrorMsg('');
-    }
   }
 
   function deleteVocab() {
@@ -89,16 +74,8 @@ const Vocabulary: NextPageWithLayout = () => {
       variant: 'default',
       description: "Vocabulary has been successfully deleted",
     });
+    if (soundOn) playSuccess();
     router.push('/profile/profile');
-  }
-
-  function enterEditTitleMode() {
-    const isOnlyEdit: boolean = checkSingleEdit();
-    if (isOnlyEdit) {
-      setIsEditTitle(true);
-    } else {
-      alert('Please finish editing the other field.');
-    }
   }
 
   useEffect(() => {
@@ -112,7 +89,6 @@ const Vocabulary: NextPageWithLayout = () => {
       const vocab = vocabs?.find(v => v._id === router.query.id);
       if (vocab) {
         setCurrVocab(vocab);
-        setTitle(vocab.title);
         setWords(vocab.words);
       }
     }
@@ -123,19 +99,16 @@ const Vocabulary: NextPageWithLayout = () => {
     switch (true) {
       case isEditUsername:
         toggleIsEditUsername();
-        break;
       case isEditWordAmount:
         toggleIsEditWordAmount();
-        break;
       case isAddVocab:
         toggleIsAddVocab();
-        break;
       case isAddWord:
         toggleIsAddWord();
-        break;
       case isEditWord:
-        toggleIsEditWord()
-        break;
+        toggleIsEditWord();
+      case isEditVocabTitle:
+        toggleIsEditVocabTitle();
     }
   }, []);
 
@@ -152,38 +125,14 @@ const Vocabulary: NextPageWithLayout = () => {
           >
             <HiArrowLongLeft /> Profile
           </Link>
-          {(isEditTitle && title !== null) ? (
-            <div className="col-span-2 justify-self-center sm:justify-self-start">
-              <form 
-                className="flex justify-center gap-2 items-center" 
-                onSubmit={updateTitle}
-              >
-                <div className="flex justify-between items-center gap-2">
-                  <input 
-                    className="text-2xl pl-2 leading-10 border border-slate-600 rounded" type="text" 
-                    size={10}
-                    maxLength={15}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)} 
-                    autoFocus 
-                  />
-                  <Button 
-                    className="bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 text-white dark:text-white"
-                    onSubmit={updateTitle}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </form>
-              <p className="text-sm text-red-800 min-h-4">{errorMsg}</p>
-            </div>
+          {currVocab ? (
+            <VocabTitleSection
+              id={currVocab._id}
+              vocabTitle={currVocab.title}
+              checkSingleEdit={checkSingleEdit}
+            />
           ) : (
-            <div className="justify-self-center flex gap-2">
-              <h1 className="text-2xl mobile:text-3xl md:text-4xl font-semibold dark:text-customText-dark">
-                {title !== null ? title : "Loading..."}
-              </h1>
-              {title !== null && <button onClick={enterEditTitleMode}><HiPencilSquare /></button>}
-            </div>
+            <Skeleton className="justify-self-center h-8 mobile:h-9 md:h-10" />
           )}
         </div>
 
@@ -234,6 +183,7 @@ const Vocabulary: NextPageWithLayout = () => {
                     key={w.word} 
                     word={w}
                     vocab={currVocab as Vocab2} 
+                    checkSingleEdit={checkSingleEdit}
                   />
                 )
               })}

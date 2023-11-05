@@ -17,6 +17,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { HiGlobeAlt, HiUserCircle, HiFolder, HiSun, HiMoon, HiPlus } from "react-icons/hi2";
 import Link from 'next/link';
 import NewVocabDialog from './NewVocabDialog';
+import SoundToggle from './SoundToggle';
 
 export default function Navbar() {
   const vocabs = useVocabStore(state => state.vocabs);
@@ -61,7 +62,7 @@ export default function Navbar() {
             <Menubar className="bg-transparent dark:bg-transparent border-none">
               <MenubarMenu>
                 <MenubarTrigger 
-                  className="p-1 rounded-md active:bg-transparent focus:bg-transparent dark:active:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white">
+                  className="p-1 rounded-md active:bg-transparent focus:bg-transparent dark:active:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white transition-colors">
                   <HiGlobeAlt className="w-8 h-8 text-white" />
                 </MenubarTrigger>
                 <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
@@ -92,7 +93,7 @@ export default function Navbar() {
 
               <MenubarMenu>
                 <MenubarTrigger 
-                  className="p-1 rounded-md active:bg-transparent focus:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white">
+                  className="p-1 rounded-md active:bg-transparent focus:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white transition-colors">
                   <HiUserCircle className="w-8 h-8 fill-white" />
                 </MenubarTrigger>
 
@@ -105,7 +106,7 @@ export default function Navbar() {
 
               <MenubarMenu>
                 <MenubarTrigger 
-                  className="p-1 rounded-md active:bg-transparent focus:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white">
+                  className="p-1 rounded-md active:bg-transparent focus:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white transition-colors">
                   <HiSun className="w-8 h-8 fill-white rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                   <HiMoon className="w-8 h-8 fill-white absolute rotate-90 scale-0 transition-all dark:-rotate-0 dark:scale-100" />
                 </MenubarTrigger>
@@ -129,6 +130,8 @@ export default function Navbar() {
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
+
+              <SoundToggle />
             </Menubar>
 
             <NewVocabDialog 

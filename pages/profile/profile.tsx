@@ -25,16 +25,16 @@ const Profile: NextPageWithLayout = () => {
     isAddVocab,
     isAddWord,
     isEditWord,
+    isEditVocabTitle,
     toggleIsEditUsername,
     toggleIsEditWordAmount,
     toggleIsAddVocab,
-    toggleIsAddWord,
-    toggleIsEditWord,
+    toggleIsEditVocabTitle
   } = useProfileStore(state => state);
 
   // only allow one field editing at a time
   function checkSingleEdit() {
-    if (isEditUsername || isEditWordAmount || isAddVocab || isAddWord || isEditWord) {
+    if (isEditUsername || isEditWordAmount || isAddVocab || isEditVocabTitle) {
       return false;
     }
     return true;
@@ -45,19 +45,12 @@ const Profile: NextPageWithLayout = () => {
     switch (true) {
       case isEditUsername:
         toggleIsEditUsername();
-        break;
       case isEditWordAmount:
         toggleIsEditWordAmount();
-        break;
       case isAddVocab:
         toggleIsAddVocab();
-        break;
-      case isAddWord:
-        toggleIsAddWord();
-        break;
-      case isEditWord:
-        toggleIsEditWord()
-        break;
+      case isEditVocabTitle:
+        toggleIsEditVocabTitle();
     }
   }, []);
   

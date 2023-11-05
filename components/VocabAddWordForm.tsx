@@ -1,23 +1,30 @@
 import React, { useState } from 'react';
 import useVocabStore from '@/lib/store';
 import { CheckSingleEditFunction, Word } from '@/lib/types';
+import { errorSound } from '@/lib/globals';
+import useSound from 'use-sound';
+import { usePreferencesStore } from '@/lib/preferencesStore';
+import useProfileStore from '@/lib/profileStore';
 
 import { Label } from '@/components/ui/label';
 import { HiPlus } from "react-icons/hi2";
-import useProfileStore from '@/lib/profileStore';
+import { useStore } from 'zustand';
 
 export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words: Word[], id: string, checkSingleEdit: CheckSingleEditFunction }) {
   const [newWord, setNewWord] = useState<string>('');
   const [translation, setTranslation] = useState<string>('');
   const addWordToStore = useVocabStore(state => state.addWord);
-  const { isAddWord, toggleIsAddWord} = useProfileStore(state => state);
+  const { isAddWord, toggleIsAddWord } = useProfileStore(state => state);
   const [errorMsg, setErrorMsg] = useState<string>('');
+  const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
+  const [playError] = useSound(errorSound, { volume: 0.25 });
 
   function enterAddWordMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
     if (isOnlyEdit) {
       toggleIsAddWord(); // to true
     } else {
+      if (soundOn) playError();
       alert('Please finish editing the other field.');
     }
   }
@@ -27,10 +34,13 @@ export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words
 
     // if the title is empty or only consists of spaces
     if (newWord.length === 0 || !/\S/.test(newWord)) {
+      if (soundOn) playError();
       setErrorMsg('Please enter a valid word');
     } else if (translation.length === 0 || !/\S/.test(translation)) {
+      if (soundOn) playError();
       setErrorMsg('Please enter a valid translation');
     } else if (words.some(w => w.word === newWord)) {
+      if (soundOn) playError();
       setErrorMsg('This word already exists in the vocabulary.')
     } else {
       toggleIsAddWord(); // to false

@@ -1,51 +1,44 @@
-import React, { useState } from 'react';
-import { Vocab2, Word } from '@/lib/types';
+import React, { useEffect, useState } from 'react';
+import { CheckSingleEditFunction, Vocab2, Word } from '@/lib/types';
 import useVocabStore from '@/lib/store';
+import useSound from 'use-sound';
+import { errorSound } from '@/lib/globals';
+import useProfileStore from '@/lib/profileStore';
 
 import { HiPencilSquare, HiTrash, HiCheckCircle, HiMiniXCircle } from "react-icons/hi2";
-import useProfileStore from '@/lib/profileStore';
+import { useStore } from 'zustand';
+import { usePreferencesStore } from '@/lib/preferencesStore';
 
 type SingleWordProps = {
   word: Word,
   vocab: Vocab2,
-  // length: number
+  checkSingleEdit: CheckSingleEditFunction
 }
 
-// { word, index, vocabTitle, length }: { word: Word, index: number, vocabTitle: string, length: number }
-export default function SingleWord({ word, vocab }: SingleWordProps) {
+export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordProps) {
   const [isEditSingleWord, setIsEditSingleWord] = useState<boolean>(false);
   const [newWord, setNewWord] = useState<string>(word.word);
   const [newTranslation, setNewTranslation] = useState<string>(word.translation);
   const deleteWord = useVocabStore(state => state.deleteWord);
   const editWord = useVocabStore(state => state.editWord);
-  const {
-    isEditUsername,
-    isEditWordAmount,
-    isAddVocab,
-    isEditWord, 
-    toggleIsEditWord
-  } = useProfileStore(state => state);
-
-  function checkSingleEdit() {
-    if (isEditUsername || isEditWordAmount || isAddVocab || isEditWord) {
-      return false;
-    }
-    return true;
-  }
+  const { toggleIsEditWord } = useProfileStore(state => state);
+  const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
+  const [playError] = useSound(errorSound, { volume: 0.25 });
 
   function enterEditWordMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
     if (isOnlyEdit) {
-      toggleIsEditWord(); // to true
       setIsEditSingleWord(true);
+      toggleIsEditWord(); // to true
     } else {
+      if (soundOn) playError();
       alert('Please finish editing the other field');
     }
   }
 
-  function exitEditWordMode() {
-    toggleIsEditWord(); // to false
+  function exitEditWordMove() {
     setIsEditSingleWord(false);
+    toggleIsEditWord(); // to false
   }
 
   function submitEdit(e: React.SyntheticEvent) {
@@ -53,12 +46,15 @@ export default function SingleWord({ word, vocab }: SingleWordProps) {
 
     if (newWord.length === 0 || !/\S/.test(newWord) 
       || newTranslation.length === 0 || !/\S/.test(newTranslation)) {
+        if (soundOn) playError();
         alert('Enter valid word');
     } else if (vocab.words.some(w => w.word === newWord)) {
+      if (soundOn) playError();
       alert('This word already exists in the vocabulary.')
     } else {
       editWord(vocab._id, word.word, newWord, newTranslation);
-      exitEditWordMode();
+      setIsEditSingleWord(false);
+      toggleIsEditWord(); // to false
     }
     setNewWord(word.word);
     setNewTranslation(word.translation);
@@ -92,7 +88,7 @@ export default function SingleWord({ word, vocab }: SingleWordProps) {
           </button>
           <button 
             className="rounded-full bg-white" 
-            onClick={exitEditWordMode}
+            onClick={exitEditWordMove}
           >
             <HiMiniXCircle className="text-secondaryBg-light hover:text-secondaryBg-light/80 h-8 w-8" />
           </button>

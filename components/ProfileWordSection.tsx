@@ -4,6 +4,8 @@ import useProfileStore from '@/lib/profileStore';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import { useToast } from './ui/use-toast';
+import useSound from 'use-sound';
+import { errorSound, successSound } from '@/lib/globals';
 
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
@@ -17,6 +19,8 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
   } = useProfileStore(state => state);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const { toast } = useToast();
+  const [playError] = useSound(errorSound, { volume: 0.25 });
+  const [playSuccess] = useSound(successSound, { volume: 0.25 });
 
   function updateWordsAmount(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -28,8 +32,10 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
         variant: 'default',
         description: "Words per lesson amount has been updated",
       });
+      if (preferenceStore.soundOn) playSuccess();
       setErrorMsg('');
     } else {
+      if (preferenceStore.soundOn) playError();
       setWordsPerLesson(1);
       setErrorMsg("Enter valid amount of words");
     }
@@ -40,6 +46,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
     if (isOnlyEdit) {
       toggleIsEditWordAmount(); // to true
     } else {
+      if (preferenceStore.soundOn) playError();
       alert('Please finish editing the other field');
     }
   }
