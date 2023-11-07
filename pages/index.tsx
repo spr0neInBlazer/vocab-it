@@ -12,6 +12,7 @@ import Navbar from '@/components/Navbar';
 
 // FCP: 1.205s -> .932s
 // TTFB: .308s -> .103s
+// FCP/TTFB: 1.475/.178
 
 const Home: NextPageWithLayout = () => {
   const { theme } = useTheme();
@@ -50,26 +51,33 @@ const Home: NextPageWithLayout = () => {
         >
           <Navbar />
           <div className="h-[100dvh] sm:w-4/5 mx-auto flex gap-2 justify-center flex-col sm:flex-row sm:justify-between items-center">
-            {isMounted && (
+            {isMounted ? (
               <Image 
                 src={theme === "dark" ? '/images/vocab-hero-dark.svg' : '/images/vocab-hero.svg'}
                 className="max-w-[70%] mobile:max-w-[50%]"
                 width={500}
                 height={500}
                 alt="lady learning"
+                priority
+              />
+            ) : (
+              <Image 
+                src='/images/vocab-hero-dark.svg'
+                className="max-w-[70%] mobile:max-w-[50%]"
+                width={500}
+                height={500}
+                alt="lady learning"
+                priority
               />
             )}
             <div className="text-3xl sm:text-5xl font-bold text-customText-light dark:text-customText-dark w-11/12 mobile:w-auto text-center sm:text-left">
-              <p>
-                <span className="text-customHighlight3">Build</span> vocabularies
-              </p>
-              <p>
-                <span className="text-customHighlight3">Study</span> at your pace
-              </p>
+              <p><span className="text-customHighlight3">Build</span> vocabularies</p>
+              <p><span className="text-customHighlight3">Study</span> at your pace</p>
             </div>
           </div>
           <button 
-            className="absolute w-12 h-12 bottom-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 rounded-full" 
+            className="absolute w-12 h-12 bottom-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 rounded-full"
+            aria-label="down" 
             onClick={goDown}
           >
             <HiOutlineArrowDownCircle className="w-12 h-12 text-customText-light dark:text-customText-dark" />
@@ -78,7 +86,10 @@ const Home: NextPageWithLayout = () => {
             className="opacity-20 -z-10 object-cover sm:object-contain"
             src="/images/word-cloud-bg.png"
             fill
+            placeholder='blur'
+            blurDataURL='/images/word-cloud-bg.png'
             alt="bg word cloud"
+            priority
           />
         </section>
 
@@ -87,6 +98,7 @@ const Home: NextPageWithLayout = () => {
           ref={bottomSectionRef}
         >
           <button className="absolute w-12 h-12 top-16 mobile:top-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 rounded-full z-50"
+            aria-label="up"
             onClick={goUp}
           >
             <HiOutlineArrowUpCircle className="w-12 h-12 text-customText-light dark:text-customText-dark" />
@@ -129,6 +141,7 @@ const Home: NextPageWithLayout = () => {
             src="/images/word-cloud-bg.png"
             fill
             alt="bg word cloud"
+            priority
           />
         </section>
       </div>

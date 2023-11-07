@@ -1,7 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import useVocabStore from '@/lib/store';
-import { Vocab2, Word } from '@/lib/types';
+import { Vocab, Word } from '@/lib/types';
 import { useToast } from '@/components/ui/use-toast';
 import useSound from 'use-sound';
 import { successSound } from '@/lib/globals';
@@ -42,7 +42,7 @@ const Vocabulary: NextPageWithLayout = () => {
   const initialFetch = useVocabStore(state => state.initialFetch);
   const deleteStoreVocab = useVocabStore(state => state.deleteVocab);
   const [words, setWords] = useState<Word[]>([]);
-  const [currVocab, setCurrVocab] = useState<Vocab2>();
+  const [currVocab, setCurrVocab] = useState<Vocab>();
   const {
     isEditUsername,
     isEditWordAmount,
@@ -182,7 +182,7 @@ const Vocabulary: NextPageWithLayout = () => {
                   <SingleWord 
                     key={w.word} 
                     word={w}
-                    vocab={currVocab as Vocab2} 
+                    vocab={currVocab as Vocab} 
                     checkSingleEdit={checkSingleEdit}
                   />
                 )

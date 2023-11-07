@@ -41,7 +41,7 @@ module.exports = {
           dark: '#352F44',
         },
         secondaryBg: {
-          light: '#F26969',
+          light: '#BA4949',
           dark: '#4D3C77'
         },
         customText: {
@@ -51,7 +51,7 @@ module.exports = {
         customHighlight: '#6A6576',
         customHighlight2: '#837E90',
         customHighlight3: 'hsl(26, 92%, 52%)',
-        btnBg: '#048B47',
+        btnBg: '#048645',
         hoverBtnBg: '#03723B',
         hoverSecondaryBg: 'hsl(0, 84%, 60%)',
       },

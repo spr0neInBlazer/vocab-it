@@ -1,24 +1,11 @@
 Done:
-- improve light/dark mode styling
-- add Arial Rounded font
-- input validations
-- exit edit mode on Esc press
-- responsiveness:
-  + scroll on mobile screen (try dvh)
-  + home down button doesn't show
-  ? light theme doesn't work correctly (only in Opera)
-  + make fonts bigger
-  + navbar "Account" link works only on the text and not on the field 
-- error page
-- alerts/notifications
-
-- fix editVocabTitlebug;
-- sound effects
++ add custom favicon
++ refactor the code (DRY & move code to components)
 
 ---------------------
+To do:
 - optimization
-- refactor the code (DRY & move code to components)
-- remove unused code (UI)
+- calculated the recommended maximum words/vocabs
 - add default vocab with words for demonstration 
 
 Features (needs back-end):

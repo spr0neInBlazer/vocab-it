@@ -7,10 +7,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/compo
 export default function HintButton({ word }: { word: string }) {
   return (
     <Popover>
-      <PopoverTrigger className="flex items-center justify-center p-2 border dark:border-white rounded">
+      <PopoverTrigger className="flex items-center justify-center p-2 border dark:border-white rounded" aria-label="hint button">
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger aria-label="tooltip">
               <HiMiniLightBulb className="w-5 h-5" />
             </TooltipTrigger>
             <TooltipContent className="dark:border-customHighlight dark:bg-mainBg-dark">

@@ -23,8 +23,6 @@ const Profile: NextPageWithLayout = () => {
     isEditUsername,
     isEditWordAmount,
     isAddVocab,
-    isAddWord,
-    isEditWord,
     isEditVocabTitle,
     toggleIsEditUsername,
     toggleIsEditWordAmount,

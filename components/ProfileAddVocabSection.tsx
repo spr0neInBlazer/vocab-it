@@ -91,19 +91,21 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
               autoFocus 
             />
             <button 
-              className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`} 
+              className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`}
+              aria-label="create" 
               onClick={createVocab}
             >              
               <p className="hidden mobile:inline">Create</p>
               <HiCheckCircle className="inline mobile:hidden text-btnBg hover:text-hoverBtnBg h-9 w-9" /> 
             </button>
             <button 
-                className={`rounded-full bg-white mobile:bg-secondaryBg-light mobile:hover:bg-secondaryBg-light/80 mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`} 
-                onClick={cancelAddVocab}
-              >
-                <p className="hidden mobile:inline">Cancel</p>
-                <HiMiniXCircle className="inline mobile:hidden text-secondaryBg-light hover:text-secondaryBg-light/80 h-9 w-9" />
-              </button>
+              className={`rounded-full bg-white mobile:bg-secondaryBg-light mobile:hover:bg-secondaryBg-light/80 mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`}
+              aria-label="cancel" 
+              onClick={cancelAddVocab}
+            >
+              <p className="hidden mobile:inline">Cancel</p>
+              <HiMiniXCircle className="inline mobile:hidden text-secondaryBg-light hover:text-secondaryBg-light/80 h-9 w-9" />
+            </button>
           </form>
           <p className="text-sm text-red-800 min-h-4">{errorMsg}</p>
         </>

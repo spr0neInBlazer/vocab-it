@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Vocab2 } from '@/lib/types';
+import { Vocab } from '@/lib/types';
 import useVocabStore from '@/lib/store';
 import useProfileStore from '@/lib/profileStore';
 import useSound from 'use-sound';
@@ -22,7 +22,7 @@ import {
 import { useToast } from './ui/use-toast';
 import { errorSound, successSound } from '@/lib/globals';
 
-export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
+export default function VocabListRow({ vocab }: { vocab: Vocab }) {
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(vocab.title);
   const vocabs = useVocabStore(state => state.vocabs);
@@ -103,7 +103,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
   }, [isEditTitle])
 
   return (
-    <tr key={vocab._id} className="border-b rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
+    <tr className="border-b rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
       {isEditTitle ? (
         <>
           <td className="py-3 pl-2">
@@ -123,7 +123,8 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
           <td className="py-3">{vocab.words ? vocab.words.length : 0}</td>
           <td>
             <button 
-              className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`} 
+              className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`}
+              aria-label="save" 
               onClick={updateTitle}
             >              
               <p className="hidden mobile:inline">Save</p>
@@ -133,6 +134,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
           <td className="py-3">
             <button 
               className={`rounded-full bg-white mobile:bg-secondaryBg-light mobile:hover:bg-secondaryBg-light/80 mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`} 
+              aria-label="cancel"
               onClick={() => setIsEditTitle(false)}
             >
               <p className="hidden mobile:inline">Cancel</p>
@@ -165,10 +167,10 @@ export default function VocabListRow({ vocab }: { vocab: Vocab2 }) {
             </button>
           </td>
           <td className="py-3">
-            <button className="text-base" onClick={enterEditTitleMode}><HiPencilSquare /></button></td>
+            <button className="text-base" aria-label="edit" onClick={enterEditTitleMode}><HiPencilSquare /></button></td>
           <td className="py-3">
             <AlertDialog>
-              <AlertDialogTrigger>
+              <AlertDialogTrigger aria-label="delete">
                 <HiTrash />
               </AlertDialogTrigger>
               <AlertDialogContent>

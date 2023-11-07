@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { CheckSingleEditFunction, Vocab2, Word } from '@/lib/types';
+import React, { useState } from 'react';
+import { CheckSingleEditFunction, Vocab, Word } from '@/lib/types';
 import useVocabStore from '@/lib/store';
 import useSound from 'use-sound';
 import { errorSound } from '@/lib/globals';
@@ -11,7 +11,7 @@ import { usePreferencesStore } from '@/lib/preferencesStore';
 
 type SingleWordProps = {
   word: Word,
-  vocab: Vocab2,
+  vocab: Vocab,
   checkSingleEdit: CheckSingleEditFunction
 }
 
@@ -82,12 +82,14 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
           />
           <button 
             className="rounded-full bg-white"
+            aria-label="update"
             onClick={enterEditWordMode}
           >
             <HiCheckCircle className="text-btnBg hover:text-hoverBtnBg h-8 w-8" />
           </button>
           <button 
-            className="rounded-full bg-white" 
+            className="rounded-full bg-white"
+            aria-label="cancel" 
             onClick={exitEditWordMove}
           >
             <HiMiniXCircle className="text-secondaryBg-light hover:text-secondaryBg-light/80 h-8 w-8" />
@@ -98,8 +100,8 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
           <p className="w-1/2">{word.word}</p>
           <p className="w-1/4">{word.translation}</p>
           <div className="flex gap-1">
-            <button className="text-base" onClick={enterEditWordMode}><HiPencilSquare /></button>
-            <button className="text-base" onClick={() => deleteWord(vocab._id as string, word.word)}><HiTrash /></button>
+            <button className="text-base" aria-label="edit" onClick={enterEditWordMode}><HiPencilSquare /></button>
+            <button className="text-base" aria-label="delete" onClick={() => deleteWord(vocab._id as string, word.word)}><HiTrash /></button>
           </div>
         </div>
       )}

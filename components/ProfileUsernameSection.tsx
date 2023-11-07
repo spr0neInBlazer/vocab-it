@@ -95,6 +95,7 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
           <p className="text-lg dark:text-customText-dark">{userName}</p>
           <button 
             className="dark:text-customText-dark py-1"
+            aria-label='edit'
             onClick={enterEditUsernameMode}
           >
             <HiPencilSquare />

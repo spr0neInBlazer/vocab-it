@@ -90,7 +90,7 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
       <h1 className="text-2xl mobile:text-3xl md:text-4xl font-semibold dark:text-customText-dark">
         {title !== null ? title : "Loading..."}
       </h1>
-      {title !== null && <button onClick={enterEditTitleMode}><HiPencilSquare /></button>}
+      {title !== null && <button aria-label="edit" onClick={enterEditTitleMode}><HiPencilSquare /></button>}
     </div>
   )
 }

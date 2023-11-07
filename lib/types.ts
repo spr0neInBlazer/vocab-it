@@ -4,19 +4,13 @@ export interface Word {
 }
 
 export interface Vocab {
-  id: string,
-  title: string,
-  // words?: Word[]
-}
-
-export interface Vocab2 {
   _id: string,
   title: string,
   words: Word[]
 }
 
 export interface VocabStore {
-  vocabs: Vocab2[] | null,
+  vocabs: Vocab[] | null,
   initialFetch: () => void,
   deleteVocab: (id: string) => void,
   addVocab: (title: string) => void,

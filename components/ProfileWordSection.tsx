@@ -111,7 +111,9 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
           <p className="text-lg text-center font-semibold dark:text-customText-dark border dark:bg-mainBg-dark px-2 py-1 w-20 rounded">
             {wordsPerLesson}
           </p>
-          <button className="dark:text-customText-dark py-1"
+          <button 
+            className="dark:text-customText-dark py-1"
+            aria-label="edit"
             onClick={enterEditWordsMode}
           >
             <HiPencilSquare />

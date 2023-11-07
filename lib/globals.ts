@@ -1,4 +1,3 @@
-import { Atma } from 'next/font/google';
 import localFont from 'next/font/local';
 
 const INITIAL_NUMBER: number = 3;
@@ -8,14 +7,8 @@ const errorSound = '/audio/error.mp3';
 const muteSound = '/audio/mute.mp3';
 const unmuteSound = '/audio/unmute.mp3';
 
-// const atma = Atma({
-//   weight: ['400', '500', '600'],
-//   subsets: ['latin'],
-//   display: 'swap',
-// });
-
-const arialRounded = localFont({ src: '../public/fonts/arial-rounded-mt.ttf'});
-const atma = localFont({src: '../public/fonts/atma-semibold.ttf'});
+const arialRounded = localFont({ src: '../public/fonts/arial-rounded-mt.woff2', adjustFontFallback: 'Arial'});
+const atma = localFont({src: '../public/fonts/atma-semibold.woff2', adjustFontFallback: 'Arial'});
 
 export {
   INITIAL_NUMBER, 

@@ -124,17 +124,6 @@ const Lesson: NextPageWithLayout = () => {
     }
   }, [endLesson, router]);
 
-  if (isLoading) {
-    return (
-      <>
-        <Head>
-          <title>Lesson</title>
-        </Head>
-        <Skeleton className="w-11/12 lg:w-3/5 h-[300px] mx-auto mt-32 mb-6 border border-white" />
-      </>
-    )
-  }
-
   // end of lesson
   if (currWord > lessonVolume) {
     return (
@@ -172,32 +161,43 @@ const Lesson: NextPageWithLayout = () => {
         <Progress
           className="my-3"
           value={Math.round(((currWord - 1) / lessonVolume) * 100)} 
+          aria-label="progress bar"
         />
-        {words.length > 0 && (
-          <section className="w-full p-4 sm:p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
-            <div>
-              <h2 className="text-xl mobile:text-2xl">Word:</h2>
-              <p className="text-2xl mobile:text-3xl text-center my-3">{words[currWord-1].translation}</p>
-            </div>
-            <div className="h-px my-5 w-full bg-zinc-400 dark:bg-mainBg-dark" />
-            <div>
-              <div className="flex justify-between">
-                <h2 className="text-xl mobile:text-2xl">Enter translation:</h2>
-                <HintButton word={words[currWord-1].word} />
+        <section className="w-full p-4 sm:p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
+          <div>
+            <h2 className="text-xl mobile:text-2xl">Word:</h2>
+            {!isLoading ? (
+              <p className="text-2xl mobile:text-3xl text-center my-3">
+                {words[currWord-1].translation}
+              </p>
+            ) : (
+              <div className="w-full flex justify-center my-3">
+                <Skeleton className="h-8 mobile:h-9 w-1/4" />
               </div>
-              <form className="my-3 flex justify-center" onSubmit={submitAnswer}>
-                <input 
-                  className="text-2xl leading-10 text-center rounded border border-zinc-400 w-full mobile:w-auto" 
-                  type="text" 
-                  value={answer} 
-                  onChange={(e) => setAnswer(e.target.value)} 
-                  placeholder="Your answer" 
-                  autoFocus 
-                />
-              </form>
+            )}
+          </div>
+          <div className="h-px my-5 w-full bg-zinc-400 dark:bg-mainBg-dark" />
+          <div>
+            <div className="flex justify-between">
+              <h2 className="text-xl mobile:text-2xl">Enter translation:</h2>
+              {!isLoading ? (
+                <HintButton word={words[currWord-1].word} />
+              ) : (
+                <Skeleton className="w-[38px] h-[38px] rounded" />
+              )}
             </div>
-          </section>
-        )}
+            <form className="my-3 flex justify-center" onSubmit={submitAnswer}>
+              <input 
+                className="text-2xl leading-10 text-center rounded border border-zinc-400 w-full mobile:w-auto" 
+                type="text" 
+                value={answer} 
+                onChange={(e) => setAnswer(e.target.value)} 
+                placeholder="Your answer" 
+                autoFocus 
+              />
+            </form>
+          </div>
+        </section>
         <div className="flex justify-between mt-5 px-3">
           <EndLessonDialog setEndLesson={setEndLesson} />
           <button 

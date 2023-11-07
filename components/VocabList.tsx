@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Vocab2 } from '@/lib/types';
+import { Vocab } from '@/lib/types';
 import useVocabStore from '@/lib/store';
 
 import VocabListRow from './VocabListRow';
@@ -46,7 +46,7 @@ export default function VocabList() {
               Words
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger className="cursor-default">
+                  <TooltipTrigger className="cursor-default" aria-label="tooltip">
                     <HiMiniQuestionMarkCircle />
                   </TooltipTrigger>
                   <TooltipContent className="dark:border-customHighlight dark:bg-mainBg-dark">
@@ -59,7 +59,7 @@ export default function VocabList() {
           </tr>
         </thead>
         <tbody>
-          {vocabs.map((vocab: Vocab2) => {
+          {vocabs.map((vocab: Vocab) => {
             return <VocabListRow key={vocab._id} vocab={vocab} />
           })}
         </tbody>
