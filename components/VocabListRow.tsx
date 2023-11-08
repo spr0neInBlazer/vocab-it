@@ -99,7 +99,15 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
   }
 
   useEffect(() => {
-    toggleIsEditVocabTitle();
+    if (isEditTitle) {
+      if (!isEditVocabTitle) {
+        toggleIsEditVocabTitle();
+      }
+    } else {
+      if (isEditVocabTitle) {
+        toggleIsEditVocabTitle();
+      }
+    }
   }, [isEditTitle])
 
   return (
@@ -167,10 +175,10 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
             </button>
           </td>
           <td className="py-3">
-            <button className="text-base" aria-label="edit" onClick={enterEditTitleMode}><HiPencilSquare /></button></td>
+            <button className="text-lg" aria-label="edit" onClick={enterEditTitleMode}><HiPencilSquare /></button></td>
           <td className="py-3">
             <AlertDialog>
-              <AlertDialogTrigger aria-label="delete">
+              <AlertDialogTrigger className="text-lg" aria-label="delete">
                 <HiTrash />
               </AlertDialogTrigger>
               <AlertDialogContent>

@@ -1,16 +1,15 @@
 import React, { useEffect } from 'react';
 import { Vocab } from '@/lib/types';
 import useVocabStore from '@/lib/store';
+import dynamic from 'next/dynamic';
 
 import VocabListRow from './VocabListRow';
 import { Skeleton } from './ui/skeleton';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { HiMiniQuestionMarkCircle } from "react-icons/hi2";
+
+const WordsTooltip = dynamic(() => import('./WordsTooltip'), {
+  loading: () => <HiMiniQuestionMarkCircle />
+});
 
 export default function VocabList() {
   const vocabs = useVocabStore(state => state.vocabs);
@@ -41,21 +40,14 @@ export default function VocabList() {
       <table className="w-full my-3 text-sm mobile:text-base">
         <thead>
           <tr>
-            <th className="w-1/3 sm:w-3/5 text-left pl-2">Name</th>
+            <th className="w-2/5 sm:w-3/5 text-left pl-2">Name</th>
             <th className="flex items-center gap-1 justify-start">
               Words
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger className="cursor-default" aria-label="tooltip">
-                    <HiMiniQuestionMarkCircle />
-                  </TooltipTrigger>
-                  <TooltipContent className="dark:border-customHighlight dark:bg-mainBg-dark">
-                    <p className="font-thin text-sm italic"> <span className="not-italic">Recommended:</span> <span className="font-semibold">50</span> words max per 1 vocabulary</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
+              <WordsTooltip />
             </th>
+            <th></th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>

@@ -112,7 +112,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
             {wordsPerLesson}
           </p>
           <button 
-            className="dark:text-customText-dark py-1"
+            className="dark:text-customText-dark py-1 text-lg"
             aria-label="edit"
             onClick={enterEditWordsMode}
           >

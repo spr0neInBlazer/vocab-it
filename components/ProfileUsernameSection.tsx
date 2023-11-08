@@ -91,10 +91,10 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
           <p className="text-sm text-red-800 min-h-4">{errorMsg}</p>
         </>
       ) : (
-        <div className="flex gap-1 my-3 w-fit sm:w-2/12 justify-between items-center">
-          <p className="text-lg dark:text-customText-dark">{userName}</p>
+        <div className="flex gap-2 my-3 w-fit sm:w-2/12 justify-between items-center">
+          <p className="text-lg leading-[38px] dark:text-customText-dark">{userName}</p>
           <button 
-            className="dark:text-customText-dark py-1"
+            className="dark:text-customText-dark py-1 text-lg"
             aria-label='edit'
             onClick={enterEditUsernameMode}
           >

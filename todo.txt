@@ -1,15 +1,17 @@
 Done:
 + add custom favicon
 + refactor the code (DRY & move code to components)
++ optimization
+
++ calculated the recommended maximum words/vocabs
 
 ---------------------
 To do:
-- optimization
-- calculated the recommended maximum words/vocabs
 - add default vocab with words for demonstration 
 
 Features (needs back-end):
 - regulate lessons frequency
+- assess learning progress (red - bad, orange - average, green - good, dark yellow - learnt)
 - achievements
 - graph stats
 Other possible features:
@@ -45,6 +47,5 @@ Vocabs navbar:
 - invalid title / valid title 
 Vocab:
 - too long title
-- when going to other pages with edit mode on, cancel edit mode on page load
-Profile page:
-- forbid editing more than one field at once
+
+vocab w/ 1 word = .18 KB

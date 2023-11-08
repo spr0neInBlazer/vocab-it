@@ -8,6 +8,7 @@ import { successSound } from '@/lib/globals';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useProfileStore from '@/lib/profileStore';
+import dynamic from 'next/dynamic';
 
 import { NextPageWithLayout } from '../_app';
 import Head from 'next/head';
@@ -32,9 +33,14 @@ import Footer from '@/components/Footer';
 import { Toaster } from '@/components/ui/toaster';
 import VocabTitleSection from '@/components/VocabTitleSection';
 import { Skeleton } from '@/components/ui/skeleton';
+import { HiMiniQuestionMarkCircle } from "react-icons/hi2";
 
 // FCP: 1.9s -> 1.5s
 // TTFB: 1s -> .167s
+
+const WordsTooltip = dynamic(() => import('@/components/WordsTooltip'), {
+  loading: () => <HiMiniQuestionMarkCircle />
+});
 
 const Vocabulary: NextPageWithLayout = () => {
   const router = useRouter();
@@ -135,10 +141,13 @@ const Vocabulary: NextPageWithLayout = () => {
             <Skeleton className="justify-self-center h-8 mobile:h-9 md:h-10" />
           )}
         </div>
-
-        <p className="mobile:text-lg text-center">
-          {words.length === 1 ? '1 word' : `${words.length} words`}
-        </p>
+        
+        <div className="w-full flex gap-2 justify-center items-start">
+          <p className="mobile:text-lg">
+            {words.length === 1 ? '1 word' : `${words.length} words`}
+          </p>
+          <WordsTooltip />
+        </div>
         <div className="my-5 flex justify-between">
           {(words.length > 0 && router.query.id) ? (
             <button className="text-white rounded-lg py-2 px-3 font-semibold bg-btnBg hover:bg-hoverBtnBg transition-colors">

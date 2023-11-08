@@ -16,7 +16,7 @@ import Navbar from '@/components/Navbar';
 
 const Home: NextPageWithLayout = () => {
   const { theme } = useTheme();
-  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [imgSrc, setImgSrc] = useState<string>('/images/vocab-hero-dark.svg');
   const topSectionRef = useRef<HTMLElement>(null);
   const bottomSectionRef = useRef<HTMLElement>(null);
 
@@ -34,10 +34,13 @@ const Home: NextPageWithLayout = () => {
     }
   }
 
-  // to apply conditional rendering of the image
   useEffect(() => {
-    setIsMounted(true);
-  }, [])
+    if (!theme || theme === "dark") {
+      setImgSrc('/images/vocab-hero-dark.svg');
+    } else {
+      setImgSrc('/images/vocab-hero.svg')
+    }
+  }, [theme])
 
   return (
     <>
@@ -51,25 +54,14 @@ const Home: NextPageWithLayout = () => {
         >
           <Navbar />
           <div className="h-[100dvh] sm:w-4/5 mx-auto flex gap-2 justify-center flex-col sm:flex-row sm:justify-between items-center">
-            {isMounted ? (
-              <Image 
-                src={theme === "dark" ? '/images/vocab-hero-dark.svg' : '/images/vocab-hero.svg'}
-                className="max-w-[70%] mobile:max-w-[50%]"
-                width={500}
-                height={500}
-                alt="lady learning"
-                priority
-              />
-            ) : (
-              <Image 
-                src='/images/vocab-hero-dark.svg'
-                className="max-w-[70%] mobile:max-w-[50%]"
-                width={500}
-                height={500}
-                alt="lady learning"
-                priority
-              />
-            )}
+            <Image 
+              src={imgSrc}
+              className="max-w-[70%] mobile:max-w-[50%]"
+              width={500}
+              height={500}
+              alt="lady learning"
+              priority
+            />
             <div className="text-3xl sm:text-5xl font-bold text-customText-light dark:text-customText-dark w-11/12 mobile:w-auto text-center sm:text-left">
               <p><span className="text-customHighlight3">Build</span> vocabularies</p>
               <p><span className="text-customHighlight3">Study</span> at your pace</p>

@@ -1,6 +1,7 @@
 import localFont from 'next/font/local';
 
 const INITIAL_NUMBER: number = 3;
+const MAX_WORDS = 100;
 const clickSound = '/audio/click.mp3';
 const successSound = '/audio/success.mp3';
 const errorSound = '/audio/error.mp3';
@@ -12,6 +13,7 @@ const atma = localFont({src: '../public/fonts/atma-semibold.woff2', adjustFontFa
 
 export {
   INITIAL_NUMBER, 
+  MAX_WORDS,
   atma, 
   arialRounded,
   clickSound,

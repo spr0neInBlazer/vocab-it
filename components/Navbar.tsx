@@ -52,7 +52,7 @@ export default function Navbar() {
   return (
     <nav className="bg-secondaryBg-light dark:bg-secondaryBg-dark py-2 sm:py-5 absolute top-0 left-0 right-0 transition-colors">
       <div className="w-4/5 mx-auto flex justify-between items-center">
-        <Link href={'/'} className="flex items-center" title="Vocab It - a language learning app">
+        <Link href={'/'} className="flex items-center" title="Vocab-It - a language learning app">
           <Image 
             className="-rotate-12"
             src="/images/vocab-logo.png"
@@ -60,7 +60,7 @@ export default function Navbar() {
             height={64}
             alt='logo'
           />
-          <p className={`${atma.className} text-white text-4xl font-bold hidden sm:inline`}>Vocab It</p>
+          <p className={`${atma.className} text-white text-4xl font-bold hidden sm:inline`}>Vocab-It</p>
         </Link>
         <div>
           <Dialog>
