@@ -4,10 +4,12 @@ Done:
 + optimization
 
 + calculated the recommended maximum words/vocabs
++ import words from a .txt file
+  + check for already existing words, submitting the same file more than once.
 
 ---------------------
 To do:
-- add default vocab with words for demonstration 
+- final Lighthouse assessment
 
 Features (needs back-end):
 - regulate lessons frequency
@@ -17,7 +19,6 @@ Features (needs back-end):
 Other possible features:
 - make bg word cloud move with the mouse (3d effect)
 - allow adding multiple translations
-- allow uploading words as a file (e.g CSV)
 
 Account page:
 - Name (edit name)

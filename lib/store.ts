@@ -13,6 +13,7 @@ interface VocabStore {
   addWord: (vocabTitle: string, word: string, translation: string) => void,
   deleteWord: (vocabTitle: string, word: string) => void,
   editWord: (id: string, oldWord: string, word: string, translation: string) => void,
+  importWords: (id: string, words: Word[]) => void
 }
 
 const useVocabStore = create<VocabStore>(set => ({
@@ -83,7 +84,6 @@ const useVocabStore = create<VocabStore>(set => ({
     })
   },
 
-  // update state immutably
   addWord: (id: string, word: string, translation: string) => {
     set((state: VocabStore) => {
       const newWord: Word = {
@@ -145,6 +145,23 @@ const useVocabStore = create<VocabStore>(set => ({
       return { ...state, vocabs: updatedVocabs };
     })
   },
+
+  importWords: (id: string, words: Word[]) => {
+    set((state: VocabStore) => {
+      const updatedVocabs: Vocab[] | undefined = state.vocabs?.map(v => {
+        if (v._id === id) {
+          return { ...v, words: [...v.words, ...words]};
+        }
+        return v;
+      });
+      const vocabToEdit = updatedVocabs?.find(v => v._id === id);
+      if (vocabToEdit) {
+        localStorage.removeItem(id);
+        localStorage.setItem(id, JSON.stringify(vocabToEdit));
+      }
+      return { ...state, vocabs: updatedVocabs };
+    })
+  }
 }))
 
 // Vocab:

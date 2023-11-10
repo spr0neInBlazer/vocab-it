@@ -4,7 +4,7 @@ import useVocabStore from '@/lib/store';
 import { Vocab, Word } from '@/lib/types';
 import { useToast } from '@/components/ui/use-toast';
 import useSound from 'use-sound';
-import { successSound } from '@/lib/globals';
+import { SOUND_VOLUME, successSound } from '@/lib/globals';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useProfileStore from '@/lib/profileStore';
@@ -35,9 +35,6 @@ import VocabTitleSection from '@/components/VocabTitleSection';
 import { Skeleton } from '@/components/ui/skeleton';
 import { HiMiniQuestionMarkCircle } from "react-icons/hi2";
 
-// FCP: 1.9s -> 1.5s
-// TTFB: 1s -> .167s
-
 const WordsTooltip = dynamic(() => import('@/components/WordsTooltip'), {
   loading: () => <HiMiniQuestionMarkCircle />
 });
@@ -65,7 +62,7 @@ const Vocabulary: NextPageWithLayout = () => {
   } = useProfileStore(state => state);
   const { toast } = useToast();
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
-  const [playSuccess] = useSound(successSound, { volume: 0.25 });
+  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
 
   function checkSingleEdit() {
     if (isAddWord || isEditWord || isEditVocabTitle) {
@@ -126,7 +123,7 @@ const Vocabulary: NextPageWithLayout = () => {
       <section className="w-11/12 lg:w-3/5 mx-auto mb-6 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight flex flex-col border border-zinc-400 dark:border-zinc-300 shadow-2xl">
         <div className="grid grid-rows-2 sm:grid-cols-3 gap-3 w-full items-start">
           <Link
-            className="w-fit flex gap-1 items-center rounded-full py-1 px-3 hover:bg-slate-100 dark:hover:bg-customHighlight2 border border-zinc-400 dark:border-zinc-300"
+            className="w-fit flex gap-1 items-center rounded-full py-1 px-3 hover:bg-slate-100 dark:hover:bg-customHighlight2 focus:bg-slate-100 dark:focus:bg-customHighlight2 border border-zinc-400 dark:border-zinc-300"
             href="/profile/profile"
           >
             <HiArrowLongLeft /> Profile
@@ -150,18 +147,21 @@ const Vocabulary: NextPageWithLayout = () => {
         </div>
         <div className="my-5 flex justify-between">
           {(words.length > 0 && router.query.id) ? (
-            <button className="text-white rounded-lg py-2 px-3 font-semibold bg-btnBg hover:bg-hoverBtnBg transition-colors">
+            <button className="text-white rounded-lg py-2 px-3 font-semibold bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors">
               <Link href={`/lesson/${encodeURIComponent(router.query.id as string)}`}>
                 Start Lesson
               </Link>
             </button>
           ) : (
-            <button className="text-gray-300 rounded-lg py-2 px-3 font-semibold bg-btnBg/80 transition-colors cursor-default">
+            <button 
+              className="rounded-lg py-2 px-3 font-semibold bg-btnBg disabled:bg-btnBg/80 disabled:text-zinc-300 cursor-default transition-colors"
+              disabled
+            >
               Start Lesson
             </button>
           )}
           <AlertDialog>
-            <AlertDialogTrigger className="flex gap-1 items-center rounded-lg py-2 px-3 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg transition-colors"
+            <AlertDialogTrigger className="flex gap-1 items-center rounded-lg py-2 px-3 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg focus:bg-hoverSecondaryBg transition-colors"
             >
               <HiTrash /> Delete <span className="hidden mobile:inline">Vocabulary</span>
             </AlertDialogTrigger>
@@ -179,28 +179,30 @@ const Vocabulary: NextPageWithLayout = () => {
             </AlertDialogContent>
           </AlertDialog>
         </div>
-        {words.length > 0 ? (
-          <section className="w-full sm:w-3/4 mx-auto">
+          <section className="w-full mx-auto">
             <div className="flex px-6 my-2">
-              <p className="font-bold w-1/2">Word</p>
-              <p className="font-bold w-1/2">Translation</p>
+              <p className="font-bold w-3/5">Word</p>
+              <p className="font-bold">Translation</p>
             </div>
-            <ScrollArea className="h-[210px] rounded-md border px-2 sm:px-4 py-3">
-              {words.map(w => {
-                return (
-                  <SingleWord 
-                    key={w.word} 
-                    word={w}
-                    vocab={currVocab as Vocab} 
-                    checkSingleEdit={checkSingleEdit}
-                  />
-                )
-              })}
-            </ScrollArea>
+            {words.length > 0 ? (
+              <ScrollArea className="h-[210px] rounded-md border px-2 sm:px-4 py-3">
+                {words.map(w => {
+                  return (
+                    <SingleWord 
+                      key={w.word} 
+                      word={w}
+                      vocab={currVocab as Vocab} 
+                      checkSingleEdit={checkSingleEdit}
+                    />
+                  )
+                })}
+              </ScrollArea>
+            ) : (
+              <div className="h-[210px] flex justify-center items-center rounded-md border">
+                <p className="text-xl font-bold">No words</p>
+              </div>
+            )}
           </section>
-        ) : (
-          <p className="text-center text-xl font-bold my-5">No words</p>
-        )}
         <VocabAddWordForm 
           words={words} 
           id={router.query.id as string} 

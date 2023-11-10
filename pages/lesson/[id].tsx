@@ -13,7 +13,7 @@ import { NextPageWithLayout } from '../_app';
 import Layout from '@/components/Layout';
 import EndLessonDialog from '@/components/EndLessonDialog';
 import { Progress } from "@/components/ui/progress"
-import { clickSound } from '@/lib/globals';
+import { SOUND_VOLUME, clickSound } from '@/lib/globals';
 
 const initialWordIdx: number = 1;
 
@@ -27,7 +27,7 @@ const Lesson: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [endLesson, setEndLesson] = useState<boolean>(false);
   const router = useRouter();
-  const [playClick] = useSound(clickSound, { volume: 0.25 });
+  const [playClick] = useSound(clickSound, { volume: SOUND_VOLUME });
 
   function randomizeWords(array: Word[], volume: number): Word[] {
     let randomizedWords: Word[] = [];
@@ -135,12 +135,12 @@ const Lesson: NextPageWithLayout = () => {
           <LessonResult allAnswers={allAnswers} words={words} />
           <div className="flex justify-between mt-5 px-3">
             <button 
-              className="flex gap-1 items-center rounded-lg p-3 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors"
+              className="flex gap-1 items-center rounded-lg p-3 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 focus:bg-zinc-500 transition-colors"
               onClick={restartLesson}  
             >
               Start Again
             </button>
-            <button className="flex gap-1 items-center rounded-lg p-3 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors">
+            <button className="flex gap-1 items-center rounded-lg p-3 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 focus:bg-zinc-500 transition-colors">
               <Link href="/profile/profile">
                 Back to Profile
               </Link>
@@ -201,13 +201,13 @@ const Lesson: NextPageWithLayout = () => {
         <div className="flex justify-between mt-5 px-3">
           <EndLessonDialog setEndLesson={setEndLesson} />
           <button 
-            className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-zinc-600 hover:bg-zinc-500 transition-colors"
+            className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-zinc-600 hover:bg-zinc-500 focus:bg-zinc-500 transition-colors"
             onClick={registerAnswer}
           >
             Skip
           </button>
           <button 
-            className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors"
+            className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors"
             onClick={registerAnswer}  
           >
             OK

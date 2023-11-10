@@ -9,14 +9,21 @@ import useProfileStore from '@/lib/profileStore';
 import ProfileAddVocabSection from '@/components/ProfileAddVocabSection';
 import ProfileWordSection from '@/components/ProfileWordSection';
 import { Toaster } from '@/components/ui/toaster';
-
-// FCP: 1.915s -> 1.363s
-// TTFB: .362s -> .213s
+import { Skeleton } from '@/components/ui/skeleton';
 
 // const SCHEDULE_OPTIONS = ['every day', 'every 2 days', 'every 3 days', 'once a week'];
 
 // needs client render because server and client (storage) username values differ
-const NoSSR = dynamic(() => import('@/components/ProfileUsernameSection'), { ssr: false });
+const NoSSR = dynamic(() => import('@/components/ProfileUsernameSection'), { 
+  ssr: false,
+  loading: () => (
+    <div>
+      <h2 className='text-xl mobile:text-2xl md:text-3xl font-bold dark:text-customText-dark mb-4'>Username</h2>
+      <Skeleton className="my-3 w-32 h-[38px] sm:w-2/12" />
+      <div className="h-px w-full dark:bg-mainBg-dark mt-3 mb-5" />
+    </div>
+  )
+});
 
 const Profile: NextPageWithLayout = () => {
   const {

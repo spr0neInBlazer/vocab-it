@@ -51,7 +51,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-secondaryBg-light dark:bg-secondaryBg-dark py-2 sm:py-5 absolute top-0 left-0 right-0 transition-colors">
-      <div className="w-4/5 mx-auto flex justify-between items-center">
+      <div className="w-11/12 mobile:w-4/5 mx-auto flex justify-between items-center">
         <Link href={'/'} className="flex items-center" title="Vocab-It - a language learning app">
           <Image 
             className="-rotate-12"

@@ -5,7 +5,7 @@ import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import { useToast } from './ui/use-toast';
 import useSound from 'use-sound';
-import { errorSound, successSound } from '@/lib/globals';
+import { SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
 
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
@@ -19,8 +19,8 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
   const [userName, setUserName] = useState<string>(preferenceStore?.profileName || 'testname');
   const [errorMsg, setErrorMsg] = useState<string>('');
   const { toast } = useToast();
-  const [playError] = useSound(errorSound, { volume: 0.25 });
-  const [playSuccess] = useSound(successSound, { volume: 0.25 });
+  const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
+  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
 
   function updateUsername(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -82,7 +82,7 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
               />
             </div>
             <Button 
-              className="bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 text-white dark:text-white"
+              className="bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:bg-gray-600 text-white dark:text-white"
               onSubmit={updateUsername}
             >
               Save

@@ -3,13 +3,13 @@ import { CheckSingleEditFunction } from '@/lib/types';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useSound from 'use-sound';
-import { errorSound, successSound } from '@/lib/globals';
+import { SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
 import useVocabStore from '@/lib/store';
 import { useToast } from './ui/use-toast';
+import useProfileStore from '@/lib/profileStore';
 
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
-import useProfileStore from '@/lib/profileStore';
 
 export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: { id: string, vocabTitle: string, checkSingleEdit: CheckSingleEditFunction }) {
   const [title, setTitle] = useState<string>(vocabTitle);
@@ -20,8 +20,8 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
   } = useVocabStore(state => state);
   const {isEditVocabTitle, toggleIsEditVocabTitle} = useProfileStore(state => state);
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
-  const [playError] = useSound(errorSound, { volume: 0.25 });
-  const [playSuccess] = useSound(successSound, { volume: 0.25 });
+  const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
+  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
   const { toast } = useToast();
 
   function updateTitle(e: React.SyntheticEvent) {
@@ -74,7 +74,7 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
             autoFocus 
           />
           <Button 
-            className="bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 text-white dark:text-white"
+            className="bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:bg-gray-600 text-white dark:text-white"
             onSubmit={updateTitle}
           >
             Save

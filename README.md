@@ -1,7 +1,9 @@
 # Vocab-It
 A web app for learning languages by creating your own vocabularies.
 
+<p align="center">
 <a href="https://ibb.co/bKcj1By"><img src="https://i.ibb.co/DR0P4C6/Screenshot-3.jpg" alt="vocab-it screenshot" border="0"></a>
+</p>
  
 ## Description
 Users can learn words by completing lessons in the form of flash cards. For now this is a front-end only app which means that all data is being stored in local storage. I plan to add back-end in the future, as well as other new features.
@@ -16,6 +18,7 @@ Users can learn words by completing lessons in the form of flash cards. For now 
 ## Main features
 - create/edit/delete vocabularies
 - add/edit/delete words
+- import words from a file (.csv & .txt)
 - lesson functionality in the form of flash cards
 - light/dark mode
 - sound FX
@@ -27,4 +30,3 @@ Users can learn words by completing lessons in the form of flash cards. For now 
 - graph stats
 - make bg word cloud move with the mouse (3d effect)
 - allow adding multiple translations
-- allow uploading words as a file (e.g CSV)

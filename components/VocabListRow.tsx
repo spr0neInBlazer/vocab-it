@@ -20,7 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from './ui/use-toast';
-import { errorSound, successSound } from '@/lib/globals';
+import { SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
 
 export default function VocabListRow({ vocab }: { vocab: Vocab }) {
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
@@ -37,8 +37,8 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
   } = useProfileStore(state => state);
   const {toast} = useToast();
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
-  const [playError] = useSound(errorSound, { volume: 0.25 });
-  const [playSuccess] = useSound(successSound, { volume: 0.25 });
+  const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
+  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
 
   // only allow one field editing at a time
   function checkSingleEdit() {
@@ -111,92 +111,93 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
   }, [isEditTitle])
 
   return (
-    <tr className="border-b rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
-      {isEditTitle ? (
-        <>
-          <td className="py-3 pl-2">
-            <form onSubmit={updateTitle}>
-              <input 
-                className="leading-8 px-2 rounded" 
-                type="text" 
-                value={title} 
-                size={10}
-                maxLength={15}
-                onChange={(e) => setTitle(e.target.value)}
-                onKeyDown={checkForAbort} 
-                autoFocus 
-              />
-            </form>
-          </td>
-          <td className="py-3">{vocab.words ? vocab.words.length : 0}</td>
-          <td>
-            <button 
-              className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`}
-              aria-label="save" 
-              onClick={updateTitle}
-            >              
-              <p className="hidden mobile:inline">Save</p>
-              <HiCheckCircle className="inline mobile:hidden text-btnBg hover:text-hoverBtnBg h-8 w-8" /> 
-            </button>
-          </td>
-          <td className="py-3">
-            <button 
-              className={`rounded-full bg-white mobile:bg-secondaryBg-light mobile:hover:bg-secondaryBg-light/80 mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`} 
-              aria-label="cancel"
-              onClick={() => setIsEditTitle(false)}
-            >
-              <p className="hidden mobile:inline">Cancel</p>
-              <HiMiniXCircle className="inline mobile:hidden text-secondaryBg-light hover:text-secondaryBg-light/80 h-8 w-8" />
-            </button>
-          </td>
-        </>
-      ) : (
-        <>
-          <td className="py-3 pl-2">
-            <Link 
-              href={`/vocabularies/${encodeURIComponent(vocab._id)}`} 
-              className="underline hover:text-customText-light/80 dark:hover:text-customText-dark/80"
-            >
-              {vocab.title}
-            </Link>
-          </td>
-          <td className="py-3">{vocab.words ? vocab.words.length : 0}</td>
-          <td>
-            <button className={`${vocab.words.length > 0 ? 'text-white' : 'text-gray-300 cursor-default'} text-sm sm:text-base rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors`}>
-              {vocab.words.length > 0 ? (
-                <Link 
-                  href={`/lesson/${encodeURIComponent(vocab._id)}`} 
-                >
-                  Start <span className="hidden mobile:inline">Lesson</span>
-                </Link>
-              ) : (
-                <p>Start <span className="hidden mobile:inline">Lesson</span></p>
-              )}
-            </button>
-          </td>
-          <td className="py-3">
-            <button className="text-lg" aria-label="edit" onClick={enterEditTitleMode}><HiPencilSquare /></button></td>
-          <td className="py-3">
-            <AlertDialog>
-              <AlertDialogTrigger className="text-lg" aria-label="delete">
-                <HiTrash />
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure you want to delete this vocabulary?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={deleteVocabFromStore}>OK</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </td>
-        </>
-      )}
-    </tr>
+    <article>
+      <div className="flex gap-1 py-3 px-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
+        {isEditTitle ? (
+          <>
+            <div className="w-2/5">
+              <form onSubmit={updateTitle}>
+                <input 
+                  className="leading-8 px-2 rounded" 
+                  type="text" 
+                  value={title} 
+                  size={10}
+                  maxLength={15}
+                  onChange={(e) => setTitle(e.target.value)}
+                  onKeyDown={checkForAbort} 
+                  autoFocus 
+                />
+              </form>
+            </div>
+            <div className="w-10 text-center">{vocab.words ? vocab.words.length : 0}</div>
+            <div className="flex gap-2 justify-around grow">
+              <button 
+                className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`}
+                aria-label="save" 
+                onClick={updateTitle}
+              >              
+                <p className="hidden mobile:inline">Save</p>
+                <HiCheckCircle className="inline mobile:hidden text-btnBg hover:text-hoverBtnBg h-8 w-8" /> 
+              </button>
+              <button 
+                className={`rounded-full bg-white mobile:bg-secondaryBg-light mobile:hover:bg-secondaryBg-light/80 mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`} 
+                aria-label="cancel"
+                onClick={() => setIsEditTitle(false)}
+              >
+                <p className="hidden mobile:inline">Cancel</p>
+                <HiMiniXCircle className="inline mobile:hidden text-secondaryBg-light hover:text-secondaryBg-light/80 h-8 w-8" />
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="w-2/5">
+              <Link 
+                href={`/vocabularies/${encodeURIComponent(vocab._id)}`} 
+                className="underline hover:text-customText-light/80 dark:hover:text-customText-dark/80"
+              >
+                {vocab.title}
+              </Link>
+            </p>
+            <p className="w-10 text-center">{vocab.words ? vocab.words.length : 0}</p>
+            <div className="grow flex gap-1 justify-around">
+              <button className={`${vocab.words.length > 0 ? 'text-white' : 'text-gray-300 cursor-default'} text-sm sm:text-base rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors`}>
+                {vocab.words.length > 0 ? (
+                  <Link 
+                    href={`/lesson/${encodeURIComponent(vocab._id)}`} 
+                  >
+                    Start <span className="hidden sm:inline">Lesson</span>
+                  </Link>
+                ) : (
+                  <p>Start <span className="hidden sm:inline">Lesson</span></p>
+                )}
+              </button>
+              <div className="flex gap-4">
+                <button className="text-lg" aria-label="edit" onClick={enterEditTitleMode}><HiPencilSquare /></button>
+                <AlertDialog>
+                  <AlertDialogTrigger className="text-lg" aria-label="delete">
+                    <HiTrash />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure you want to delete this vocabulary?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={deleteVocabFromStore}>OK</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+      {/* separator */}
+      {vocabs && vocabs[vocabs.length - 1]._id !== vocab._id && <div className="h-px w-full dark:bg-mainBg-dark" />}
+    </article>
   )
 }

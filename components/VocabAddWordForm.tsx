@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import useVocabStore from '@/lib/store';
 import { CheckSingleEditFunction, Word } from '@/lib/types';
-import { errorSound } from '@/lib/globals';
+import { SOUND_VOLUME, errorSound } from '@/lib/globals';
 import useSound from 'use-sound';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useProfileStore from '@/lib/profileStore';
+import { useStore } from 'zustand';
 
 import { Label } from '@/components/ui/label';
 import { HiPlus } from "react-icons/hi2";
-import { useStore } from 'zustand';
+import FileForm from './FileForm';
 
 export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words: Word[], id: string, checkSingleEdit: CheckSingleEditFunction }) {
   const [newWord, setNewWord] = useState<string>('');
@@ -17,7 +18,7 @@ export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words
   const { isAddWord, toggleIsAddWord } = useProfileStore(state => state);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
-  const [playError] = useSound(errorSound, { volume: 0.25 });
+  const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
 
   function enterAddWordMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
@@ -102,13 +103,13 @@ export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words
           </div>
           <div className="flex gap-2">
             <button 
-              className="text-white bg-btnBg hover:bg-hoverBtnBg px-3 py-2 rounded"
+              className="text-white bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg px-3 py-2 rounded"
               onClick={addWord}
             >
               Create
             </button>
             <button 
-              className="bg-secondaryBg-light hover:bg-hoverSecondaryBg text-white px-3 py-2 rounded" 
+              className="bg-secondaryBg-light hover:bg-hoverSecondaryBg focus:bg-hoverSecondaryBg text-white px-3 py-2 rounded" 
               onClick={cancelAddWord}
             >
               Cancel
@@ -121,13 +122,15 @@ export default function VocabAddWordForm({ words, id, checkSingleEdit }: { words
   }
 
   return (
-    <div>
+    <div className="w-full flex flex-col justify-center items-center">
       <button 
-        className="flex gap-1 items-center justify-center mobile:justify-start w-full mobile:w-fit rounded-lg mt-5 py-2 px-3 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg transition-colors" 
+        className="flex gap-1 items-center justify-center w-full mobile:w-3/4 rounded-lg mt-5 py-2 px-3 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors" 
         onClick={enterAddWordMode}
       >
         <HiPlus /> Add Word
       </button>
+      <p className="font-bold text-lg my-3">OR</p>
+      <FileForm id={id} storeWords={words} />
     </div>
   )
 }

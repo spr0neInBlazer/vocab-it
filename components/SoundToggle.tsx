@@ -1,16 +1,16 @@
 import React from 'react'
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useSound from 'use-sound';
-import { muteSound, unmuteSound } from '@/lib/globals';
+import { SOUND_VOLUME, muteSound, unmuteSound } from '@/lib/globals';
+import { useStore } from 'zustand';
 
 import { MenubarMenu } from "@/components/ui/menubar";
 import { HiSpeakerXMark, HiSpeakerWave } from "react-icons/hi2";
-import { useStore } from 'zustand';
 
 export default function SoundToggle() {
   const {soundOn, toggleSoundOn} = useStore(usePreferencesStore, (state) => state);
-  const [playMute] = useSound(muteSound, { volume: 0.25 });
-  const [playUnmute] = useSound(unmuteSound, { volume: 0.25 });
+  const [playMute] = useSound(muteSound, { volume: SOUND_VOLUME });
+  const [playUnmute] = useSound(unmuteSound, { volume: SOUND_VOLUME });
 
   function toggleSound() {
     soundOn ? playMute() : playUnmute();

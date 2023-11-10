@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Vocab } from '@/lib/types';
 import useVocabStore from '@/lib/store';
 import dynamic from 'next/dynamic';
@@ -6,58 +6,89 @@ import dynamic from 'next/dynamic';
 import VocabListRow from './VocabListRow';
 import { Skeleton } from './ui/skeleton';
 import { HiMiniQuestionMarkCircle } from "react-icons/hi2";
+import { ScrollArea } from './ui/scroll-area';
 
 const WordsTooltip = dynamic(() => import('./WordsTooltip'), {
   loading: () => <HiMiniQuestionMarkCircle />
 });
 
 export default function VocabList() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const vocabs = useVocabStore(state => state.vocabs);
   const initialFetch = useVocabStore(state => state.initialFetch);
 
-  // after SSR replace default value with local storage data
+  useEffect(() => {
+    if (vocabs) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
+  }, [vocabs]);
+  
+  // replace default value with local storage data
   useEffect(() => {
     initialFetch();
   }, [initialFetch]);
 
-  if (!vocabs) {
+  if (isLoading) {
     return (
-      <div className="flex justify-between w-full my-3">
-        <div className="w-1/2">
-          <Skeleton className="h-3.5 w-2/5" />
+      <div className="w-full my-4">
+        <div className="flex gap-1 px-4 my-2">
+          <p className="w-2/5 font-bold text-left pl-2">Title</p>
+          <p className="font-bold flex items-center gap-1 justify-start">
+            Words
+            <WordsTooltip />
+          </p>
         </div>
-        <div className="flex w-1/2 justify-between">
-          <Skeleton className="h-3.5 w-7" />
-          <Skeleton className="h-3.5 w-11" />
-          <Skeleton className="h-3.5 w-11" />
+        <div className="h-[210px] rounded-md border px-2 sm:px-4 py-3">
+          <div className="flex w-full justify-between py-3 px-2">
+            <Skeleton className="h-5 w-1/5" />
+            <Skeleton className="h-5 w-3/5" />
+          </div>
+          <div className="flex w-full justify-between py-3 px-2">
+            <Skeleton className="h-5 w-1/5" />
+            <Skeleton className="h-5 w-3/5" />
+          </div>
+          <div className="flex w-full justify-between py-3 px-2">
+            <Skeleton className="h-5 w-1/5" />
+            <Skeleton className="h-5 w-3/5" />
+          </div>
         </div>
       </div>
     );
   }
 
-  if (vocabs.length > 0) {
+  if (vocabs && vocabs.length > 0) {
     return (
-      <table className="w-full my-3 text-sm mobile:text-base">
-        <thead>
-          <tr>
-            <th className="w-2/5 sm:w-3/5 text-left pl-2">Name</th>
-            <th className="flex items-center gap-1 justify-start">
-              Words
-              <WordsTooltip />
-            </th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
+      <section className="w-full my-4">
+        <div className="flex gap-1 px-4 my-2">
+          <p className="w-2/5 font-bold text-left pl-2">Title</p>
+          <p className="font-bold flex items-center gap-1 justify-start">
+            Words
+            <WordsTooltip />
+          </p>
+        </div>
+        <ScrollArea className="h-[210px] rounded-md border px-2 sm:px-4 py-3">
           {vocabs.map((vocab: Vocab) => {
             return <VocabListRow key={vocab._id} vocab={vocab} />
           })}
-        </tbody>
-      </table>
+        </ScrollArea>
+      </section>
     )
   }
 
-  return <p className="text-center text-base sm:text-xl font-bold my-5">No vocabularies</p>
+  return (
+    <section className="my-4">
+      <div className="flex gap-1 px-4 my-2">
+        <p className="w-2/5 font-bold text-left pl-2">Title</p>
+        <p className="font-bold flex items-center gap-1 justify-start">
+          Words
+          {/* <WordsTooltip /> */}
+        </p>
+      </div>
+      <div className="h-[210px] rounded-md border sm:px-4 py-3 flex justify-center items-center">
+        <p className="text-base sm:text-xl font-bold">No vocabularies</p>
+      </div>
+    </section>
+  )
 }

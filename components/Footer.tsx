@@ -21,17 +21,17 @@ export default function Footer() {
           <h2 className="text-xl font-semibold mb-2">Contact</h2>
           <ul className="flex flex-col items-center mobile:items-start">
             <li>
-              <Link className="flex items-center gap-1 hover:text-white transition-colors" href="https://github.com/savvy-itch/vocab-it">
+              <Link className="flex items-center gap-1 hover:text-white focus:text-white transition-colors" href="https://github.com/savvy-itch/vocab-it">
                 GitHub <HiOutlineExternalLink />
               </Link>
             </li>
             <li>
-              <Link className="flex items-center gap-1 hover:text-white transition-colors" href="https://twitter.com/spronetunes">
+              <Link className="flex items-center gap-1 hover:text-white focus:text-white transition-colors" href="https://twitter.com/spronetunes">
                 Twitter <HiOutlineExternalLink />
               </Link>
             </li>
             <li>
-              <Link className="flex items-center gap-1 hover:text-white transition-colors" href="https://www.linkedin.com/in/михайло-савич-a31366248/">
+              <Link className="flex items-center gap-1 hover:text-white focus:text-white transition-colors" href="https://www.linkedin.com/in/михайло-савич-a31366248/">
                 LinkedIn <HiOutlineExternalLink />
               </Link>
             </li>

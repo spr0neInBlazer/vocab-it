@@ -10,10 +10,6 @@ import {HiOutlineArrowDownCircle, HiOutlineArrowUpCircle} from "react-icons/hi2"
 import HomeLayout from '@/components/HomeLayout';
 import Navbar from '@/components/Navbar';
 
-// FCP: 1.205s -> .932s
-// TTFB: .308s -> .103s
-// FCP/TTFB: 1.475/.178
-
 const Home: NextPageWithLayout = () => {
   const { theme } = useTheme();
   const [imgSrc, setImgSrc] = useState<string>('/images/vocab-hero-dark.svg');
@@ -68,7 +64,7 @@ const Home: NextPageWithLayout = () => {
             </div>
           </div>
           <button 
-            className="absolute w-12 h-12 bottom-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 rounded-full"
+            className="absolute w-12 h-12 bottom-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 focus:border-2 rounded-full"
             aria-label="down" 
             onClick={goDown}
           >
@@ -89,7 +85,7 @@ const Home: NextPageWithLayout = () => {
         <section className="relative w-11/12 h-screen sm:w-4/5 flex flex-col justify-between mx-auto pt-24 mobile:pt-10 pb-5 sm:pb-10 transition ease-in-out duration-300 text-customText-light dark:text-customText-dark"
           ref={bottomSectionRef}
         >
-          <button className="absolute w-12 h-12 top-16 mobile:top-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 rounded-full z-50"
+          <button className="absolute w-12 h-12 top-16 mobile:top-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 focus:border-2 rounded-full z-50"
             aria-label="up"
             onClick={goUp}
           >
@@ -123,7 +119,7 @@ const Home: NextPageWithLayout = () => {
           </div>
           <div className="flex justify-center">
             <Link href={`/profile/profile`}>
-              <button className="animated-btn bg-secondaryBg-light flex gap-1 items-center rounded-lg py-3 lg:py-4 px-8 font-semibold text-white text-md lg:text-xl transition hover:animated-btn hover:scale-105">
+              <button className="animated-btn bg-secondaryBg-light flex gap-1 items-center rounded-lg py-3 lg:py-4 px-8 font-semibold text-white text-md lg:text-xl transition hover:animated-btn focus:animated-btn hover:scale-105 focus:scale-105">
                 START NOW
               </button>
             </Link>
