@@ -11,7 +11,15 @@ import useSound from 'use-sound';
 import { Label } from './ui/label';
 import { HiDocumentText } from "react-icons/hi2";
 
-// add focus style for buttons
+function decodeString(str: string): string {
+  let encoding = jschardet.detect(str).encoding;
+  // add fallback encoding if current is not supported
+  if (encoding === 'x-mac-cyrillic') {
+    encoding = 'utf8';
+  }
+  const decodedStr = iconv.decode(Buffer.from(str, 'binary'), encoding);
+  return decodedStr;
+}
 
 export default function FileForm({ id, storeWords }: { id: string, storeWords: Word[] }) {
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -84,16 +92,6 @@ export default function FileForm({ id, storeWords }: { id: string, storeWords: W
         reader.readAsBinaryString(file);
       }
     }
-  }
-
-  function decodeString(str: string): string {
-    let encoding = jschardet.detect(str).encoding;
-    // add fallback encoding if current is not supported
-    if (encoding === 'x-mac-cyrillic') {
-      encoding = 'utf8';
-    }
-    const decodedStr = iconv.decode(Buffer.from(str, 'binary'), encoding);
-    return decodedStr;
   }
 
   function checkForDuplicateWords(words: Word[]) {

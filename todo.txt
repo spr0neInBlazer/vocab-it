@@ -1,16 +1,3 @@
-Done:
-+ add custom favicon
-+ refactor the code (DRY & move code to components)
-+ optimization
-
-+ calculated the recommended maximum words/vocabs
-+ import words from a .txt file
-  + check for already existing words, submitting the same file more than once.
-
----------------------
-To do:
-- final Lighthouse assessment
-
 Features (needs back-end):
 - regulate lessons frequency
 - assess learning progress (red - bad, orange - average, green - good, dark yellow - learnt)
@@ -18,7 +5,7 @@ Features (needs back-end):
 - graph stats
 Other possible features:
 - make bg word cloud move with the mouse (3d effect)
-- allow adding multiple translations
+- allow multiple translations
 
 Account page:
 - Name (edit name)

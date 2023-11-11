@@ -83,7 +83,6 @@ export default function VocabList() {
         <p className="w-2/5 font-bold text-left pl-2">Title</p>
         <p className="font-bold flex items-center gap-1 justify-start">
           Words
-          {/* <WordsTooltip /> */}
         </p>
       </div>
       <div className="h-[210px] rounded-md border sm:px-4 py-3 flex justify-center items-center">
