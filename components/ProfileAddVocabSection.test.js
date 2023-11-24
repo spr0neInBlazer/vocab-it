@@ -1,5 +1,7 @@
-import { screen, render, fireEvent } from '@testing-library/react';
+import { screen, render, fireEvent, cleanup } from '@testing-library/react';
 import ProfileAddVocabSection from './ProfileAddVocabSection';
+
+test.afterEach(cleanup);
 
 jest.mock("next/font/local", () => function() {
   return {

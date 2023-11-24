@@ -1,5 +1,7 @@
-import { fireEvent, screen, render } from "@testing-library/react";
+import { fireEvent, screen, render, cleanup } from "@testing-library/react";
 import Home from './index.tsx';
+
+test.afterEach(cleanup);
 
 jest.mock("next/font/local", () => function() {
   return {
