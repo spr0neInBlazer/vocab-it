@@ -68,7 +68,11 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
       <h2 className='text-xl mobile:text-2xl md:text-3xl font-bold dark:text-customText-dark mb-4'>Username</h2>
       {isEditUsername ? (
         <>
-          <form className="flex gap-3 my-3 w-2/12 justify-between items-center" onSubmit={updateUsername}>
+          <form 
+            className="flex gap-3 my-3 w-2/12 justify-between items-center" 
+            onSubmit={updateUsername}
+            data-testid="username-form"
+          >
             <div>
               <input 
                 className="text-lg leading-9 px-2 border rounded" 
@@ -79,11 +83,13 @@ export default function ProfileUsernameSection({checkSingleEdit}: {checkSingleEd
                 maxLength={10}
                 autoFocus 
                 onFocus={() => setErrorMsg('')}
+                data-testid="username-input"
               />
             </div>
             <Button 
               className="bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:bg-gray-600 text-white dark:text-white"
               onSubmit={updateUsername}
+              aria-label='submit'
             >
               Save
             </Button>

@@ -47,6 +47,7 @@ const Home: NextPageWithLayout = () => {
       <div>
         <section className="relative w-full h-[100dvh] transition ease-in-out duration-300 z-10"
           ref={topSectionRef}
+          data-testid="top-section"
         >
           <Navbar />
           <div className="h-[100dvh] sm:w-4/5 mx-auto flex gap-2 justify-center flex-col sm:flex-row sm:justify-between items-center">
@@ -84,6 +85,7 @@ const Home: NextPageWithLayout = () => {
         {/* bottom screen */}
         <section className="relative w-11/12 h-screen sm:w-4/5 flex flex-col justify-between mx-auto pt-24 mobile:pt-10 pb-5 sm:pb-10 transition ease-in-out duration-300 text-customText-light dark:text-customText-dark"
           ref={bottomSectionRef}
+          data-testid="bottom-section"
         >
           <button className="absolute w-12 h-12 top-16 mobile:top-2 inset-x-0 mx-auto flex items-center border-customText-light dark:border-customText-dark hover:border-2 focus:border-2 rounded-full z-50"
             aria-label="up"

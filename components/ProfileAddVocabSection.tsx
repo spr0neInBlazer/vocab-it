@@ -89,6 +89,7 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
               size={15} 
               maxLength={15}
               autoFocus 
+              data-testid="vocab-input"
             />
             <button 
               className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:focus:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`}

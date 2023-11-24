@@ -1,0 +1,1 @@
+jest.mock("nanoid", () => {   return { nanoid: () => "123" } });

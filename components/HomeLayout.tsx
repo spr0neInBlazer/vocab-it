@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { ThemeProvider } from "@/components/theme-provider";
 import Head from 'next/head';
-import { arialRounded } from '@/lib/globals';
+import { arialRounded } from '../lib/globals';
 
 export default function Layout({ children }: { children: ReactNode}) {
   return (

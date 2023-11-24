@@ -6,34 +6,6 @@ Features (needs back-end):
 Other possible features:
 - make bg word cloud move with the mouse (3d effect)
 - allow multiple translations
-
-Account page:
-- Name (edit name)
-- (?) User achievements
-- Vocabularies (create vocab button):
-  - No vocabularies yet
-  - list of vocabularies:
-    - start a lesson, edit button, delete button
-- Lessons:
-  - Current Schedule:
-    - (select option):
-      - every day, every 2 days, every 3 days, once a week
-    - words per lesson
-- User stats
-
-Vocabulary:
-- edit button/ delete button
-- stats (words in total)
-- list of words:
-  - word:
-    - edit button, delete button
-- (?) assess word's learning progress (red - bad, orange - average, green - good, gray - learnt)
-
-Ideas for test cases:
-Vocabs navbar:
-- when no vocabs exist yet
-- invalid title / valid title 
-Vocab:
-- too long title
+- add "Show first letter" button to lessons
 
 vocab w/ 1 word = .18 KB

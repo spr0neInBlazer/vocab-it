@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { atma } from '@/lib/globals';
+import { atma } from '../lib/globals';
 import { useTheme } from 'next-themes';
 import { Vocab } from '@/lib/types';
 import useVocabStore from '@/lib/store';

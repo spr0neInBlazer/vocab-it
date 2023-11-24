@@ -32,13 +32,21 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
       toggleIsEditWord(); // to true
     } else {
       if (soundOn) playError();
-      alert('Please finish editing the other field');
+      alert('Please finish editing the other field (SW)');
     }
   }
 
-  function exitEditWordMove() {
+  function exitEditWordMode() {
     setIsEditSingleWord(false);
     toggleIsEditWord(); // to false
+  }
+
+  function checkForAbort(e: React.KeyboardEvent) {
+    if (e.key === "Escape") {
+      exitEditWordMode();
+      setNewWord(word.word);
+      setNewTranslation(word.translation);
+    }
   }
 
   function submitEdit(e: React.SyntheticEvent) {
@@ -71,6 +79,7 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
             className="w-1/3 pl-2 border border-slate-600 rounded" 
             value={newWord} 
             onChange={(e) => setNewWord(e.target.value)} 
+            onKeyDown={checkForAbort}
             size={20} 
             autoFocus 
           />
@@ -78,19 +87,20 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
             className="w-1/3 pl-2 border border-slate-600 rounded" 
             value={newTranslation} 
             onChange={(e) => setNewTranslation(e.target.value)} 
+            onKeyDown={checkForAbort}
             size={20} 
           />
           <button 
             className="rounded-full bg-white"
             aria-label="update"
-            onClick={enterEditWordMode}
+            onClick={submitEdit}
           >
             <HiCheckCircle className="text-btnBg hover:text-hoverBtnBg focus:text-hoverBtnBg h-8 w-8" />
           </button>
           <button 
             className="rounded-full bg-white"
             aria-label="cancel" 
-            onClick={exitEditWordMove}
+            onClick={exitEditWordMode}
           >
             <HiMiniXCircle className="text-secondaryBg-light hover:text-secondaryBg-light/80 focus:text-secondaryBg-light/80 h-8 w-8" />
           </button>
