@@ -7,5 +7,11 @@ Other possible features:
 - make bg word cloud move with the mouse (3d effect)
 - allow multiple translations
 - add "Show first letter" button to lessons
+- sort words
+- when a word is deleted show "cancel" button in its place until the next 
+page load to revert back
+- add hints (reveal first letter, second, etc.)
+- add another type of exercise: find a pair
+- add special symbols keyboard for different langs
 
 vocab w/ 1 word = .18 KB
