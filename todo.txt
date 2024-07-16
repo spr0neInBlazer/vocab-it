@@ -1,0 +1,19 @@
++ create user model
++ authenticate user
+- get user controller
+- send username
+
+Routes:
++ register
++ auth
+- refresh
++ logout
+- *
+----------
+- user page
+- add vocab
+- edit vocab
+- delete vocab
+- add word
+- edit word
+- delete word
