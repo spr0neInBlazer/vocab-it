@@ -5,6 +5,7 @@ interface User {
   password: string;
   roles: string[];
   vocabularies: Types.ObjectId;
+  wordsPerLesson: number,
   refreshToken: string
 }
 
@@ -28,6 +29,10 @@ const userSchema = new Schema<User>({
     type: Types.ObjectId,
     ref: 'Vocabulary'
   }],
+  wordsPerLesson: {
+    type: Number,
+    default: 20
+  },
   refreshToken: String
 });
 

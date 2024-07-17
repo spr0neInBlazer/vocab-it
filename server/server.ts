@@ -11,6 +11,8 @@ import registerRouter from './routes/register';
 import authRouter from './routes/auth';
 import logoutRouter from './routes/logout';
 import errorHandlerMiddleware from './middleware/errorHandler';
+import verifyJWT from './middleware/verifyJWT';
+import profileRouter from './routes/profile';
 const app: Application = express();
 const PORT = process.env.PORT || 3500;
 
@@ -27,6 +29,8 @@ app.use(cookieParser());
 app.use('/register', registerRouter);
 app.use('/auth', authRouter);
 app.use('/logout', logoutRouter);
+app.use(verifyJWT);
+app.use('/profile', profileRouter);
 
 app.use(errorHandlerMiddleware);
 

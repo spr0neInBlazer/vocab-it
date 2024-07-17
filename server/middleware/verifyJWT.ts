@@ -1,8 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken';
 
-function verifyJWT(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers.authorization || req.headers.Authorization;
+interface JwtPayload {
+  UserInfo: {
+    _id: string,
+    username: string,
+    roles: string[],
+    wordsPerLesson: number,
+  }
+}
+
+function verifyJWT(req, res: Response, next: NextFunction) {
+  const authHeader: string | undefined = req.headers.authorization || req.headers.Authorization as string | undefined;
 
   if (!authHeader?.startsWith('Bearer ')) {
     return res.sendStatus(401); // Unauthorized
@@ -13,16 +22,12 @@ function verifyJWT(req: Request, res: Response, next: NextFunction) {
   if (!accessSecret) {
     return res.sendStatus(401); // Unauthorized
   }
-  jwt.verify(
-    token,
-    accessSecret,
-    (err, decoded) => {
-      if (err) return res.sendStatus(403);
-      req.username = decoded.UserInfo.username;
-      req.roles = decoded.UserInfo.roles;
-      next();
-    }
-  )
+  const decoded = jwt.verify(token, accessSecret) as JwtPayload;
+  // req._id = decoded.UserInfo._id;
+  // req.username = decoded.UserInfo.username;
+  // req.roles = decoded.UserInfo.roles;
+  req.userInfo = decoded.UserInfo;
+  next();
 }
 
 export default verifyJWT;
