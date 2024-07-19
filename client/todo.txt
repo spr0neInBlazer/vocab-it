@@ -1,6 +1,6 @@
 Features (needs back-end):
 - regulate lessons frequency
-- assess learning progress (red - bad, orange - average, green - good, dark yellow - learnt)
+- assess learning progress (red - bad, orange - average, green - good, dark yellow - learnt OR percentage of correct translations)
 - achievements
 - graph stats
 Other possible features:

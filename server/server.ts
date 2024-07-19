@@ -13,25 +13,27 @@ import logoutRouter from './routes/logout';
 import errorHandlerMiddleware from './middleware/errorHandler';
 import verifyJWT from './middleware/verifyJWT';
 import profileRouter from './routes/profile';
+import refreshRouter from './routes/refresh';
+import notFoundMiddleware from './middleware/notFound';
 const app: Application = express();
 const PORT = process.env.PORT || 3500;
 
 connectDB();
 
-// routers
-
 app.use(credentials);
 app.use(cors(corsOptions));
-
 app.use(express.json());
 app.use(cookieParser());
 
 app.use('/register', registerRouter);
 app.use('/auth', authRouter);
 app.use('/logout', logoutRouter);
-app.use(verifyJWT);
-app.use('/profile', profileRouter);
+app.use('/refresh', refreshRouter);
+// Protected routes
+app.use('/profile', verifyJWT, profileRouter);
+app.use('/vocabs/:title', verifyJWT,);
 
+app.all('*', notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 mongoose.connection.once('open', () => {

@@ -6,11 +6,17 @@
 Routes:
 + register
 + auth
-- refresh
+? refresh (needs front-end)
 + logout
-- *
++ *
+
+- add CSV max size limit
 ----------
-- user page
++ user page
+  + get profile
+  + update username
+  + update words per lesson
+  + delete account
 - add vocab
 - edit vocab
 - delete vocab

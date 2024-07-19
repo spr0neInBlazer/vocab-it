@@ -26,11 +26,13 @@ async function handleLogin(req: Request, res: Response) {
     const accessToken = jwt.sign(
       {
         "UserInfo": {
+          "_id": foundUser._id,
           "username": foundUser.username,
           "roles": roles
         }
       },
-      accessSecret, { expiresIn: '10m' }
+      accessSecret, 
+      { expiresIn: '10m' }
     );
     const refreshToken = jwt.sign(
       { "username": foundUser.username },
@@ -40,8 +42,8 @@ async function handleLogin(req: Request, res: Response) {
     foundUser.refreshToken = refreshToken;
     const result = await foundUser.save();
 
-    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 24*60*60*1000});
-    res.status(201).json({ 'message': 'User logged in', accessToken });
+    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: "none", secure: true, maxAge: 24*60*60*1000 });
+    res.json({ accessToken });
   } else {
     return res.sendStatus(401);
   }

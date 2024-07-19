@@ -1,14 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken';
-
-interface JwtPayload {
-  UserInfo: {
-    _id: string,
-    username: string,
-    roles: string[],
-    wordsPerLesson: number,
-  }
-}
+import { JwtPayload } from "../types";
 
 function verifyJWT(req, res: Response, next: NextFunction) {
   const authHeader: string | undefined = req.headers.authorization || req.headers.Authorization as string | undefined;
