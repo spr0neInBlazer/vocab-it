@@ -15,6 +15,7 @@ import verifyJWT from './middleware/verifyJWT';
 import profileRouter from './routes/profile';
 import refreshRouter from './routes/refresh';
 import notFoundMiddleware from './middleware/notFound';
+import vocabRouter from './routes/vocabulary';
 const app: Application = express();
 const PORT = process.env.PORT || 3500;
 
@@ -31,7 +32,7 @@ app.use('/logout', logoutRouter);
 app.use('/refresh', refreshRouter);
 // Protected routes
 app.use('/profile', verifyJWT, profileRouter);
-app.use('/vocabs/:title', verifyJWT,);
+app.use('/vocabs', verifyJWT, vocabRouter);
 
 app.all('*', notFoundMiddleware);
 app.use(errorHandlerMiddleware);

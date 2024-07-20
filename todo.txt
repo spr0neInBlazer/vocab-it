@@ -17,9 +17,13 @@ Routes:
   + update username
   + update words per lesson
   + delete account
-- add vocab
-- edit vocab
-- delete vocab
-- add word
-- edit word
-- delete word
+  + add vocab
+- vocab page
+  + get vocab info
+  + edit vocab name
+  ! delete vocab (reference from user doesn't get deleted)
+  - add word
+  - edit word
+  - delete word
+  - add CSV
+  ? download CSV

@@ -4,7 +4,7 @@ interface User {
   username: string;
   password: string;
   roles: string[];
-  vocabularies: Types.ObjectId;
+  vocabularies: Types.ObjectId[];
   wordsPerLesson: number,
   refreshToken: string
 }

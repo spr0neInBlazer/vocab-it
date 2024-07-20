@@ -1,21 +1,38 @@
 import mongoose, { Schema, Types } from "mongoose";
+import { Word } from "../types";
 
-interface Vocabulary {
-  name: string;
-  words: Types.ObjectId;
-  user: Types.ObjectId;
-}
-
-const vocabSchema = new Schema<Vocabulary>({
-  name: {
+const wordSchema = new Schema<Word>({
+  _id: {
+    type: String,
+    required: true,
+  },
+  word: {
     type: String,
     required: true
   },
-  words: [{
-    type: Types.ObjectId,
-    ref: 'Word'
-  }],
-  user: {
+  translation: {
+    type: String,
+    required: true
+  }
+});
+
+
+interface Vocabulary {
+  title: string;
+  words: Word[];
+  userId: Types.ObjectId;
+}
+
+const vocabSchema = new Schema<Vocabulary>({
+  title: {
+    type: String,
+    required: true
+  },
+  words: {
+    type: [wordSchema],
+    default: []
+  },
+  userId: {
     type: Schema.Types.ObjectId, 
     ref: 'User'
   }

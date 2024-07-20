@@ -1,11 +1,6 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import User from "../models/User";
-
-interface CustomRequest extends Request {
-  userInfo: {
-    _id: string;
-  }
-}
+import { CustomRequest } from "../types";
 
 async function getProfile(req: CustomRequest, res: Response) {
   try {
@@ -13,14 +8,18 @@ async function getProfile(req: CustomRequest, res: Response) {
     if (!foundUser) {
       return res.status(404).json({ msg: `User ID ${req.userInfo._id} not found`});
     }
-    res.status(200).json({ username: foundUser.username, wordsPerLesson: foundUser.wordsPerLesson });
+    res.status(200).json({ 
+      username: foundUser.username, 
+      vocabularies: foundUser.vocabularies,
+      wordsPerLesson: foundUser.wordsPerLesson 
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 }
 
-async function updateUsername(req: CustomRequest, res: Response) {
+async function updateUsername(req, res: Response) {
   const { username } = req.body;
   try {
     const updatedUser = await User.findByIdAndUpdate(req.userInfo._id, { username });
@@ -52,7 +51,7 @@ async function updateWordsPerLesson(req, res: Response) {
   }
 }
 
-async function deleteAccount(req, res: Response) {
+async function deleteAccount(req: CustomRequest, res: Response) {
   try {
     const userToDelete = await User.findByIdAndDelete(req.userInfo._id);
     if (!userToDelete) {

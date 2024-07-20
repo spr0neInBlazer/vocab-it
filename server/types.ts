@@ -1,4 +1,6 @@
-interface JwtPayload {
+import { Request } from "express";
+
+export interface JwtPayload {
   UserInfo: {
     _id: string,
     username: string,
@@ -7,4 +9,14 @@ interface JwtPayload {
   }
 }
 
-export {JwtPayload}
+export interface Word {
+  _id: string,
+  word: string,
+  translation: string
+}
+
+export interface CustomRequest extends Request {
+  userInfo: {
+    _id: string;
+  }
+}

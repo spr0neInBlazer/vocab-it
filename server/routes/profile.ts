@@ -1,5 +1,10 @@
 import express from 'express';
-import {deleteAccount, getProfile, updateUsername, updateWordsPerLesson} from '../controllers/profileController';
+import {
+  deleteAccount, 
+  getProfile, 
+  updateUsername, 
+  updateWordsPerLesson
+} from '../controllers/profileController';
 
 const profileRouter = express.Router();
 
