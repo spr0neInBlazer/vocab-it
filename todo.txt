@@ -21,9 +21,14 @@ Routes:
 - vocab page
   + get vocab info
   + edit vocab name
-  ! delete vocab (reference from user doesn't get deleted)
-  - add word
-  - edit word
-  - delete word
+  + delete vocab
+  
+  + add word
+  + edit word
+  + delete word
+  + delete all words
   - add CSV
   ? download CSV
+  - update progress
+
+- test edge cases

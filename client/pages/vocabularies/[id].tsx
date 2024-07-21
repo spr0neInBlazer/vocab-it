@@ -138,7 +138,7 @@ const Vocabulary: NextPageWithLayout = () => {
             <Skeleton className="justify-self-center h-8 mobile:h-9 md:h-10" />
           )}
         </div>
-        
+
         <div className="w-full flex gap-2 justify-center items-start">
           <p className="mobile:text-lg">
             {words.length === 1 ? '1 word' : `${words.length} words`}
@@ -153,7 +153,7 @@ const Vocabulary: NextPageWithLayout = () => {
               </Link>
             </button>
           ) : (
-            <button 
+            <button
               className="rounded-lg py-2 px-3 font-semibold bg-btnBg disabled:bg-btnBg/80 disabled:text-zinc-300 cursor-default transition-colors"
               disabled
             >
@@ -179,33 +179,33 @@ const Vocabulary: NextPageWithLayout = () => {
             </AlertDialogContent>
           </AlertDialog>
         </div>
-          <section className="w-full mx-auto">
-            <div className="flex px-6 my-2">
-              <p className="font-bold w-3/5">Word</p>
-              <p className="font-bold">Translation</p>
+        <section className="w-full mx-auto">
+          <div className="flex px-6 my-2">
+            <p className="font-bold w-3/5">Word</p>
+            <p className="font-bold">Translation</p>
+          </div>
+          {words.length > 0 ? (
+            <ScrollArea className="h-[210px] rounded-md border px-2 sm:px-4 py-3">
+              {words.map(w => {
+                return (
+                  <SingleWord
+                    key={w.word}
+                    word={w}
+                    vocab={currVocab as Vocab}
+                    checkSingleEdit={checkSingleEdit}
+                  />
+                )
+              })}
+            </ScrollArea>
+          ) : (
+            <div className="h-[210px] flex justify-center items-center rounded-md border">
+              <p className="text-xl font-bold">No words</p>
             </div>
-            {words.length > 0 ? (
-              <ScrollArea className="h-[210px] rounded-md border px-2 sm:px-4 py-3">
-                {words.map(w => {
-                  return (
-                    <SingleWord 
-                      key={w.word} 
-                      word={w}
-                      vocab={currVocab as Vocab} 
-                      checkSingleEdit={checkSingleEdit}
-                    />
-                  )
-                })}
-              </ScrollArea>
-            ) : (
-              <div className="h-[210px] flex justify-center items-center rounded-md border">
-                <p className="text-xl font-bold">No words</p>
-              </div>
-            )}
-          </section>
-        <VocabAddWordForm 
-          words={words} 
-          id={router.query.id as string} 
+          )}
+        </section>
+        <VocabAddWordForm
+          words={words}
+          id={router.query.id as string}
           checkSingleEdit={checkSingleEdit}
         />
       </section>

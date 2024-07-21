@@ -73,7 +73,7 @@ async function deleteVocab(req, res: Response) {
     const { _id } = req.body;
     await Vocabulary.findByIdAndDelete(_id);
     const userToUpdate = await User.findById(req.userInfo._id).exec();
-    const updatedVocabs = userToUpdate.vocabularies.filter(vocab => vocab._id !== _id);
+    const updatedVocabs = userToUpdate.vocabularies.filter(vocab => vocab._id.toString() !== _id);
     userToUpdate.vocabularies = updatedVocabs;
     await userToUpdate.save();
     res.sendStatus(204);
