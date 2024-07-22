@@ -22,13 +22,13 @@ Routes:
   + get vocab info
   + edit vocab name
   + delete vocab
-  
   + add word
   + edit word
   + delete word
   + delete all words
-  - add CSV
+  + import CSV
   ? download CSV
-  - update progress
+  ! update completed lesson progress
 
 - test edge cases
+- maybe leave word per lesson option in local storage

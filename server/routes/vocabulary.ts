@@ -6,9 +6,11 @@ import {
   updateTitle
 } from '../controllers/vocabController';
 import { 
+  addCSV,
   addWord, 
   deleteAllWords, 
   deleteWord, 
+  updateProgress, 
   updateWord
 } from '../controllers/wordController';
 
@@ -22,5 +24,7 @@ vocabRouter.post('/addWord', addWord);
 vocabRouter.put('/updateWord', updateWord);
 vocabRouter.delete('/deleteWord', deleteWord);
 vocabRouter.delete('/deleteWords', deleteAllWords);
+vocabRouter.put('/importCsv', addCSV);
+vocabRouter.put('/updateProgress', updateProgress);
 
 export default vocabRouter;

@@ -13,6 +13,14 @@ const wordSchema = new Schema<Word>({
   translation: {
     type: String,
     required: true
+  },
+  progress: {
+    type: Number,
+    default: 0
+  },
+  trained: {
+    type: Number,
+    default: 0
   }
 });
 
