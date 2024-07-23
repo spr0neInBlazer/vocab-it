@@ -4,18 +4,22 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 async function handleLogin(req: Request, res: Response) {
-  const { username, pwd } = req.body;
-  if (!username || !pwd) {
-    return res.status(400).json({ 'message': 'Username and password are required'});
-  }
+  try {
+    const { username, pwd } = req.body;
+    if (!username || !pwd) {
+      return res.status(400).json({ 'message': 'Username and password are required' });
+    }
 
-  const foundUser = await User.findOne({ username }).exec();
-  if (!foundUser) {
-    return res.sendStatus(401); // Unauthorized
-  }
+    const foundUser = await User.findOne({ username }).exec();
+    if (!foundUser) {
+      return res.sendStatus(401); // Unauthorized
+    }
 
-  const match = await bcrypt.compare(pwd, foundUser.password);
-  if (match) {
+    const match = await bcrypt.compare(pwd, foundUser.password);
+    if (!match) {
+      return res.status(400).json({ msg: 'Invalid password' });
+    }
+
     const refreshSecret = process.env.REFRESH_TOKEN_SECRET;
     const accessSecret = process.env.ACCESS_TOKEN_SECRET;
     if (!refreshSecret || !accessSecret) {
@@ -31,7 +35,7 @@ async function handleLogin(req: Request, res: Response) {
           "roles": roles
         }
       },
-      accessSecret, 
+      accessSecret,
       { expiresIn: '10m' }
     );
     const refreshToken = jwt.sign(
@@ -40,13 +44,14 @@ async function handleLogin(req: Request, res: Response) {
       { expiresIn: '1d' }
     );
     foundUser.refreshToken = refreshToken;
-    const result = await foundUser.save();
+    await foundUser.save();
 
-    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: "none", secure: true, maxAge: 24*60*60*1000 });
+    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: "none", secure: true, maxAge: 24 * 60 * 60 * 1000 });
     res.json({ accessToken });
-  } else {
-    return res.sendStatus(401);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: error.message });
   }
-} 
+}
 
 export default handleLogin;

@@ -20,7 +20,8 @@ async function addWord(req: Request, res: Response) {
       _id: uuidv4(),
       word,
       translation,
-      trained: 0
+      trained: 0,
+      progress: 0
     };
     vocabToUpdate.words = [...vocabToUpdate.words, newWord];
     await vocabToUpdate.save();
@@ -115,8 +116,7 @@ async function addCSV(req: Request, res: Response) {
     // check for invalid word-translation pairs and duplicates
     const validatedWords: Word[] = words
       .filter(w => w.word && w.translation && !foundVocab.words.find(fvw => fvw.word === w.word))
-      // add id
-      .map(w => ({ ...w, _id: uuidv4() }));
+      .map(w => ({ ...w, _id: uuidv4(), progress: 0, times: 0 }));
 
     if (validatedWords.length === 0) {
       return res.status(409).json({ msg: 'No valid new words to add' });
@@ -146,8 +146,8 @@ async function updateProgress(req: Request, res: Response) {
     lessonWords.forEach((w: Word) => {
       const currWord = foundVocab.words.find(word => word._id === w._id);
       if (currWord) {
-        w.progress = getProgressPercentage(w.progress, w.trained, w.isGuessCorrect);
-        w.trained = w.trained + 1;
+        currWord.trained = currWord.trained + 1;
+        currWord.progress = getProgressPercentage(currWord.progress, currWord.trained, w.isGuessCorrect);
       }
     });
 
@@ -159,25 +159,19 @@ async function updateProgress(req: Request, res: Response) {
   }
 }
 
-function getProgressPercentage(prev: number, times: number, isCorrect: boolean): number {
+function getProgressPercentage(prev: number, trained: number, isCorrect: boolean): number {
   let result: number;
-  const x = 100/(times - 1);
+  const x = 100/(trained - 1);
   const y = prev / x;
-  const z = 100 / times;
+  const z = 100 / trained;
 
   if (isCorrect) {
-    result = times === 1 ? 100 : Math.floor(z * (y+1));
+    result = trained === 1 ? 100 : Math.floor(z * (y+1));
   } else {
-    result = times === 1 ? 0 : Math.floor(z * y);
+    result = trained === 1 ? 0 : Math.floor(z * y);
   }
   return result;
 }
-
-// prev = 66 times = 4 isCorrect = true 0;1;true
-// 100/3 = 33; 100/(1-0)
-// 66/33 = 2
-// 100/4 = 25
-// 25*(2+1)=75
 
 export {
   addWord,

@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import Vocabulary from "../models/Vocabulary";
 import User from "../models/User";
 
@@ -33,7 +33,7 @@ async function addVocab(req, res: Response) {
   }
 }
 
-async function getVocab(req, res: Response) {
+async function getVocab(req: Request, res: Response) {
   try {
     const foundVocab = await Vocabulary.findById(req.body._id).exec();
     if (!foundVocab) {

@@ -12,7 +12,7 @@ interface User {
 const userSchema = new Schema<User>({
   username: {
     type: String,
-    required: true
+    required: [true, 'Please provide username']
   },
   roles: {
     User: {
@@ -23,7 +23,8 @@ const userSchema = new Schema<User>({
   },
   password: {
     type: String, 
-    required: true
+    required: [true, 'please provide password'],
+    minlength: 6
   },
   vocabularies: [{
     type: Types.ObjectId,

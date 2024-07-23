@@ -4,7 +4,7 @@ import { CustomRequest } from "../types";
 
 async function getProfile(req: CustomRequest, res: Response) {
   try {
-    const foundUser = await User.findOne({ _id: req.userInfo._id }).exec();
+    const foundUser = await User.findById(req.userInfo._id).exec();
     if (!foundUser) {
       return res.status(404).json({ msg: `User ID ${req.userInfo._id} not found`});
     }

@@ -28,7 +28,11 @@ Routes:
   + delete all words
   + import CSV
   ? download CSV
-  ! update completed lesson progress
+
+  + update completed lesson progress
 
 - test edge cases
 - maybe leave word per lesson option in local storage
+- average percentage per vocab
+- forgot password mechanism
+- admin page
