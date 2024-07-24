@@ -15,3 +15,5 @@ page load to revert back
 - add special symbols keyboard for different langs
 
 vocab w/ 1 word = .18 KB
+
+- do I need both lucide-react and react-icons?
