@@ -17,3 +17,16 @@ page load to revert back
 vocab w/ 1 word = .18 KB
 
 - do I need both lucide-react and react-icons?
+
++ on login grant refresh and access token
++ store access token in store
+- on page refresh check for refresh token and grant new access token 
++ refresh access token after username change
++ set conditionally navbar content depending on auth
++ implement sign out
+! get profile data and display it on profile page
++ create new user ID beforehand to store it in refresh token
++ implement username update
+- implement words per lesson update
+- implement account deletion
+- add messages for successful login and registration

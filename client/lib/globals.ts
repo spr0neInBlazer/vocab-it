@@ -1,5 +1,6 @@
 import localFont from 'next/font/local';
 
+const BASE_URL="http://localhost:3500";
 const INITIAL_NUMBER: number = 3;
 const MAX_WORDS = 100;
 const SOUND_VOLUME = 0.25;
@@ -13,6 +14,7 @@ const arialRounded = localFont({ src: '../public/fonts/arial-rounded-mt.woff2', 
 const atma = localFont({src: '../public/fonts/atma-semibold.woff2', adjustFontFallback: 'Arial'});
 
 export {
+  BASE_URL,
   INITIAL_NUMBER, 
   MAX_WORDS,
   SOUND_VOLUME,

@@ -1,6 +1,7 @@
 import { Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
-export interface JwtPayload {
+export interface CustomJwtPayload extends JwtPayload {
   UserInfo: {
     _id: string,
     username: string,
@@ -20,6 +21,7 @@ export interface Word {
 
 export interface CustomRequest extends Request {
   userInfo: {
-    _id: string;
+    _id?: string,
+    username: string
   }
 }

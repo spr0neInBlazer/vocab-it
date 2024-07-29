@@ -10,11 +10,13 @@ import ProfileAddVocabSection from '@/components/ProfileAddVocabSection';
 import ProfileWordSection from '@/components/ProfileWordSection';
 import { Toaster } from '@/components/ui/toaster';
 import { Skeleton } from '@/components/ui/skeleton';
-
-// const SCHEDULE_OPTIONS = ['every day', 'every 2 days', 'every 3 days', 'once a week'];
+import RequireAuth from '@/components/RequireAuth';
+import useAuth from '@/hooks/useAuth';
+import { useRouter } from 'next/router';
+import { BASE_URL } from '@/lib/globals';
 
 // needs client render because server and client (storage) username values differ
-const NoSSR = dynamic(() => import('@/components/ProfileUsernameSection'), { 
+const NoSSR = dynamic(() => import('@/components/ProfileUsernameSection'), {
   ssr: false,
   loading: () => (
     <div>
@@ -36,6 +38,8 @@ const Profile: NextPageWithLayout = () => {
     toggleIsAddVocab,
     toggleIsEditVocabTitle
   } = useProfileStore(state => state);
+  const fetchWithAuth = useAuth();
+  const router = useRouter();
 
   // only allow one field editing at a time
   function checkSingleEdit() {
@@ -44,6 +48,34 @@ const Profile: NextPageWithLayout = () => {
     }
     return true;
   }
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const getProfileData = async () => {
+      try {
+        const res = await fetchWithAuth(`${BASE_URL}/profile`, {
+          signal: controller.signal
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch profile data');
+        }
+
+        const data = await res.json();
+        console.log({ data });
+      } catch (error) {
+        console.error(error);
+        router.push('/auth/login');
+      }
+    }
+
+    getProfileData();
+    return () => {
+      isMounted = false;
+      controller.abort();
+    }
+  }, []);
 
   useEffect(() => {
     // reset all active edit modes 
@@ -58,9 +90,9 @@ const Profile: NextPageWithLayout = () => {
         toggleIsEditVocabTitle();
     }
   }, []);
-  
+
   return (
-    <>
+    <RequireAuth allowedRoles={[1305]}>
       <Head>
         <title>Account</title>
       </Head>
@@ -73,7 +105,7 @@ const Profile: NextPageWithLayout = () => {
       </section>
       <Toaster />
       <Footer />
-    </>
+    </RequireAuth>
   )
 }
 

@@ -32,3 +32,13 @@ export interface Answer {
 }
 
 export type CheckSingleEditFunction = () => boolean;
+
+export interface CustomPayload {
+  "UserInfo": {
+    "_id": string,
+    "username": string,
+    "roles": number[]
+  },
+  "iat": number,
+  "exp": number
+}

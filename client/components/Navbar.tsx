@@ -19,9 +19,12 @@ import Link from 'next/link';
 import NewVocabDialog from './NewVocabDialog';
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Skeleton } from './ui/skeleton';
+import { useAuthStore } from '@/lib/authStore';
+import useLogout from '@/hooks/useLogout';
+import { useRouter } from 'next/router';
 
-const SoundToggleNoSSR = dynamic(() => import('./SoundToggle'), { 
-  loading: () => <Skeleton className="w-11 h-11 ml-1 rounded-full" /> 
+const SoundToggleNoSSR = dynamic(() => import('./SoundToggle'), {
+  loading: () => <Skeleton className="w-11 h-11 ml-1 rounded-full" />
 });
 
 export default function Navbar() {
@@ -31,10 +34,18 @@ export default function Navbar() {
   const [vocabTitle, setVocabTitle] = useState<string>("");
   const [invalidInputMsg, setInvalidInputMsg] = useState<string>('');
   const { setTheme } = useTheme();
+  const { accessToken } = useAuthStore(state => state);
+  const logout = useLogout();
+  const router = useRouter(); 
 
   function resetDialogInput() {
     setVocabTitle('');
     setInvalidInputMsg('');
+  }
+
+  async function handleSignOut() {
+    router.push('/');
+    await logout();
   }
 
   useEffect(() => {
@@ -53,7 +64,7 @@ export default function Navbar() {
     <nav className="bg-secondaryBg-light dark:bg-secondaryBg-dark py-2 sm:py-5 absolute top-0 left-0 right-0 transition-colors">
       <div className="w-11/12 mobile:w-4/5 mx-auto flex justify-between items-center">
         <Link href={'/'} className="flex items-center" title="Vocab-It - a language learning app">
-          <Image 
+          <Image
             className="-rotate-12"
             src="/images/vocab-logo.png"
             width={64}
@@ -65,56 +76,68 @@ export default function Navbar() {
         <div>
           <Dialog>
             <Menubar className="bg-transparent dark:bg-transparent border-none">
-              <MenubarMenu>
-                <MenubarTrigger 
-                  className="p-1 rounded-md active:bg-transparent focus:bg-transparent dark:active:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white transition-colors"
-                  aria-label="vocabularies"
-                >
-                  <HiGlobeAlt className="w-8 h-8 text-white" />
-                </MenubarTrigger>
-                <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
-                  {isFetching ? (
-                    <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
-                      <HiFolder className="mr-2" /> LOADING...
-                    </MenubarItem>
-                  ) : (
-                    vocabs?.map((v: Vocab) => {
-                      return (
-                        <MenubarItem key={v._id} className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
-                          <Link href={`/vocabularies/${encodeURIComponent(v._id)}`} className="flex items-center w-full">
-                            <HiFolder className="mr-2" /> {v.title}
-                          </Link>
-                        </MenubarItem>)
-                    })
-                  )}
-                  <MenubarSeparator className="dark:bg-customHighlight" />
-                  <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
-                    <DialogTrigger className="flex items-center"
-                      onClick={resetDialogInput}
+              {accessToken ? (
+                <>
+                  <MenubarMenu>
+                    <MenubarTrigger
+                      className="p-1 rounded-md active:bg-transparent focus:bg-transparent dark:active:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white transition-colors"
+                      aria-label="vocabularies"
                     >
-                      <HiPlus className="mr-2" /> New Vocabulary
-                    </DialogTrigger>
-                  </MenubarItem>
-                </MenubarContent>
-              </MenubarMenu>
+                      <HiGlobeAlt className="w-8 h-8 text-white" />
+                    </MenubarTrigger>
+                    <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
+                      {isFetching ? (
+                        <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
+                          <HiFolder className="mr-2" /> LOADING...
+                        </MenubarItem>
+                      ) : (
+                        vocabs?.map((v: Vocab) => {
+                          return (
+                            <MenubarItem key={v._id} className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
+                              <Link href={`/vocabularies/${encodeURIComponent(v._id)}`} className="flex items-center w-full">
+                                <HiFolder className="mr-2" /> {v.title}
+                              </Link>
+                            </MenubarItem>)
+                        })
+                      )}
+                      <MenubarSeparator className="dark:bg-customHighlight" />
+                      <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
+                        <DialogTrigger className="flex items-center"
+                          onClick={resetDialogInput}
+                        >
+                          <HiPlus className="mr-2" /> New Vocabulary
+                        </DialogTrigger>
+                      </MenubarItem>
+                    </MenubarContent>
+                  </MenubarMenu>
+
+                  <MenubarMenu>
+                    <MenubarTrigger
+                      className="p-1 rounded-md active:bg-transparent focus:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white transition-colors"
+                      aria-label="account"
+                    >
+                      <HiUserCircle className="w-8 h-8 fill-white" />
+                    </MenubarTrigger>
+
+                    <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
+                      <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
+                        <Link className="w-full" href='/profile/'>Account</Link>
+                      </MenubarItem>
+                      <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
+                        <button className="w-full text-left" onClick={handleSignOut}>Sign Out</button>
+                      </MenubarItem>
+                    </MenubarContent>
+                  </MenubarMenu>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth/login">Sign In</Link>
+                  <Link href="/auth/register">Sign Up</Link>
+                </>
+              )}
 
               <MenubarMenu>
-                <MenubarTrigger 
-                  className="p-1 rounded-md active:bg-transparent focus:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white transition-colors"
-                  aria-label="account"
-                >
-                  <HiUserCircle className="w-8 h-8 fill-white" />
-                </MenubarTrigger>
-
-                <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
-                  <MenubarItem className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight">
-                    <Link className="w-full" href={'/profile/profile'}>Account</Link>
-                  </MenubarItem>
-                </MenubarContent>
-              </MenubarMenu>
-
-              <MenubarMenu>
-                <MenubarTrigger 
+                <MenubarTrigger
                   className="p-1 rounded-md active:bg-transparent focus:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white transition-colors"
                   aria-label="color theme"
                 >
@@ -123,7 +146,7 @@ export default function Navbar() {
                 </MenubarTrigger>
 
                 <MenubarContent className="dark:border-customHighlight dark:bg-mainBg-dark" align='end'>
-                  <MenubarItem 
+                  <MenubarItem
                     className="hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight"
                     onClick={() => setTheme("light")}
                   >
@@ -145,11 +168,11 @@ export default function Navbar() {
               <SoundToggleNoSSR />
             </Menubar>
 
-            <NewVocabDialog 
-              vocabTitle={vocabTitle} 
-              setVocabTitle={setVocabTitle} 
-              invalidInputMsg={invalidInputMsg} 
-              setInvalidInputMsg={setInvalidInputMsg} 
+            <NewVocabDialog
+              vocabTitle={vocabTitle}
+              setVocabTitle={setVocabTitle}
+              invalidInputMsg={invalidInputMsg}
+              setInvalidInputMsg={setInvalidInputMsg}
             />
           </Dialog>
         </div>

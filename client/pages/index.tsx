@@ -111,10 +111,9 @@ const Home: NextPageWithLayout = () => {
               <div className="w-full sm:w-auto">
                 <h2 className="text-2xl mobile:text-3xl md:text-5xl text-customHighlight3 font-bold mt-7 mb-4 text-center sm:text-left">How to use it?</h2>
                 <ol className="text-lg mobile:text-xl sm:text-2xl font-semibold break-words list-decimal list-inside">
-                  <li className="my-2">Create new vocabularies</li>
+                  <li className="my-2">Create vocabularies</li>
                   <li className="my-2">Add words you want to learn</li>
-                  <li className="my-2">Practice them at your pace</li>
-                  <li>That&#39;s it :)</li>
+                  <li className="my-2">Practice at your pace</li>
                 </ol>
               </div>
             </div>

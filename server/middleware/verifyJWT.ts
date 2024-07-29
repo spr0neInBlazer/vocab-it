@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import jwt from 'jsonwebtoken';
-import { JwtPayload } from "../types";
+import { NextFunction, Response } from "express";
+import jwt, {JwtPayload} from 'jsonwebtoken';
+import { CustomJwtPayload } from "../types";
 
 function verifyJWT(req, res: Response, next: NextFunction) {
   const authHeader: string | undefined = req.headers.authorization || req.headers.Authorization as string | undefined;
@@ -14,12 +14,20 @@ function verifyJWT(req, res: Response, next: NextFunction) {
   if (!accessSecret) {
     return res.sendStatus(401); // Unauthorized
   }
-  const decoded = jwt.verify(token, accessSecret) as JwtPayload;
-  // req._id = decoded.UserInfo._id;
-  // req.username = decoded.UserInfo.username;
-  // req.roles = decoded.UserInfo.roles;
-  req.userInfo = decoded.UserInfo;
-  next();
+  
+  jwt.verify(
+    token, 
+    accessSecret,
+    (err, decoded) => {
+      if (err) return res.sendStatus(403);
+      if (typeof decoded !== 'string' && 'UserInfo' in decoded) {
+        req.userInfo = decoded.UserInfo;
+      } else {
+        return res.sendStatus(403);
+      }
+      next();
+    }
+  );
 }
 
 export default verifyJWT;

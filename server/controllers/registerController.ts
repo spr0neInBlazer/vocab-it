@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 async function handleNewUser(req: Request, res: Response) {
   const { username, pwd } = req.body;
@@ -21,21 +22,25 @@ async function handleNewUser(req: Request, res: Response) {
     if (!refreshSecret || !accessSecret) {
       throw new Error('Token secrets are not defined');
     }
+    const userId = uuidv4();
     const accessToken = jwt.sign(
       {
         "UserInfo": {
+          "_id": userId,
           "username": username,
+          "roles": [1305]
         }
       },
-      accessSecret, { expiresIn: '10m' }
+      accessSecret, { expiresIn: '10s' }
     );
     const refreshToken = jwt.sign(
-      { "username": username },
+      { "_id": userId },
       refreshSecret,
       { expiresIn: '1d' }
     );
 
     const result = await User.create({
+      "_id": userId,
       "username": username,
       "password": hashedPwd,
       "vocabularies": [],
