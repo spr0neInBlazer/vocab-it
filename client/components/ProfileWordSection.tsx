@@ -68,18 +68,6 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
   return (
     <article>
       <h2 className='text-xl mobile:text-2xl md:text-3xl font-bold dark:text-customText-dark mb-4'>Lessons</h2>
-      {/* Lesson schedule feature to add when back-end is implemented */}
-      {/* <h3 className="text-xl font-bold dark:text-customText-dark mb-4">Your current schedule:</h3>
-      <Select>
-        <SelectTrigger className="w-[180px] dark:bg-mainBg-dark">
-          <SelectValue placeholder="frequency" />
-        </SelectTrigger>
-        <SelectContent className="dark:border-customHighlight dark:bg-mainBg-dark">
-          {SCHEDULE_OPTIONS.map((option, index) => {
-            return <SelectItem className="capitalize hover:cursor-pointer text-customText-light dark:text-white dark:hover:bg-customHighlight dark:focus:bg-customHighlight" key={option} value={option}>{option}</SelectItem>
-          })}
-        </SelectContent>
-      </Select> */}
       <h3 className="text-base mobile:text-lg md:text-xl font-bold dark:text-customText-dark my-4">Words per lesson:</h3>
       {isEditWordAmount ? (
         <form className="my-3 max-w-max" onSubmit={updateWordsAmount}>

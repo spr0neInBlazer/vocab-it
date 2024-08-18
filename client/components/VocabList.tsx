@@ -15,7 +15,7 @@ const WordsTooltip = dynamic(() => import('./WordsTooltip'), {
 export default function VocabList() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const vocabs = useVocabStore(state => state.vocabs);
-  const initialFetch = useVocabStore(state => state.initialFetch);
+  // const initialFetch = useVocabStore(state => state.initialFetch);
 
   useEffect(() => {
     if (vocabs) {
@@ -26,9 +26,9 @@ export default function VocabList() {
   }, [vocabs]);
   
   // replace default value with local storage data
-  useEffect(() => {
-    initialFetch();
-  }, [initialFetch]);
+  // useEffect(() => {
+  //   initialFetch();
+  // }, [initialFetch]);
 
   if (isLoading) {
     return (

@@ -4,7 +4,7 @@ import { CustomRequest } from "../types";
 
 async function getProfile(req: CustomRequest, res: Response) {
   try {
-    const foundUser = await User.findById(req.userInfo._id).exec();
+    const foundUser = await User.findById(req.userInfo._id).populate('vocabularies').exec();
     if (!foundUser) {
       return res.status(404).json({ msg: `User ${req.userInfo.username} not found`});
     }
@@ -12,7 +12,7 @@ async function getProfile(req: CustomRequest, res: Response) {
     res.status(200).json({ 
       username: foundUser.username, 
       vocabularies: foundUser.vocabularies,
-      wordsPerLesson: foundUser.wordsPerLesson 
+      // wordsPerLesson: foundUser.wordsPerLesson 
     });
   } catch (error) {
     console.error(error);
@@ -35,23 +35,23 @@ async function updateUsername(req: CustomRequest, res: Response) {
   }
 }
 
-async function updateWordsPerLesson(req: CustomRequest, res: Response) {
-  const { wordsPerLesson } = req.body;
-  try {
-    if (wordsPerLesson < 1 || isNaN(wordsPerLesson) || !Number.isInteger(wordsPerLesson)) {
-      return res.status(400).json({ msg: `Invalid property value`});
-    }
+// async function updateWordsPerLesson(req: CustomRequest, res: Response) {
+//   const { wordsPerLesson } = req.body;
+//   try {
+//     if (wordsPerLesson < 1 || isNaN(wordsPerLesson) || !Number.isInteger(wordsPerLesson)) {
+//       return res.status(400).json({ msg: `Invalid property value`});
+//     }
 
-    const updatedUser = await User.findByIdAndUpdate(req.userInfo._id, { wordsPerLesson });
-    if (!updatedUser) {
-      return res.status(404).json({ msg: `User with ID ${req.userInfo._id} not found`});
-    }
-    res.sendStatus(204);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ msg: error.message });
-  }
-}
+//     const updatedUser = await User.findByIdAndUpdate(req.userInfo._id, { wordsPerLesson });
+//     if (!updatedUser) {
+//       return res.status(404).json({ msg: `User with ID ${req.userInfo._id} not found`});
+//     }
+//     res.sendStatus(204);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ msg: error.message });
+//   }
+// }
 
 async function deleteAccount(req: CustomRequest, res: Response) {
   try {
@@ -69,6 +69,6 @@ async function deleteAccount(req: CustomRequest, res: Response) {
 export {
   getProfile,
   updateUsername,
-  updateWordsPerLesson,
+  // updateWordsPerLesson,
   deleteAccount
 };

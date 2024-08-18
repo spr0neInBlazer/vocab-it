@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { atma } from '../lib/globals';
+import { atma, BASE_URL } from '../lib/globals';
 import { useTheme } from 'next-themes';
 import { Vocab } from '@/lib/types';
 import useVocabStore from '@/lib/store';
@@ -22,21 +22,25 @@ import { Skeleton } from './ui/skeleton';
 import { useAuthStore } from '@/lib/authStore';
 import useLogout from '@/hooks/useLogout';
 import { useRouter } from 'next/router';
+import useRefreshToken from '@/hooks/useRefreshToken';
+import useAuth from '@/hooks/useAuth';
 
 const SoundToggleNoSSR = dynamic(() => import('./SoundToggle'), {
   loading: () => <Skeleton className="w-11 h-11 ml-1 rounded-full" />
 });
 
 export default function Navbar() {
-  const vocabs = useVocabStore(state => state.vocabs);
-  const initialFetch = useVocabStore(state => state.initialFetch);
+  const { vocabs, setVocabs } = useVocabStore(state => state);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [vocabTitle, setVocabTitle] = useState<string>("");
   const [invalidInputMsg, setInvalidInputMsg] = useState<string>('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const { setTheme } = useTheme();
   const { accessToken } = useAuthStore(state => state);
   const logout = useLogout();
-  const router = useRouter(); 
+  const router = useRouter();
+  const refresh = useRefreshToken();
+  const fetchWithAuth = useAuth();
 
   function resetDialogInput() {
     setVocabTitle('');
@@ -49,8 +53,39 @@ export default function Navbar() {
   }
 
   useEffect(() => {
-    initialFetch();
-  }, [initialFetch]);
+    if (isDropdownOpen) {
+      setIsFetching(true);
+      const controller = new AbortController();
+      const privateFetch = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/getVocabs`, {
+            signal: controller.signal,
+            credentials: 'include'
+          });
+  
+          if (!res.ok) {
+            throw new Error('Failed to fetch vocabs in navbar');
+          }
+  
+          const data = await res.json();
+          // console.log({data});
+          setVocabs(data.vocabularies);
+          await refresh();
+          console.log('vocabs in navbar fetched');
+        } catch (error) {
+          console.error(error);
+        }
+      }
+  
+      privateFetch();
+  
+      return () => {
+        controller.abort();
+        console.log('request performed');
+        setIsFetching(false);
+      }
+    }
+  }, [isDropdownOpen]);
 
   useEffect(() => {
     if (vocabs) {
@@ -82,6 +117,7 @@ export default function Navbar() {
                     <MenubarTrigger
                       className="p-1 rounded-md active:bg-transparent focus:bg-transparent dark:active:bg-transparent hover:cursor-pointer border-solid border-2 border-transparent hover:border-white transition-colors"
                       aria-label="vocabularies"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
                       <HiGlobeAlt className="w-8 h-8 text-white" />
                     </MenubarTrigger>

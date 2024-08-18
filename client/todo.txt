@@ -30,3 +30,5 @@ vocab w/ 1 word = .18 KB
 - implement words per lesson update
 - implement account deletion
 - add messages for successful login and registration
++ get vocabs info
+- add data sanitizing

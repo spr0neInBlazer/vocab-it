@@ -6,15 +6,13 @@ import { usePreferencesStore } from '@/lib/preferencesStore';
 import { useToast } from './ui/use-toast';
 import useSound from 'use-sound';
 import { BASE_URL, SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
-
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
-import { useAuthStore } from '@/lib/authStore';
 import useRefreshToken from '@/hooks/useRefreshToken';
 import useAuth from '@/hooks/useAuth';
 
 export default function ProfileUsernameSection({ checkSingleEdit }: { checkSingleEdit: CheckSingleEditFunction }) {
-  const { storedUsername } = useAuthStore();
+  const { storedUsername } = usePreferencesStore();
   const preferenceStore = useStore(usePreferencesStore, (state) => state);
   const {
     isEditUsername,

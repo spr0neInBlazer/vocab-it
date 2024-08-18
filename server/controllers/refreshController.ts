@@ -6,7 +6,7 @@ interface DecodedPayload {
   _id: string,
   username: string,
   roles: string[],
-  wordsPerLesson: number,
+  // wordsPerLesson: number,
 }
 
 async function handleRefreshToken(req: Request, res: Response) {

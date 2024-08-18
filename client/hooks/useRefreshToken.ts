@@ -1,10 +1,12 @@
 import { useAuthStore } from "@/lib/authStore";
 import { BASE_URL } from "@/lib/globals";
+import { usePreferencesStore } from "@/lib/preferencesStore";
 import { CustomPayload } from "@/lib/types";
 import { jwtDecode } from 'jwt-decode';
 
 const useRefreshToken = () => {
-  const {setAccessToken, setStoredUsername} = useAuthStore(state => state);
+  const {setAccessToken} = useAuthStore(state => state);
+  const {storedUsername, setStoredUsername} = usePreferencesStore(state => state);
 
   async function refresh() {
     try {
@@ -19,7 +21,9 @@ const useRefreshToken = () => {
       const data = await res.json();
       setAccessToken(data.accessToken);
       const decoded = jwtDecode<CustomPayload>(data.accessToken);
-      setStoredUsername(decoded.UserInfo.username);
+      if (storedUsername !== decoded.UserInfo.username) {
+        setStoredUsername(decoded.UserInfo.username);
+      }
       console.log({accessToken: data.accessToken});
       return data.accessToken;
     } catch (error) {

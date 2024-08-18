@@ -3,17 +3,18 @@ import { CheckSingleEditFunction } from '@/lib/types';
 import useProfileStore from '@/lib/profileStore';
 import useVocabStore from '@/lib/store';
 import { useStore } from 'zustand';
-import { SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
 import useSound from 'use-sound';
 import { usePreferencesStore } from '@/lib/preferencesStore';
-
 import VocabList from '@/components/VocabList';
 import { HiPlus, HiCheckCircle, HiMiniXCircle } from "react-icons/hi2";
 import { useToast } from './ui/use-toast';
+import useAuth from '@/hooks/useAuth';
+import useRefreshToken from '@/hooks/useRefreshToken';
 
 export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEdit: CheckSingleEditFunction}) {
   const [newVocab, setNewVocab] = useState<string>('');
-  const {vocabs, addVocab} = useVocabStore(state => state);
+  const {vocabs, addVocab, setVocabs} = useVocabStore(state => state);
   const {
     isAddVocab, 
     toggleIsAddVocab,
@@ -23,6 +24,8 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
   const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
+  const fetchWithAuth = useAuth();
+  const refresh = useRefreshToken();
 
   function enterAddVocabMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
@@ -47,14 +50,45 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
       if (soundOn) playError();
       setErrorMsg('A vocabulary with this title already exists');
     } else {
-      toggleIsAddVocab(); // to false
-      addVocab(newVocab);
-      toast({
-        variant: 'default',
-        description: "Vocabulary has been successfully added",
-      });
-      if (soundOn) playSuccess();
-      setErrorMsg('');
+      const controller = new AbortController();
+      const privateUpdate = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/addVocab`, {
+            method: 'POST',
+            signal: controller.signal,
+            body: JSON.stringify({ title: newVocab }),
+            credentials: 'include'
+          });
+
+          if (!res.ok) {
+            toast({
+              variant: 'destructive',
+              description: "Could not create vocabulary",
+            });
+            if (soundOn) playError();
+            throw new Error('Could not create vocabulary');
+          }
+
+          const data = await res.json();
+          setVocabs(data.vocabularies);
+          await refresh();
+          toggleIsAddVocab(); // to false
+          toast({
+            variant: 'default',
+            description: "New vocabulary has been added",
+          });
+          if (soundOn) playSuccess();
+          setErrorMsg('');
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      privateUpdate();
+
+      return () => {
+        controller.abort();
+      }
     }
     setNewVocab('');
   }

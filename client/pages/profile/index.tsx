@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect } from 'react';
 import { NextPageWithLayout } from '../_app';
 import dynamic from 'next/dynamic';
-
 import Head from "next/head";
 import Layout from '@/components/Layout';
 import Footer from '@/components/Footer';
@@ -14,6 +13,7 @@ import RequireAuth from '@/components/RequireAuth';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/router';
 import { BASE_URL } from '@/lib/globals';
+import useVocabStore from '@/lib/store';
 
 // needs client render because server and client (storage) username values differ
 const NoSSR = dynamic(() => import('@/components/ProfileUsernameSection'), {
@@ -38,6 +38,7 @@ const Profile: NextPageWithLayout = () => {
     toggleIsAddVocab,
     toggleIsEditVocabTitle
   } = useProfileStore(state => state);
+  const { vocabs, setVocabs } = useVocabStore(state => state);
   const fetchWithAuth = useAuth();
   const router = useRouter();
 
@@ -63,6 +64,7 @@ const Profile: NextPageWithLayout = () => {
         }
 
         const data = await res.json();
+        setVocabs(data.vocabularies);
         console.log({ data });
       } catch (error) {
         console.error(error);

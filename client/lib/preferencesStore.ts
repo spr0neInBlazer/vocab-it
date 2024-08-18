@@ -3,27 +3,31 @@ import { persist } from "zustand/middleware";
 
 const INITIAL_AMOUNT: number = 3;
 
-interface PrefenceStore {
-  // profileName: string,
+interface PreferenceStore {
+  storedUsername: string,
   lessonVolume: number,
   soundOn: boolean,
-  // updateProfileName: (newName: string) => void,
+  setStoredUsername: (username: string) => void,
   updateLessonVolume: (newVolume: number) => void,
   toggleSoundOn: () => void
 }
 
-export const usePreferencesStore = create(
-  persist<PrefenceStore>(
+export const usePreferencesStore = create<PreferenceStore>()(
+  persist(
     (set) => ({
-      // profileName: 'testname',
+      storedUsername: 'default',
       lessonVolume: INITIAL_AMOUNT,
       soundOn: true,
-      // updateProfileName: (newName: string) => set({ profileName: newName }),
+      setStoredUsername: (username: string) => set({ storedUsername: username }),
       updateLessonVolume: (newVolume: number) => set({ lessonVolume: newVolume }),
-      toggleSoundOn: () => set((state: PrefenceStore) => ({ soundOn: !state.soundOn}))
+      toggleSoundOn: () => set((state: PreferenceStore) => ({ soundOn: !state.soundOn}))
     }),
     {
-      name: "vocab-preferences"
+      name: "vocab-preferences",
+      partialize: (state) => 
+        Object.fromEntries(
+          Object.entries(state).filter(([key]) => !['storedUsername'].includes(key))
+        ),
     }
-  )
+  ),
 );

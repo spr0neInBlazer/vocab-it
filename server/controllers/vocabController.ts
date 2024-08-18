@@ -1,6 +1,23 @@
 import { Request, Response } from "express";
 import Vocabulary from "../models/Vocabulary";
 import User from "../models/User";
+import { v4 as uuidv4 } from 'uuid';
+
+async function getVocabs(req, res: Response) {
+  try {
+    const foundUser = await User.findById(req.userInfo._id).populate('vocabularies').exec();
+    if (!foundUser) {
+      return res.status(404).json({ msg: `User ${req.userInfo.username} not found`});
+    }
+
+    res.status(200).json({
+      vocabularies: foundUser.vocabularies,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+}
 
 async function addVocab(req, res: Response) {
   try {
@@ -15,6 +32,7 @@ async function addVocab(req, res: Response) {
     }
 
     const newVocab = await Vocabulary.create({
+      // "_id": uuidv4(),
       "title": title,
       "userId": req.userInfo._id
     });
@@ -22,10 +40,9 @@ async function addVocab(req, res: Response) {
     const updatedVocabs = [...foundUser.vocabularies, newVocab._id];
     foundUser.vocabularies = updatedVocabs;
     await foundUser.save();
-    await foundUser.populate('vocabularies')
+    await foundUser.populate('vocabularies');
     res.status(201).json({ 
-      _id: foundUser._id,
-      vocabularies: foundUser.vocabularies,
+      vocabularies: foundUser.vocabularies
     });
   } catch (error) {
     console.error(error);
@@ -59,8 +76,12 @@ async function updateTitle(req, res: Response) {
     if (duplicate) {
       return res.send(409).json({ msg: 'Vocabulary with this name already exists' });
     }
+    
+    const vocabToUpdate = await Vocabulary.findByIdAndUpdate(_id, { title });
+    if (!vocabToUpdate) {
+      return res.send(409).json({ msg: 'Invalid vocab ID' });
+    }
 
-    const updatedVocab = await Vocabulary.findByIdAndUpdate(_id, { title });
     res.sendStatus(204);
   } catch (error) {
     console.error(error);
@@ -84,6 +105,7 @@ async function deleteVocab(req, res: Response) {
 }
 
 export {
+  getVocabs,
   addVocab,
   getVocab,
   updateTitle,

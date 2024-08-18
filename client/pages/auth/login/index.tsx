@@ -9,15 +9,17 @@ import React, { ReactElement, SyntheticEvent, useEffect, useRef, useState } from
 import { jwtDecode } from 'jwt-decode';
 import { CustomPayload } from '@/lib/types';
 import { BASE_URL } from '@/lib/globals';
+import { usePreferencesStore } from '@/lib/preferencesStore';
 
 const Login: NextPageWithLayout = () => {
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLParagraphElement | null>(null);
   const [user, setUser] = useState<string>('');
-  const [userFocus, setUserFocus] = useState(false);
+  const [userFocus, setUserFocus] = useState<boolean>(false);
   const [pwd, setPwd] = useState<string>('');
-  const [errMsg, setErrMsg] = useState('');
-  const {setAccessToken, setStoredUsername} = useAuthStore(state => state);
+  const [errMsg, setErrMsg] = useState<string>('');
+  const {setAccessToken} = useAuthStore(state => state);
+  const {setStoredUsername} = usePreferencesStore(state => state);
   const router = useRouter();
 
   async function handleSubmit(e: SyntheticEvent) {

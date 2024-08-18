@@ -3,6 +3,7 @@ import {
   addVocab, 
   deleteVocab, 
   getVocab, 
+  getVocabs, 
   updateTitle
 } from '../controllers/vocabController';
 import { 
@@ -16,6 +17,7 @@ import {
 
 const vocabRouter = express.Router();
 
+vocabRouter.get('/getVocabs', getVocabs);
 vocabRouter.post('/addVocab', addVocab);
 vocabRouter.post('/getVocab', getVocab);
 vocabRouter.put('/updateTitle', updateTitle);

@@ -5,8 +5,8 @@ import { nanoid } from 'nanoid';
 export const prefix: string = "vi_";
 
 interface VocabStore {
-  vocabs: Vocab[] | null,
-  initialFetch: () => void,
+  vocabs: Vocab[] | [],
+  setVocabs: (vocabs: Vocab[]) => void,
   addVocab: (title: string) => void,
   deleteVocab: (id: string) => void,
   editVocabTitle: (id: string, newTitle: string) => void,
@@ -17,20 +17,8 @@ interface VocabStore {
 }
 
 const useVocabStore = create<VocabStore>(set => ({
-  vocabs: null,
-  initialFetch: () => {
-    set(() => {
-      const parsedVocabs: Vocab[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key?.startsWith(prefix)) {
-          const vocab = JSON.parse(localStorage.getItem(key)!);
-          parsedVocabs.push(vocab);
-        }
-      }
-      return { vocabs: parsedVocabs }
-    })
-  },
+  vocabs: [],
+  setVocabs: (vocabs: Vocab[]) => set({ vocabs }),
   
   addVocab: (title: string) => {
     set((state: VocabStore) => {
@@ -57,30 +45,20 @@ const useVocabStore = create<VocabStore>(set => ({
   deleteVocab: (id: string) => {
     set((state: VocabStore) => {
       if (state.vocabs) {
-        const filteredVocabs = state.vocabs.filter((vocab) => vocab._id !== id);
-        localStorage.removeItem(id);
+        const filteredVocabs = state.vocabs.filter(vocab => vocab._id !== id);
         return { vocabs: filteredVocabs };
-      } else {
-        return state;
       }
+      return state;
     });
   },
 
   editVocabTitle: (id: string, newTitle: string) => {
     set((state: VocabStore) => {
-      const updatedVocabs: Vocab[] | undefined = state.vocabs?.map(v => {
-        if (v._id === id) {
-          return  {...v, title: newTitle };
-        }
-        return v;
-      })
       const vocabToEdit: Vocab | undefined = state.vocabs?.find(v => v._id === id);
       if (vocabToEdit) {
         vocabToEdit.title = newTitle;
-        localStorage.removeItem(id);
-        localStorage.setItem(id, JSON.stringify(vocabToEdit));
       }
-      return { ...state, vocabs: updatedVocabs };
+      return { ...state };
     })
   },
 

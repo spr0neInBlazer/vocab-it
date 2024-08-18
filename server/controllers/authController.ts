@@ -36,7 +36,7 @@ async function handleLogin(req: Request, res: Response) {
         }
       },
       accessSecret,
-      { expiresIn: '10s' }
+      { expiresIn: '1m' }
     );
     const refreshToken = jwt.sign(
       { "_id": foundUser._id },

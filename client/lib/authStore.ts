@@ -2,14 +2,14 @@ import { create } from "zustand";
 
 interface AuthSlice {
   accessToken: string,
-  storedUsername: string,
+  // storedUsername: string,
   setAccessToken: (token: string) => void,
-  setStoredUsername: (username: string) => void,
+  // setStoredUsername: (username: string) => void,
 }
 
 export const useAuthStore = create<AuthSlice>()(set => ({
   accessToken: '',
-  storedUsername: '',
+  // storedUsername: '',
   setAccessToken: (token: string) => set({ accessToken: token }),
-  setStoredUsername: (username: string) => set({ storedUsername: username }),
+  // setStoredUsername: (username: string) => set({ storedUsername: username }),
 }));

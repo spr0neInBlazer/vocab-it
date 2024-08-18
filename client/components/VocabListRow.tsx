@@ -20,7 +20,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from './ui/use-toast';
-import { SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
+import useAuth from '@/hooks/useAuth';
+import useRefreshToken from '@/hooks/useRefreshToken';
 
 export default function VocabListRow({ vocab }: { vocab: Vocab }) {
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
@@ -39,6 +41,8 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
   const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
+  const fetchWithAuth = useAuth();
+  const refresh = useRefreshToken();
 
   // only allow one field editing at a time
   function checkSingleEdit() {
@@ -58,7 +62,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
     }
   }
 
-  function updateTitle(e: React.SyntheticEvent) {
+  async function updateTitle(e: React.SyntheticEvent) {
     e.preventDefault();
 
     // if the title is empty or only consists of spaces
@@ -71,15 +75,49 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
       if (soundOn) playError();
       alert('A vocabulary with this title already exists');
     } else {
-      editVocabTitle(vocab._id, title);
-      setIsEditTitle(false);
-      toast({
-        variant: 'default',
-        description: "Vocabulary title has been successfully updated",
-      });
-      if (soundOn) playSuccess();
+      const controller = new AbortController();
+      const privateUpdate = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/updateTitle`, {
+            method: 'PUT',
+            signal: controller.signal,
+            body: JSON.stringify({
+              _id: vocab._id,
+              title
+            }),
+            credentials: 'include'
+          });
+
+          if (!res.ok) {
+            toast({
+              variant: 'destructive',
+              description: "Username could not be updated",
+            });
+            if (soundOn) playError();
+            throw new Error('Failed to update title');
+          }
+
+          await refresh();
+          editVocabTitle(vocab._id, title);
+          setIsEditTitle(false);
+          toast({
+            variant: 'default',
+            description: "Vocabulary title has been updated",
+          });
+          if (soundOn) playSuccess();
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setTitle(vocab.title);
+        }
+      }
+
+      privateUpdate();
+
+      return () => {
+        controller.abort();
+      }
     }
-    setTitle(vocab.title);
   }
 
   function checkForAbort(e: React.KeyboardEvent) {
@@ -89,13 +127,43 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
     }
   }
 
-  function deleteVocabFromStore() {
-    deleteVocab(vocab._id);
-    toast({
-      variant: 'default',
-      description: "Vocabulary has been deleted",
-    });
-    if (soundOn) playSuccess();
+  function deleteVocabFromDb() {
+    const controller = new AbortController();
+    const privateDelete = async () => {
+      try {
+        const res = await fetchWithAuth(`${BASE_URL}/vocabs/deleteVocab`, {
+          method: 'DELETE',
+          signal: controller.signal,
+          body: JSON.stringify({ _id: vocab._id }),
+          credentials: 'include'
+        });
+
+        if (!res.ok) {
+          toast({
+            variant: 'destructive',
+            description: "Could not delete vocabulary",
+          });
+          if (soundOn) playError();
+          throw new Error('Could not delete vocabulary');
+        }
+
+        await refresh();
+        deleteVocab(vocab._id);
+        toast({
+          variant: 'default',
+          description: "Vocabulary has been deleted",
+        });
+        if (soundOn) playSuccess();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    privateDelete();
+
+    return () => {
+      controller.abort();
+    }
   }
 
   useEffect(() => {
@@ -187,7 +255,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={deleteVocabFromStore}>OK</AlertDialogAction>
+                      <AlertDialogAction onClick={deleteVocabFromDb}>OK</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
