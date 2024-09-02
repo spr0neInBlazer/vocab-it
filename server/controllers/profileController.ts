@@ -1,6 +1,7 @@
 import { Response } from "express";
 import User from "../models/User";
 import { CustomRequest } from "../types";
+import Vocabulary from "../models/Vocabulary";
 
 async function getProfile(req: CustomRequest, res: Response) {
   try {
@@ -59,6 +60,10 @@ async function deleteAccount(req: CustomRequest, res: Response) {
     if (!userToDelete) {
       return res.status(404).json({ msg: `User ID ${req.userInfo._id} not found`});
     }
+
+    // remove all user's vocabs
+    await Vocabulary.deleteMany({ userId: req.userInfo._id });
+    
     res.sendStatus(204);
   } catch (error) {
     console.error(error);

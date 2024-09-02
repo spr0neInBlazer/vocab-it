@@ -14,6 +14,11 @@ import Layout from '@/components/Layout';
 import EndLessonDialog from '@/components/EndLessonDialog';
 import { Progress } from "@/components/ui/progress"
 import { SOUND_VOLUME, clickSound } from '@/lib/globals';
+import RequireAuth from '@/components/RequireAuth';
+import { useAuthStore } from '@/lib/authStore';
+import useCheckToken from '@/hooks/useCheckToken';
+import useVocabStore from '@/lib/store';
+import useRefreshToken from '@/hooks/useRefreshToken';
 
 const initialWordIdx: number = 1;
 
@@ -21,6 +26,7 @@ const Lesson: NextPageWithLayout = () => {
   const preferenceStore = usePreferencesStore(state => state);
   const [lessonVolume, setLessonVolume] = useState<number>(0);
   const [words, setWords] = useState<Word[]>([]);
+  const { currVocab } = useVocabStore(state => state);
   const [currWord, setCurrWord] = useState<number>(initialWordIdx);
   const [answer, setAnswer] = useState<string>('');
   const [allAnswers, setAllAnswers] = useState<Answer[]>([]);
@@ -28,6 +34,9 @@ const Lesson: NextPageWithLayout = () => {
   const [endLesson, setEndLesson] = useState<boolean>(false);
   const router = useRouter();
   const [playClick] = useSound(clickSound, { volume: SOUND_VOLUME });
+  const { accessToken, isTokenChecked, setIsTokenChecked } = useAuthStore(state => state);
+  const refresh = useRefreshToken();
+  const { checkToken } = useCheckToken();
 
   function randomizeWords(array: Word[], volume: number): Word[] {
     let randomizedWords: Word[] = [];
@@ -58,7 +67,7 @@ const Lesson: NextPageWithLayout = () => {
       };
       setAllAnswers((prevAnswers) => [...prevAnswers, userAnswer]);
     } else {
-    // if the answer is correct 
+      // if the answer is correct 
       const userAnswer: Answer = {
         userAnswer: answer,
         isCorrect: true,
@@ -70,15 +79,14 @@ const Lesson: NextPageWithLayout = () => {
   }
 
   function restartLesson() {
+    
     setCurrWord(1);
     setAllAnswers([]);
-    const vocab = localStorage.getItem(router.query.id as string);
-    if (vocab) {
-      const fetchedWords = JSON.parse(vocab).words;
-      setWords(randomizeWords(fetchedWords, lessonVolume));
+    if (currVocab) {
+      setWords(randomizeWords(currVocab.words, lessonVolume));
     }
   }
-  
+
   // fetch lessonStore
   // update lessonVolume from lessonStore
   useEffect(() => {
@@ -87,16 +95,17 @@ const Lesson: NextPageWithLayout = () => {
     }
   }, [preferenceStore]);
 
+  useEffect(() => {
+    setIsTokenChecked(false);
+    checkToken();
+  }, []);
+
   // fetch words from local storage and randomize them 
   useEffect(() => {
-    if (localStorage && router.query.id) {
-      const vocab = localStorage.getItem((router.query.id as string));
-      if (vocab) {
-        const fetchedWords = JSON.parse(vocab).words;
-        setWords(fetchedWords);
-      }
+    if (currVocab) {
+      setWords(currVocab.words);
     }
-  }, [router.query.id]);
+  }, [currVocab]);
 
   useEffect(() => {
     if (words.length > 0 && lessonVolume > 0) {
@@ -107,52 +116,52 @@ const Lesson: NextPageWithLayout = () => {
         setWords(randomizeWords(words, lessonVolume));
       }
     }
-  }, [lessonVolume, words.length]);
+  }, [lessonVolume, words]);
 
   useEffect(() => {
-    if (router.query.id && words.length > 0 && preferenceStore) {
+    if (router.query.id && currVocab && currVocab.words.length > 0 && preferenceStore) {
       setIsLoading(false);
     } else {
       setIsLoading(true)
     }
-  }, [router.query.id, preferenceStore, isLoading, words]);
+  }, [router.query.id, preferenceStore, isLoading, currVocab]);
 
   // when user ends the lesson, redirect to profile page
   useEffect(() => {
     if (endLesson) {
-      router.push('/profile/profile');
+      router.push('/profile');
     }
   }, [endLesson, router]);
 
   // end of lesson
   if (currWord > lessonVolume) {
     return (
-      <>
+      <RequireAuth allowedRoles={[1305]}>
         <Head>
           <title>Lesson</title>
         </Head>
         <div className="w-11/12 lg:w-3/5 mx-auto mb-6">
           <LessonResult allAnswers={allAnswers} words={words} />
           <div className="flex justify-between mt-5 px-3">
-            <button 
+            <button
               className="flex gap-1 items-center rounded-lg p-3 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 focus:bg-zinc-500 transition-colors"
-              onClick={restartLesson}  
+              onClick={restartLesson}
             >
               Start Again
             </button>
             <button className="flex gap-1 items-center rounded-lg p-3 mobile:px-4 text-sm mobile:text-base font-semibold text-white bg-zinc-600 hover:bg-zinc-500 focus:bg-zinc-500 transition-colors">
-              <Link href="/profile/profile">
+              <Link href="/profile">
                 Back to Profile
               </Link>
             </button>
           </div>
         </div>
-      </>
+      </RequireAuth>
     )
   }
 
   return (
-    <>
+    <RequireAuth allowedRoles={[1305]}>
       <Head>
         <title>Lesson</title>
       </Head>
@@ -160,15 +169,15 @@ const Lesson: NextPageWithLayout = () => {
         <p className="mx-3">{currWord}/{lessonVolume}</p>
         <Progress
           className="my-3"
-          value={Math.round(((currWord - 1) / lessonVolume) * 100)} 
+          value={Math.round(((currWord - 1) / lessonVolume) * 100)}
           aria-label="progress bar"
         />
         <section className="w-full p-4 sm:p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
           <div>
             <h2 className="text-xl mobile:text-2xl">Word:</h2>
-            {!isLoading ? (
+            {(isTokenChecked && !isLoading) ? (
               <p className="text-2xl mobile:text-3xl text-center my-3">
-                {words[currWord-1].translation}
+                {words[currWord - 1].translation}
               </p>
             ) : (
               <div className="w-full flex justify-center my-3">
@@ -180,41 +189,41 @@ const Lesson: NextPageWithLayout = () => {
           <div>
             <div className="flex justify-between">
               <h2 className="text-xl mobile:text-2xl">Enter translation:</h2>
-              {!isLoading ? (
-                <HintButton word={words[currWord-1].word} />
+              {(isTokenChecked && !isLoading) ? (
+                <HintButton word={words[currWord - 1].word as string} />
               ) : (
                 <Skeleton className="w-[38px] h-[38px] rounded" />
               )}
             </div>
             <form className="my-3 flex justify-center" onSubmit={submitAnswer}>
-              <input 
-                className="text-2xl leading-10 text-center rounded border border-zinc-400 w-full mobile:w-auto" 
-                type="text" 
-                value={answer} 
-                onChange={(e) => setAnswer(e.target.value)} 
-                placeholder="Your answer" 
-                autoFocus 
+              <input
+                className="text-2xl leading-10 text-center rounded border border-zinc-400 w-full mobile:w-auto"
+                type="text"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                placeholder="Your answer"
+                autoFocus
               />
             </form>
           </div>
         </section>
         <div className="flex justify-between mt-5 px-3">
           <EndLessonDialog setEndLesson={setEndLesson} />
-          <button 
+          <button
             className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-zinc-600 hover:bg-zinc-500 focus:bg-zinc-500 transition-colors"
             onClick={registerAnswer}
           >
             Skip
           </button>
-          <button 
+          <button
             className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors"
-            onClick={registerAnswer}  
+            onClick={registerAnswer}
           >
             OK
           </button>
         </div>
       </div>
-    </>
+    </RequireAuth>
   )
 }
 

@@ -1,34 +1,28 @@
-Features (needs back-end):
-- regulate lessons frequency
-- assess learning progress (red - bad, orange - average, green - good, dark yellow - learnt OR percentage of correct translations)
-- achievements
-- graph stats
-Other possible features:
-- make bg word cloud move with the mouse (3d effect)
-- allow multiple translations
+Features:
 - add "Show first letter" button to lessons
 - sort words
-- when a word is deleted show "cancel" button in its place until the next 
-page load to revert back
-- add hints (reveal first letter, second, etc.)
 - add another type of exercise: find a pair
 - add special symbols keyboard for different langs
+? register words learning progress
+? achievements
+? graph stats (lessons completion frequency)
+? make bg word cloud move with the mouse (3d effect)
+? allow multiple translations
+? when a word is deleted show "cancel" button in its place until the next page load to revert back
 
-vocab w/ 1 word = .18 KB
++ on page refresh check for refresh token and grant new access token (persistent login)
+  - add persistent login to all pages
+- disable all buttons during data fetching
++ add new word
++ import CSV
++ delete all words
+- register words progress
+- add messages for successful login and registration
+- add data sanitizing
+- check whether lessonStore is needed at all
 
+Bugs/other:
 - do I need both lucide-react and react-icons?
 
-+ on login grant refresh and access token
-+ store access token in store
-- on page refresh check for refresh token and grant new access token 
-+ refresh access token after username change
-+ set conditionally navbar content depending on auth
-+ implement sign out
-! get profile data and display it on profile page
-+ create new user ID beforehand to store it in refresh token
-+ implement username update
-- implement words per lesson update
-- implement account deletion
-- add messages for successful login and registration
-+ get vocabs info
-- add data sanitizing
+http://localhost:3000/lesson/66cb7c8169e3b395c6965f4a
+http://localhost:3000/vocabularies/66cb7c8169e3b395c6965f4a

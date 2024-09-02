@@ -6,10 +6,13 @@ import useVocabStore from '@/lib/store';
 import { useToast } from './ui/use-toast';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
-import { SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
 import useSound from 'use-sound';
 import { Label } from './ui/label';
 import { HiDocumentText } from "react-icons/hi2";
+import useAuth from '@/hooks/useAuth';
+import useRefreshToken from '@/hooks/useRefreshToken';
+import useDisplayPopup from '@/hooks/useDisplayPopup';
 
 function decodeString(str: string): string {
   let encoding = jschardet.detect(str).encoding;
@@ -21,16 +24,17 @@ function decodeString(str: string): string {
   return decodedStr;
 }
 
-export default function FileForm({ id, storeWords }: { id: string, storeWords: Word[] }) {
+export default function FileForm() {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [importedWords, setImportedWords] = useState<Word[]>([]);
-  const { importWords } = useVocabStore(state => state);
-  const { toast } = useToast();
+  // const [importedWords, setImportedWords] = useState<Word[]>([]);
+  const { currVocab, setCurrVocab } = useVocabStore(state => state);
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
-  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
   const [filePreview, setFilePreview] = useState<string>('No file selected');
   const [isSelectFile, setIsSelectFile] = useState<boolean>(false);
+  const fetchWithAuth = useAuth();
+  const refresh = useRefreshToken();
+  const { displayPopup } = useDisplayPopup();
 
   function displayFileInfo(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -49,9 +53,11 @@ export default function FileForm({ id, storeWords }: { id: string, storeWords: W
         
         reader.onload = (event) => {
           if (event.target) {
-            const words: Word[] = [];
+            const words = [];
             const fileContent = event.target.result as string;
 
+            console.log({ fileContent });
+            
             if (fileContent.length === 0) return;
 
             let startIdx = 0;
@@ -67,8 +73,8 @@ export default function FileForm({ id, storeWords }: { id: string, storeWords: W
                 } else {
                   // if it's a valid word
                   let wordStr = fileContent.substring(startIdx, i);
-                  const decodedWord: string = decodeString(wordStr);
-                  const wordObj: Word = {word: decodedWord, translation: ''};
+                  // const decodedWord: string = decodeString(wordStr);
+                  const wordObj = {word: wordStr, translation: ''};
                   words.push(wordObj);
                   // if file uses incorrect indentation (', ')
                   (fileContent[i+1] === ' ') ? startIdx = i+2 : startIdx = i+1;
@@ -77,41 +83,65 @@ export default function FileForm({ id, storeWords }: { id: string, storeWords: W
                 // if it's the end of the line
                 let translationStr = fileContent.substring(startIdx, i-1);
                 // if no valid translation, remove last word object
-                const decodedTranslation: string = decodeString(translationStr);
-                words[words.length - 1].translation = decodedTranslation;
+                // const decodedTranslation: string = decodeString(translationStr);
+                words[words.length - 1].translation = translationStr;
                 startIdx = i+1;
               } else if (i === fileContent.length - 1) {
                 let translationStr = fileContent.substring(startIdx, i+1);
-                const decodedTranslation: string = decodeString(translationStr);
-                words[words.length - 1].translation = decodedTranslation;
+                // const decodedTranslation: string = decodeString(translationStr);
+                words[words.length - 1].translation = translationStr;
               }
             }
             checkForDuplicateWords(words);
           }
         }
-        reader.readAsBinaryString(file);
+        reader.readAsText(file);
       }
     }
   }
 
-  function checkForDuplicateWords(words: Word[]) {
+  function checkForDuplicateWords(words) {
     const wordSet = new Set();
-    const uniqueWords: Word[] = [];
+    const uniqueWords = [];
     for (const word of words) {
       // if there's no duplicates in the file and in the store
-      if (!wordSet.has(word.word) && !storeWords.some(w => w.word === word.word)) {
+      if (!wordSet.has(word.word) && !currVocab?.words.some(w => w.word === word.word)) {
         wordSet.add(word.word);
         uniqueWords.push(word);
       }
     }
-    setImportedWords(uniqueWords);
+    // setImportedWords(uniqueWords);
     if (uniqueWords.length > 0) {
-      importWords(id, uniqueWords);
-      toast({
-        variant: 'default',
-        description: "Data has been successfully imported",
-      });
-      if (soundOn) playSuccess();
+      const controller = new AbortController();
+      const privateUpdate = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/importCsv`, {
+            method: 'POST',
+            signal: controller.signal,
+            body: JSON.stringify({
+              vocabId: currVocab?._id,
+              words: uniqueWords
+            }),
+            credentials: 'include'
+          });
+
+          if (!res.ok) {
+            displayPopup({ isError: true, msg: "Could not edit the word" });
+            throw new Error('Failed to update word');
+          }
+
+          await refresh();
+
+          const data = await res.json();
+          setCurrVocab(data);
+          displayPopup({ isError: false, msg: "Words from file have been imported" });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      privateUpdate();
+      return () => controller.abort();
     } 
   }
 

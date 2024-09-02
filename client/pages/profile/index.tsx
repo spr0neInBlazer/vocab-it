@@ -11,9 +11,11 @@ import { Toaster } from '@/components/ui/toaster';
 import { Skeleton } from '@/components/ui/skeleton';
 import RequireAuth from '@/components/RequireAuth';
 import useAuth from '@/hooks/useAuth';
-import { useRouter } from 'next/router';
 import { BASE_URL } from '@/lib/globals';
 import useVocabStore from '@/lib/store';
+import DangerZone from '@/components/DangerZone';
+import { useAuthStore } from '@/lib/authStore';
+import useCheckToken from '@/hooks/useCheckToken';
 
 // needs client render because server and client (storage) username values differ
 const NoSSR = dynamic(() => import('@/components/ProfileUsernameSection'), {
@@ -38,9 +40,10 @@ const Profile: NextPageWithLayout = () => {
     toggleIsAddVocab,
     toggleIsEditVocabTitle
   } = useProfileStore(state => state);
-  const { vocabs, setVocabs } = useVocabStore(state => state);
+  const setVocabs = useVocabStore(state => state.setVocabs);
   const fetchWithAuth = useAuth();
-  const router = useRouter();
+  const { accessToken, setIsTokenChecked } = useAuthStore(state => state);
+  const {checkToken} = useCheckToken();
 
   // only allow one field editing at a time
   function checkSingleEdit() {
@@ -51,8 +54,9 @@ const Profile: NextPageWithLayout = () => {
   }
 
   useEffect(() => {
-    let isMounted = true;
+    setIsTokenChecked(false);
     const controller = new AbortController();
+
     const getProfileData = async () => {
       try {
         const res = await fetchWithAuth(`${BASE_URL}/profile`, {
@@ -65,19 +69,17 @@ const Profile: NextPageWithLayout = () => {
 
         const data = await res.json();
         setVocabs(data.vocabularies);
-        console.log({ data });
       } catch (error) {
         console.error(error);
-        router.push('/auth/login');
       }
     }
 
-    getProfileData();
+    checkToken(getProfileData);
+
     return () => {
-      isMounted = false;
       controller.abort();
     }
-  }, []);
+  }, [accessToken]);
 
   useEffect(() => {
     // reset all active edit modes 
@@ -104,6 +106,7 @@ const Profile: NextPageWithLayout = () => {
         <NoSSR checkSingleEdit={checkSingleEdit} />
         <ProfileAddVocabSection checkSingleEdit={checkSingleEdit} />
         <ProfileWordSection checkSingleEdit={checkSingleEdit} />
+        <DangerZone />
       </section>
       <Toaster />
       <Footer />

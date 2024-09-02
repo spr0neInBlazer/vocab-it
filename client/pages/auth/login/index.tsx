@@ -52,7 +52,7 @@ const Login: NextPageWithLayout = () => {
       const accessToken = data.accessToken;
       if (!accessToken) {
         setErrMsg('Invalid credentials');
-        return
+        return;
       }
 
       const decoded = jwtDecode<CustomPayload>(accessToken);

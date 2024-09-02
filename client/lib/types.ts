@@ -1,6 +1,10 @@
 export interface Word {
+  _id: string,
   word: string,
-  translation: string
+  translation: string,
+  progress?: number,
+  trained: number,
+  isGuessCorrect?: boolean
 }
 
 export interface Vocab {

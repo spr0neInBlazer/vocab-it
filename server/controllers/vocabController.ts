@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Vocabulary from "../models/Vocabulary";
 import User from "../models/User";
-import { v4 as uuidv4 } from 'uuid';
 
 async function getVocabs(req, res: Response) {
   try {
@@ -28,7 +27,7 @@ async function addVocab(req, res: Response) {
 
     const duplicate = await Vocabulary.findOne({ title }).where({ user: req.userInfo._id });
     if (duplicate) {
-      return res.send(409).json({ msg: 'Vocabulary with this name already exists' });
+      return res.status(409).json({ msg: 'Vocabulary with this name already exists' });
     }
 
     const newVocab = await Vocabulary.create({
@@ -50,15 +49,15 @@ async function addVocab(req, res: Response) {
   }
 }
 
-async function getVocab(req: Request, res: Response) {
+async function getVocab(req, res: Response) {
   try {
-    const foundVocab = await Vocabulary.findById(req.body._id).exec();
+    const foundVocab = await Vocabulary.findById(req.body._id).lean();
     if (!foundVocab) {
-      return res.status(400).json({ msg: 'Invalid title property' });
+      return res.status(400).json({ msg: 'Vocabulary not found' });
     }
 
-    const { _id, title, userId, words } = foundVocab;
-    res.status(200).json({ _id, title, userId, words });
+    const { _id, title, words } = foundVocab;
+    res.status(200).json({ _id, title, words });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });
@@ -74,12 +73,12 @@ async function updateTitle(req, res: Response) {
 
     const duplicate = await Vocabulary.findOne({ title }).where({ user: req.userInfo._id });
     if (duplicate) {
-      return res.send(409).json({ msg: 'Vocabulary with this name already exists' });
+      return res.status(409).json({ msg: 'Vocabulary with this name already exists' });
     }
     
     const vocabToUpdate = await Vocabulary.findByIdAndUpdate(_id, { title });
     if (!vocabToUpdate) {
-      return res.send(409).json({ msg: 'Invalid vocab ID' });
+      return res.status(409).json({ msg: 'Invalid vocab ID' });
     }
 
     res.sendStatus(204);

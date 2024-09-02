@@ -3,6 +3,7 @@ import User from "../models/User";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
+import mongoose from "mongoose";
 
 async function handleNewUser(req: Request, res: Response) {
   const { username, pwd } = req.body;
@@ -22,7 +23,7 @@ async function handleNewUser(req: Request, res: Response) {
     if (!refreshSecret || !accessSecret) {
       throw new Error('Token secrets are not defined');
     }
-    const userId = uuidv4();
+    const userId = new mongoose.Types.ObjectId();
     const accessToken = jwt.sign(
       {
         "UserInfo": {

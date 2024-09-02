@@ -5,15 +5,15 @@ import { Word } from "../types";
 
 async function addWord(req: Request, res: Response) {
   try {
-    const { _id, word, translation } = req.body;
+    const { vocabId, word, translation } = req.body;
     if (!word || !translation) {
       return res.status(400).json({ msg: 'Invalid word properties' });
     }
 
-    const vocabToUpdate = await Vocabulary.findById(_id).exec();
+    const vocabToUpdate = await Vocabulary.findById(vocabId).exec();
     const duplicate = vocabToUpdate.words.find(w => w.word === word);
     if (duplicate) {
-      return res.send(409).json({ msg: 'This word is already in the vocabulary' });
+      return res.status(409).json({ msg: 'This word is already in the vocabulary' });
     }
 
     const newWord: Word = {
@@ -25,7 +25,7 @@ async function addWord(req: Request, res: Response) {
     };
     vocabToUpdate.words = [...vocabToUpdate.words, newWord];
     await vocabToUpdate.save();
-    res.status(201).json({ words: vocabToUpdate.words });
+    res.status(201).json(vocabToUpdate);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });
@@ -45,8 +45,8 @@ async function updateWord(req: Request, res: Response) {
     }
 
     const duplicate = vocabToUpdate.words.find(w => w.word === word);
-    if (duplicate) {
-      return res.send(409).json({ msg: 'This word is already in the vocabulary' });
+    if (!duplicate) {
+      return res.status(409).json({ msg: 'The word does not exist in the vocabulary' });
     }
 
     const wordToUpdate = vocabToUpdate.words.find(w => w._id === wordId);
@@ -57,7 +57,7 @@ async function updateWord(req: Request, res: Response) {
     wordToUpdate.word = word;
     wordToUpdate.translation = translation;
     await vocabToUpdate.save();
-    res.status(200).json({ words: vocabToUpdate.words });
+    res.status(200).json(vocabToUpdate);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });
@@ -80,7 +80,7 @@ async function deleteWord(req: Request, res: Response) {
     const updatedWords = [...vocabToUpdate.words.slice(0, wordIdx), ...vocabToUpdate.words.slice(wordIdx + 1)];
     vocabToUpdate.words = updatedWords;
     await vocabToUpdate.save();
-    res.status(200).json({ words: vocabToUpdate.words });
+    res.status(200).json(vocabToUpdate);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });
@@ -90,11 +90,15 @@ async function deleteWord(req: Request, res: Response) {
 async function deleteAllWords(req: Request, res: Response) {
   try {
     if (!req.body._id) {
-      return res.status(400).json({ msg: '/"_id/" property not found'});
+      return res.status(400).json({ msg: '_id property not found'});
     }
 
-    const vocabToUpdate = await Vocabulary.findByIdAndUpdate(req.body._id, { words: []});
-    res.sendStatus(204);
+    const vocabToUpdate = await Vocabulary.findByIdAndUpdate(req.body._id, { words: []}, {new: true});
+    if (!vocabToUpdate) {
+      return res.status(404).json({ msg: 'Vocabulary not found' });
+    }
+
+    res.status(200).json(vocabToUpdate);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });
@@ -103,12 +107,12 @@ async function deleteAllWords(req: Request, res: Response) {
 
 async function addCSV(req: Request, res: Response) {
   try {
-    const { words, _id } = req.body;
+    const { words, vocabId } = req.body;
     if (!words || !Array.isArray(words) || words.length === 0) {
       return res.status(400).json({ msg: 'Invalid words array' });
     }
 
-    const foundVocab = await Vocabulary.findById(_id).exec();
+    const foundVocab = await Vocabulary.findById(vocabId).exec();
     if (!foundVocab) {
       return res.status(404).json({ msg: 'Vocabulary not found' });
     }
@@ -124,7 +128,7 @@ async function addCSV(req: Request, res: Response) {
     
     foundVocab.words.push(...validatedWords);
     await foundVocab.save();
-    res.status(200).json({ words: foundVocab.words });
+    res.status(200).json(foundVocab);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });
@@ -133,17 +137,17 @@ async function addCSV(req: Request, res: Response) {
 
 async function updateProgress(req: Request, res: Response) {
   try {
-    const { lessonWords, _id } = req.body;
-    if (!lessonWords || !_id) {
+    const { answers, vocabId } = req.body;
+    if (!answers || !vocabId) {
       return res.status(400).json({ msg: 'Invalid data' });
     }
 
-    const foundVocab = await Vocabulary.findById(_id).exec();
+    const foundVocab = await Vocabulary.findById(vocabId).exec();
     if (!foundVocab) {
       return res.status(404).json({ msg: 'Vocabulary not found' });
     }
 
-    lessonWords.forEach((w: Word) => {
+    answers.forEach((w: Word) => {
       const currWord = foundVocab.words.find(word => word._id === w._id);
       if (currWord) {
         currWord.trained = currWord.trained + 1;
@@ -152,7 +156,7 @@ async function updateProgress(req: Request, res: Response) {
     });
 
     await foundVocab.save();
-    res.status(200).json({ words: foundVocab.words });
+    res.status(200).json({ foundVocab });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });

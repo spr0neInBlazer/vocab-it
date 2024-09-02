@@ -3,13 +3,15 @@ import { CheckSingleEditFunction } from '@/lib/types';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useSound from 'use-sound';
-import { SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
 import useVocabStore from '@/lib/store';
 import { useToast } from './ui/use-toast';
 import useProfileStore from '@/lib/profileStore';
 
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
+import useAuth from '@/hooks/useAuth';
+import useRefreshToken from '@/hooks/useRefreshToken';
 
 export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: { id: string, vocabTitle: string, checkSingleEdit: CheckSingleEditFunction }) {
   const [title, setTitle] = useState<string>(vocabTitle);
@@ -23,6 +25,8 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
   const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
   const { toast } = useToast();
+  const fetchWithAuth = useAuth();
+  const refresh = useRefreshToken();
 
   function updateTitle(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -36,14 +40,45 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
       if (soundOn) playError();
       setErrorMsg('A vocabulary with this title already exists');
     } else {
-      editVocabTitle(id, title);
-      toggleIsEditVocabTitle(); // to false
-      toast({
-        variant: 'default',
-        description: "Vocabulary title has been updated",
-      });
-      if (soundOn) playSuccess();
-      setErrorMsg('');
+      const controller = new AbortController();
+      const privateUpdate = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/updateTitle`, {
+            method: 'PUT',
+            signal: controller.signal,
+            body: JSON.stringify({ _id: id, title }),
+            credentials: 'include'
+          });
+
+          if (!res.ok) {
+            toast({
+              variant: 'destructive',
+              description: "Username could not be updated",
+              duration: 1500
+            });
+            if (soundOn) playError();
+            throw new Error('Failed to update title');
+          }
+
+          await refresh();
+          editVocabTitle(id, title);
+          toggleIsEditVocabTitle(); // to false
+          toast({
+            variant: 'default',
+            description: "Vocabulary title has been updated",
+            duration: 1500
+          });
+          if (soundOn) playSuccess();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      privateUpdate();
+
+      return () => {
+        controller.abort();
+      }
     }
   }
 

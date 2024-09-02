@@ -2,7 +2,7 @@ import { useAuthStore } from "@/lib/authStore"
 import { BASE_URL } from "@/lib/globals";
 
 const useLogout = () => {
-  const {setAccessToken, setStoredUsername} = useAuthStore(state => state);
+  const {setAccessToken, setIsTokenChecked} = useAuthStore(state => state);
 
   async function logout() {
     try {
@@ -10,7 +10,7 @@ const useLogout = () => {
         credentials: 'include'
       });
       setAccessToken('');
-      setStoredUsername('');
+      setIsTokenChecked(false);
       console.log('singed out');
     } catch (error) {
       console.error(error);

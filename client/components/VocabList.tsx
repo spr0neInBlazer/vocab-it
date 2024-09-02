@@ -7,6 +7,7 @@ import VocabListRow from './VocabListRow';
 import { Skeleton } from './ui/skeleton';
 import { HiMiniQuestionMarkCircle } from "react-icons/hi2";
 import { ScrollArea } from './ui/scroll-area';
+import { useAuthStore } from '@/lib/authStore';
 
 const WordsTooltip = dynamic(() => import('./WordsTooltip'), {
   loading: () => <HiMiniQuestionMarkCircle />
@@ -15,20 +16,15 @@ const WordsTooltip = dynamic(() => import('./WordsTooltip'), {
 export default function VocabList() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const vocabs = useVocabStore(state => state.vocabs);
-  // const initialFetch = useVocabStore(state => state.initialFetch);
+  const accessToken = useAuthStore(state => state.accessToken);
 
   useEffect(() => {
-    if (vocabs) {
+    if (accessToken) {
       setIsLoading(false);
     } else {
       setIsLoading(true);
     }
-  }, [vocabs]);
-  
-  // replace default value with local storage data
-  // useEffect(() => {
-  //   initialFetch();
-  // }, [initialFetch]);
+  }, [accessToken]);
 
   if (isLoading) {
     return (

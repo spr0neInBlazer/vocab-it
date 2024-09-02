@@ -108,6 +108,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
           </button>
         </div>
         )}
+      <div className="h-px w-full dark:bg-mainBg-dark mt-3 mb-5" />
     </article>
   )
 }

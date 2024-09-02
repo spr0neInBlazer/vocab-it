@@ -36,7 +36,7 @@ export default function Navbar() {
   const [invalidInputMsg, setInvalidInputMsg] = useState<string>('');
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const { setTheme } = useTheme();
-  const { accessToken } = useAuthStore(state => state);
+  const accessToken = useAuthStore(state => state.accessToken);
   const logout = useLogout();
   const router = useRouter();
   const refresh = useRefreshToken();
@@ -68,9 +68,8 @@ export default function Navbar() {
           }
   
           const data = await res.json();
-          // console.log({data});
           setVocabs(data.vocabularies);
-          await refresh();
+          // await refresh();
           console.log('vocabs in navbar fetched');
         } catch (error) {
           console.error(error);

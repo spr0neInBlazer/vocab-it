@@ -3,29 +3,28 @@ import { CheckSingleEditFunction } from '@/lib/types';
 import useProfileStore from '@/lib/profileStore';
 import useVocabStore from '@/lib/store';
 import { useStore } from 'zustand';
-import { BASE_URL, SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, errorSound } from '@/lib/globals';
 import useSound from 'use-sound';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import VocabList from '@/components/VocabList';
 import { HiPlus, HiCheckCircle, HiMiniXCircle } from "react-icons/hi2";
-import { useToast } from './ui/use-toast';
 import useAuth from '@/hooks/useAuth';
 import useRefreshToken from '@/hooks/useRefreshToken';
+import useDisplayPopup from '@/hooks/useDisplayPopup';
 
 export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEdit: CheckSingleEditFunction}) {
   const [newVocab, setNewVocab] = useState<string>('');
-  const {vocabs, addVocab, setVocabs} = useVocabStore(state => state);
+  const {vocabs, setVocabs} = useVocabStore(state => state);
   const {
     isAddVocab, 
     toggleIsAddVocab,
   } = useProfileStore(state => state);
   const [errorMsg, setErrorMsg] = useState<string>('');
-  const { toast } = useToast();
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
-  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
   const fetchWithAuth = useAuth();
   const refresh = useRefreshToken();
+  const { displayPopup } = useDisplayPopup();
 
   function enterAddVocabMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
@@ -61,11 +60,7 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
           });
 
           if (!res.ok) {
-            toast({
-              variant: 'destructive',
-              description: "Could not create vocabulary",
-            });
-            if (soundOn) playError();
+            displayPopup({isError: true, msg: "Could not create vocabulary"});
             throw new Error('Could not create vocabulary');
           }
 
@@ -73,11 +68,7 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
           setVocabs(data.vocabularies);
           await refresh();
           toggleIsAddVocab(); // to false
-          toast({
-            variant: 'default',
-            description: "New vocabulary has been added",
-          });
-          if (soundOn) playSuccess();
+          displayPopup({isError: false, msg: "New vocabulary has been added"});
           setErrorMsg('');
         } catch (error) {
           console.error(error);

@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckSingleEditFunction, Vocab, Word } from '@/lib/types';
 import useVocabStore from '@/lib/store';
 import useSound from 'use-sound';
-import { SOUND_VOLUME, errorSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, errorSound } from '@/lib/globals';
 import useProfileStore from '@/lib/profileStore';
 
 import { HiPencilSquare, HiTrash, HiCheckCircle, HiMiniXCircle } from "react-icons/hi2";
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
+import useAuth from '@/hooks/useAuth';
+import useRefreshToken from '@/hooks/useRefreshToken';
+import useDisplayPopup from '@/hooks/useDisplayPopup';
 
 type SingleWordProps = {
   word: Word,
@@ -19,11 +22,14 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
   const [isEditSingleWord, setIsEditSingleWord] = useState<boolean>(false);
   const [newWord, setNewWord] = useState<string>(word.word);
   const [newTranslation, setNewTranslation] = useState<string>(word.translation);
-  const deleteWord = useVocabStore(state => state.deleteWord);
-  const editWord = useVocabStore(state => state.editWord);
+  const setCurrVocab = useVocabStore(state => state.setCurrVocab);
   const { toggleIsEditWord } = useProfileStore(state => state);
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
+  const fetchWithAuth = useAuth();
+  const refresh = useRefreshToken();
+  const { displayPopup } = useDisplayPopup();
+  const [progressColor, setProgressColor] = useState<string>('gray-500');
 
   function enterEditWordMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
@@ -52,54 +58,134 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
   function submitEdit(e: React.SyntheticEvent) {
     e.preventDefault();
 
-    if (newWord.length === 0 || !/\S/.test(newWord) 
+    if (newWord.length === 0 || !/\S/.test(newWord)
       || newTranslation.length === 0 || !/\S/.test(newTranslation)) {
-        if (soundOn) playError();
-        alert('Enter valid word');
-    } else if (vocab.words.some(w => w.word === newWord)) {
+      if (soundOn) playError();
+      alert('Enter valid word');
+    } else if (vocab.words.some(w => w.word === newWord && w._id !== word._id)) {
       if (soundOn) playError();
       alert('This word already exists in the vocabulary.')
     } else {
-      editWord(vocab._id, word.word, newWord, newTranslation);
-      setIsEditSingleWord(false);
-      toggleIsEditWord(); // to false
+      const controller = new AbortController();
+      const privateUpdate = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/updateWord`, {
+            method: 'PUT',
+            signal: controller.signal,
+            body: JSON.stringify({
+              vocabId: vocab._id,
+              wordId: word._id,
+              word: newWord,
+              translation: newTranslation
+            }),
+            credentials: 'include'
+          });
+
+          if (!res.ok) {
+            displayPopup({ isError: true, msg: "Could not edit the word" });
+            throw new Error('Failed to update word');
+          }
+
+          await refresh();
+
+          const data = await res.json();
+          setIsEditSingleWord(false);
+          toggleIsEditWord(); // to false
+          setCurrVocab(data);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      privateUpdate();
+      return () => controller.abort();
     }
     setNewWord(word.word);
     setNewTranslation(word.translation);
   }
 
+  async function deleteWordFromDb() {
+    try {
+      const controller = new AbortController();
+      const privateDelete = async () => {
+        const res = await fetchWithAuth(`${BASE_URL}/vocabs/deleteWord`, {
+          method: 'DELETE',
+          signal: controller.signal,
+          body: JSON.stringify({
+            vocabId: vocab._id,
+            wordId: word._id,
+          }),
+          credentials: 'include'
+        });
+
+        if (!res.ok) {
+          displayPopup({ isError: true, msg: "Could not delete the word" });
+          throw new Error('Failed to delete word');
+        }
+
+        await refresh();
+
+        const data = await res.json();
+        setCurrVocab(data);
+      }
+
+      privateDelete();
+      return () => controller.abort();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  function getProgressColor() {
+    if (word.progress) {
+        if (word.progress < 50) {
+          setProgressColor('red-500');
+        } else if (word.progress >=50 && word.progress < 75) {
+          setProgressColor('yellow-500');
+        } else if (word.progress >= 75) {
+          setProgressColor('green-500');
+        } else {
+          setProgressColor('gray-500');
+        }
+    }
+  }
+
+  useEffect(() => {
+    getProgressColor();
+  }, []);
+
   return (
     <article className="text-sm mobile:text-base">
       {isEditSingleWord ? (
-        <form 
+        <form
           className="flex justify-between my-1 p-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 focus:bg-slate-100 dark:focus:bg-customHighlight2 transition-colors"
           onSubmit={submitEdit}
         >
-          <input 
-            className="w-1/3 pl-2 border border-slate-600 rounded" 
-            value={newWord} 
-            onChange={(e) => setNewWord(e.target.value)} 
+          <input
+            className="w-1/3 pl-2 border border-slate-600 rounded"
+            value={newWord}
+            onChange={(e) => setNewWord(e.target.value)}
             onKeyDown={checkForAbort}
-            size={20} 
-            autoFocus 
+            size={20}
+            autoFocus
           />
-          <input 
-            className="w-1/3 pl-2 border border-slate-600 rounded" 
-            value={newTranslation} 
-            onChange={(e) => setNewTranslation(e.target.value)} 
+          <input
+            className="w-1/3 pl-2 border border-slate-600 rounded"
+            value={newTranslation}
+            onChange={(e) => setNewTranslation(e.target.value)}
             onKeyDown={checkForAbort}
-            size={20} 
+            size={20}
           />
-          <button 
+          <button
             className="rounded-full bg-white"
             aria-label="update"
             onClick={submitEdit}
           >
             <HiCheckCircle className="text-btnBg hover:text-hoverBtnBg focus:text-hoverBtnBg h-8 w-8" />
           </button>
-          <button 
+          <button
             className="rounded-full bg-white"
-            aria-label="cancel" 
+            aria-label="cancel"
             onClick={exitEditWordMode}
           >
             <HiMiniXCircle className="text-secondaryBg-light hover:text-secondaryBg-light/80 focus:text-secondaryBg-light/80 h-8 w-8" />
@@ -109,14 +195,15 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
         <div className="flex justify-between my-1 p-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 focus:bg-slate-100 dark:focus:bg-customHighlight2 transition-colors">
           <p className="w-1/2">{word.word}</p>
           <p className="w-1/4 break-words">{word.translation}</p>
+          <div className={`bg-${progressColor} h-4 w-4 rounded-full`}></div>
           <div className="flex gap-1">
             <button className="text-base" aria-label="edit" onClick={enterEditWordMode}><HiPencilSquare /></button>
-            <button className="text-base" aria-label="delete" onClick={() => deleteWord(vocab._id as string, word.word)}><HiTrash /></button>
+            <button className="text-base" aria-label="delete" onClick={deleteWordFromDb}><HiTrash /></button>
           </div>
         </div>
       )}
       {/* separator */}
-      {vocab.words[vocab.words.length - 1].word !== word.word && <div className="h-px w-full dark:bg-mainBg-dark" />}
+      {vocab.words[vocab.words.length - 1]?.word !== word.word && <div className="h-px w-full dark:bg-mainBg-dark" />}
     </article>
   )
 }

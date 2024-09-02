@@ -221,7 +221,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
           <>
             <p className="w-2/5">
               <Link 
-                href={`/vocabularies/${encodeURIComponent(vocab._id)}`} 
+                href={`/vocabularies/${vocab._id}`} 
                 className="underline hover:text-customText-light/80 dark:hover:text-customText-dark/80"
               >
                 {vocab.title}
@@ -232,7 +232,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
               <button className={`${vocab.words.length > 0 ? 'text-white' : 'text-gray-300 cursor-default'} text-sm sm:text-base rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors`}>
                 {vocab.words.length > 0 ? (
                   <Link 
-                    href={`/lesson/${encodeURIComponent(vocab._id)}`} 
+                    href={`/lesson/${vocab._id}`} 
                   >
                     Start <span className="hidden sm:inline">Lesson</span>
                   </Link>

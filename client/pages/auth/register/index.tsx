@@ -9,6 +9,7 @@ import { useAuthStore } from '@/lib/authStore';
 import { useRouter } from 'next/router';
 import { jwtDecode } from 'jwt-decode';
 import { CustomPayload } from '@/lib/types';
+import { usePreferencesStore } from '@/lib/preferencesStore';
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -31,7 +32,8 @@ const Registration: NextPageWithLayout = () => {
 
   const [errMsg, setErrMsg] = useState('');
 
-  const {setAccessToken, setStoredUsername} = useAuthStore(state => state);
+  const {setAccessToken} = useAuthStore(state => state);
+  const {setStoredUsername} = usePreferencesStore();
   const router = useRouter();
 
   async function handleSubmit(e: SyntheticEvent) {

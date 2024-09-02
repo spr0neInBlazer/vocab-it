@@ -2,14 +2,14 @@ import { create } from "zustand";
 
 interface AuthSlice {
   accessToken: string,
-  // storedUsername: string,
+  isTokenChecked: boolean,
   setAccessToken: (token: string) => void,
-  // setStoredUsername: (username: string) => void,
+  setIsTokenChecked: (to: boolean) => void,
 }
 
 export const useAuthStore = create<AuthSlice>()(set => ({
   accessToken: '',
-  // storedUsername: '',
+  isTokenChecked: false,
   setAccessToken: (token: string) => set({ accessToken: token }),
-  // setStoredUsername: (username: string) => set({ storedUsername: username }),
+  setIsTokenChecked: (to: boolean) => set({ isTokenChecked: to})
 }));

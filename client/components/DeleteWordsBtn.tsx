@@ -1,0 +1,81 @@
+import React from 'react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { HiTrash } from "react-icons/hi2";
+import useVocabStore from '@/lib/store';
+import useDisplayPopup from '@/hooks/useDisplayPopup';
+import useAuth from '@/hooks/useAuth';
+import useRefreshToken from '@/hooks/useRefreshToken';
+import { BASE_URL } from '@/lib/globals';
+
+export default function DeleteWordsBtn() {
+  const {currVocab, setCurrVocab} = useVocabStore(state => state);
+  const { displayPopup } = useDisplayPopup();
+  const fetchWithAuth = useAuth();
+  const refresh = useRefreshToken();
+
+  function deleteVocabFromDb() {
+    const controller = new AbortController();
+    const privateDelete = async () => {
+      try {
+        if (!currVocab) {
+          displayPopup({isError: true, msg: 'Could not delete words'});
+          throw new Error('Could not delete words');
+        }
+
+        const res = await fetchWithAuth(`${BASE_URL}/vocabs/deleteWords`, {
+          method: 'PUT',
+          signal: controller.signal,
+          body: JSON.stringify({ _id: currVocab._id }),
+          credentials: 'include'
+        });
+
+        if (!res.ok) {
+          displayPopup({isError: true, msg: 'Could not delete words'});
+          throw new Error('Could not delete words');
+        }
+
+        // await refresh();
+        const data = await res.json();
+        setCurrVocab(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    privateDelete();
+    return () => controller.abort();
+  }
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger 
+        className="flex gap-1 items-center rounded-lg py-2 px-3 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg focus:bg-hoverSecondaryBg transition-colors disabled:bg-secondaryBg-light/50 disabled:hover:cursor-not-allowed"
+        disabled={currVocab?.words.length === 0}
+      >
+        <HiTrash /> Delete <span className="hidden mobile:inline"> All Words</span>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure you want to delete all words from this vocabulary?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={deleteVocabFromDb}>OK</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}
