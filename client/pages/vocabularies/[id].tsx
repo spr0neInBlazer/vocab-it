@@ -145,7 +145,7 @@ const Vocabulary: NextPageWithLayout = () => {
         <div className="my-5 flex justify-between items-center">
           {(words.length > 0 && router.query.id) ? (
             <button className="text-white rounded-lg py-2 px-3 font-semibold bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors">
-              <Link href={`/lesson/${encodeURIComponent(router.query.id as string)}`}>
+              <Link href={`/lesson/${router.query.id}`}>
                 Start Lesson
               </Link>
             </button>

@@ -13,41 +13,40 @@ import { NextPageWithLayout } from '../_app';
 import Layout from '@/components/Layout';
 import EndLessonDialog from '@/components/EndLessonDialog';
 import { Progress } from "@/components/ui/progress"
-import { SOUND_VOLUME, clickSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, clickSound } from '@/lib/globals';
 import RequireAuth from '@/components/RequireAuth';
 import { useAuthStore } from '@/lib/authStore';
 import useCheckToken from '@/hooks/useCheckToken';
 import useVocabStore from '@/lib/store';
-import useRefreshToken from '@/hooks/useRefreshToken';
+import useAuth from '@/hooks/useAuth';
 
 const initialWordIdx: number = 1;
+
+function randomizeWords(array: Word[], volume: number): Word[] {
+  let randomizedWords: Word[] = [];
+  let sourceArray: Word[] = array;
+  for (let i = 0; i < volume; i++) {
+    let randomIdx: number = Math.floor(Math.random() * sourceArray.length);
+    randomizedWords.push(sourceArray[randomIdx]);
+    sourceArray = sourceArray.filter((_, i) => i !== randomIdx);
+  }
+  return randomizedWords;
+}
 
 const Lesson: NextPageWithLayout = () => {
   const preferenceStore = usePreferencesStore(state => state);
   const [lessonVolume, setLessonVolume] = useState<number>(0);
   const [words, setWords] = useState<Word[]>([]);
-  const { currVocab } = useVocabStore(state => state);
+  const { currVocab, setCurrVocab } = useVocabStore(state => state);
   const [currWord, setCurrWord] = useState<number>(initialWordIdx);
   const [answer, setAnswer] = useState<string>('');
   const [allAnswers, setAllAnswers] = useState<Answer[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [endLesson, setEndLesson] = useState<boolean>(false);
   const router = useRouter();
   const [playClick] = useSound(clickSound, { volume: SOUND_VOLUME });
-  const { accessToken, isTokenChecked, setIsTokenChecked } = useAuthStore(state => state);
-  const refresh = useRefreshToken();
+  const { isTokenChecked, setIsTokenChecked, accessToken } = useAuthStore(state => state);
+  const fetchWithAuth = useAuth();
   const { checkToken } = useCheckToken();
-
-  function randomizeWords(array: Word[], volume: number): Word[] {
-    let randomizedWords: Word[] = [];
-    let sourceArray: Word[] = array;
-    for (let i = 0; i < volume; i++) {
-      let randomIdx: number = Math.floor(Math.random() * sourceArray.length);
-      randomizedWords.push(sourceArray[randomIdx]);
-      sourceArray = sourceArray.filter((_, i) => i !== randomIdx);
-    }
-    return randomizedWords;
-  }
 
   function submitAnswer(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -57,29 +56,18 @@ const Lesson: NextPageWithLayout = () => {
 
   function registerAnswer() {
     const i = currWord - 1;
-    // if the answer is wrong
-    if (answer.toLocaleLowerCase() !== words[i].word.toLowerCase()) {
-      const userAnswer: Answer = {
-        userAnswer: answer,
-        isCorrect: false,
-        word: words[i].translation,
-        correctAnswer: words[i].word
-      };
-      setAllAnswers((prevAnswers) => [...prevAnswers, userAnswer]);
-    } else {
-      // if the answer is correct 
-      const userAnswer: Answer = {
-        userAnswer: answer,
-        isCorrect: true,
-      };
-      setAllAnswers((prevAnswers) => [...prevAnswers, userAnswer]);
-    }
+    const userAnswer: Answer = {
+      _id: words[i]._id,
+      word: words[i].word,
+      translation: words[i].translation,
+      userAnswer: answer.trim()
+    };
+    setAllAnswers((prevAnswers) => [...prevAnswers, userAnswer]);
     setCurrWord(currWord + 1);
     setAnswer('');
   }
 
   function restartLesson() {
-    
     setCurrWord(1);
     setAllAnswers([]);
     if (currVocab) {
@@ -87,8 +75,38 @@ const Lesson: NextPageWithLayout = () => {
     }
   }
 
-  // fetch lessonStore
-  // update lessonVolume from lessonStore
+  // get vocab by default
+  useEffect(() => {
+    if (!currVocab) {
+      setIsTokenChecked(false);
+      const controller = new AbortController();
+
+      const getVocabData = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/getVocab`, {
+            method: "POST",
+            signal: controller.signal,
+            body: JSON.stringify({ _id: router.query.id }),
+            credentials: 'include'
+          });
+
+          if (!res.ok) {
+            throw new Error('Failed to fetch vocab data');
+          }
+
+          const vocab = await res.json();
+          setCurrVocab(vocab);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      checkToken(getVocabData);
+
+      return () => controller.abort();
+    }
+  }, [router, currVocab]);
+  
   useEffect(() => {
     if (preferenceStore) {
       setLessonVolume(preferenceStore.lessonVolume);
@@ -96,42 +114,64 @@ const Lesson: NextPageWithLayout = () => {
   }, [preferenceStore]);
 
   useEffect(() => {
-    setIsTokenChecked(false);
-    checkToken();
-  }, []);
-
-  // fetch words from local storage and randomize them 
-  useEffect(() => {
-    if (currVocab) {
-      setWords(currVocab.words);
-    }
-  }, [currVocab]);
-
-  useEffect(() => {
-    if (words.length > 0 && lessonVolume > 0) {
-      if (lessonVolume > words.length) {
-        setLessonVolume(words.length);
-        setWords(randomizeWords(words, words.length));
+    if (currVocab && currVocab.words.length > 0 && lessonVolume > 0) {
+      if (lessonVolume > currVocab.words.length) {
+        setLessonVolume(currVocab.words.length);
+        setWords(randomizeWords(currVocab.words, currVocab.words.length));
       } else {
-        setWords(randomizeWords(words, lessonVolume));
+        setWords(randomizeWords(currVocab.words, lessonVolume));
       }
     }
-  }, [lessonVolume, words]);
+  }, [lessonVolume, currVocab]);
 
   useEffect(() => {
-    if (router.query.id && currVocab && currVocab.words.length > 0 && preferenceStore) {
+    if (words.length > 0) {
       setIsLoading(false);
     } else {
       setIsLoading(true)
     }
-  }, [router.query.id, preferenceStore, isLoading, currVocab]);
+  }, [words]);
 
-  // when user ends the lesson, redirect to profile page
+  // lesson end
   useEffect(() => {
-    if (endLesson) {
-      router.push('/profile');
+    if (currWord !== initialWordIdx && currWord > lessonVolume) {
+      setIsTokenChecked(false);
+      const controller = new AbortController();
+      const answersToSend = allAnswers.map((a: Answer) => {
+        return {
+          _id: a._id,
+          userAnswer: a.userAnswer
+        }
+      });
+
+      const updateProgress = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/updateProgress`, {
+            method: 'PATCH',
+            signal: controller.signal,
+            body: JSON.stringify({
+              answers: answersToSend,
+              vocabId: currVocab?._id
+            }),
+            credentials: 'include'
+          });
+
+          if (!res.ok) {
+            throw new Error('Failed to update progress');
+          }
+
+          const vocab = await res.json();
+          setCurrVocab(vocab);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      checkToken(updateProgress);
+
+      return () => controller.abort();
     }
-  }, [endLesson, router]);
+  }, [router, currWord, lessonVolume]);
 
   // end of lesson
   if (currWord > lessonVolume) {
@@ -175,7 +215,7 @@ const Lesson: NextPageWithLayout = () => {
         <section className="w-full p-4 sm:p-8 rounded-xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
           <div>
             <h2 className="text-xl mobile:text-2xl">Word:</h2>
-            {(isTokenChecked && !isLoading) ? (
+            {(isTokenChecked && !isLoading && words[currWord - 1]) ? (
               <p className="text-2xl mobile:text-3xl text-center my-3">
                 {words[currWord - 1].translation}
               </p>
@@ -189,8 +229,8 @@ const Lesson: NextPageWithLayout = () => {
           <div>
             <div className="flex justify-between">
               <h2 className="text-xl mobile:text-2xl">Enter translation:</h2>
-              {(isTokenChecked && !isLoading) ? (
-                <HintButton word={words[currWord - 1].word as string} />
+              {(isTokenChecked && !isLoading && words[currWord - 1]) ? (
+                <HintButton word={words[currWord - 1].word} />
               ) : (
                 <Skeleton className="w-[38px] h-[38px] rounded" />
               )}
@@ -203,21 +243,24 @@ const Lesson: NextPageWithLayout = () => {
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder="Your answer"
                 autoFocus
+                disabled={!isTokenChecked || isLoading}
               />
             </form>
           </div>
         </section>
         <div className="flex justify-between mt-5 px-3">
-          <EndLessonDialog setEndLesson={setEndLesson} />
+          <EndLessonDialog />
           <button
-            className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-zinc-600 hover:bg-zinc-500 focus:bg-zinc-500 transition-colors"
+            className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-zinc-600 hover:bg-zinc-500 focus:bg-zinc-500 transition-colors disabled:text-gray-400"
             onClick={registerAnswer}
+            disabled={!isTokenChecked || isLoading}
           >
             Skip
           </button>
           <button
-            className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors"
+            className="w-16 text-sm mobile:text-base mobile:w-28 flex justify-center items-center rounded-lg py-2 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors disabled:text-gray-400"
             onClick={registerAnswer}
+            disabled={!isTokenChecked || isLoading}
           >
             OK
           </button>

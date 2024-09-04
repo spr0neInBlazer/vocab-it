@@ -11,6 +11,7 @@ const useAuth = () => {
   const {accessToken} = useAuthStore(state => state);
   
   async function fetchWithAuth(url: string, options: FetchOptions = {}) {
+    console.log(`Access token within fetchWithAuth: ${accessToken}`);
     const defaultHeaders = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${accessToken}`
@@ -25,10 +26,10 @@ const useAuth = () => {
     };
 
     let res = await fetch(url, config);
+    // console.log(`Access token after refresh: ${accessToken}`);
 
-    if (res.status === 403) {
+    if (res.status === 403 || res.status === 401) {
       const newAccessToken = await refresh();
-
       config.headers['Authorization'] = `Bearer ${newAccessToken}`;
       res = await fetch(url, config);
     }

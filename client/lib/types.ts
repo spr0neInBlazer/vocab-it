@@ -29,10 +29,10 @@ export interface WordStore {
 }
 
 export interface Answer {
-  userAnswer: string,
-  isCorrect: boolean,
-  word?: string,
-  correctAnswer?: string
+  _id: string,
+  word: string,
+  translation: string,
+  userAnswer: string
 }
 
 export type CheckSingleEditFunction = () => boolean;

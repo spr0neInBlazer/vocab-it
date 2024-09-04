@@ -16,7 +16,11 @@ export interface Word {
   translation: string,
   progress?: number,
   trained: number,
-  isGuessCorrect?: boolean
+}
+
+export interface UserAnswer {
+  _id: string,
+  userAnswer: string
 }
 
 export interface CustomRequest extends Request {

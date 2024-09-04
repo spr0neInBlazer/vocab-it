@@ -1,8 +1,10 @@
 import { useAuthStore } from "@/lib/authStore"
 import { BASE_URL } from "@/lib/globals";
+import useVocabStore from "@/lib/store";
 
 const useLogout = () => {
   const {setAccessToken, setIsTokenChecked} = useAuthStore(state => state);
+  const {setCurrVocab} = useVocabStore(state => state);
 
   async function logout() {
     try {
@@ -10,8 +12,9 @@ const useLogout = () => {
         credentials: 'include'
       });
       setAccessToken('');
+      setCurrVocab(null);
       setIsTokenChecked(false);
-      console.log('singed out');
+      console.log('signed out');
     } catch (error) {
       console.error(error);
     }

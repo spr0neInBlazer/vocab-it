@@ -32,7 +32,7 @@ async function handleNewUser(req: Request, res: Response) {
           "roles": [1305]
         }
       },
-      accessSecret, { expiresIn: '10s' }
+      accessSecret, { expiresIn: '10m' }
     );
     const refreshToken = jwt.sign(
       { "_id": userId },

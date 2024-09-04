@@ -9,8 +9,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useRouter } from 'next/router';
 
-export default function EndLessonDialog({ setEndLesson }: { setEndLesson: React.Dispatch<React.SetStateAction<boolean>>}) {
+export default function EndLessonDialog() {
+  const router = useRouter();
+
   return (
     <AlertDialog>
       <AlertDialogTrigger className="w-16 text-sm mobile:text-base mobile:w-28 flex items-center justify-center rounded-lg py-2 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg transition-colors">
@@ -28,7 +31,7 @@ export default function EndLessonDialog({ setEndLesson }: { setEndLesson: React.
           </AlertDialogCancel>
           <AlertDialogAction
             className="font-semibold bg-btnBg dark:bg-btnBg hover:bg-hoverBtnBg dark:hover:bg-hoverBtnBg text-white dark:text-white hover:text-white border dark:border-white"
-            onClick={() => setEndLesson(true)}
+            onClick={() => router.push('/profile')}
           >
             OK
           </AlertDialogAction>

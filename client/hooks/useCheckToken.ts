@@ -9,7 +9,6 @@ function useCheckToken() {
   const refresh = useRefreshToken();
 
   const checkToken = useCallback(async (fetchFn?: FetchFn) => {
-
     if (accessToken) {
       setIsTokenChecked(true);
       if (fetchFn) {
@@ -17,9 +16,9 @@ function useCheckToken() {
       }
     } else {
       try {
-        console.log('try/catch block');
         await refresh();
         if (fetchFn) {
+          console.log('try/catch block');
           await fetchFn();
         }
         setIsTokenChecked(true);

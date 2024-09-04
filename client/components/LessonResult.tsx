@@ -17,7 +17,7 @@ type ResultProps = {
 }
 
 export default function LessonResult({allAnswers, words}: ResultProps) {
-  const wrongAnswers: Answer[] = allAnswers.filter(a => !a.isCorrect);
+  const wrongAnswers: Answer[] = allAnswers.filter(a => a.userAnswer !== a.word);
   const answeredCorrectly: number = allAnswers.length - wrongAnswers.length;
 
   const successPercentage: number = Math.round((answeredCorrectly / words.length) * 100);
@@ -49,10 +49,10 @@ export default function LessonResult({allAnswers, words}: ResultProps) {
                 <TableBody className="italic">
                 {wrongAnswers.map(a => {
                   return (
-                    <TableRow key={a.word} className="text-sm mobile:text-base text-left">
-                      <TableCell className="font-medium px-2 mobile:px-4">{a.word}</TableCell>
+                    <TableRow key={a._id} className="text-sm mobile:text-base text-left">
+                      <TableCell className="font-medium px-2 mobile:px-4">{a.translation}</TableCell>
                       <TableCell className="text-red-500 dark:text-red-300 px-2 mobile:px-4">{a.userAnswer}</TableCell>
-                      <TableCell className="text-green-600 dark:text-green-300 px-2 mobile:px-4">{a.correctAnswer}</TableCell>
+                      <TableCell className="text-green-600 dark:text-green-300 px-2 mobile:px-4">{a.word}</TableCell>
                     </TableRow>
                   )
                 })}

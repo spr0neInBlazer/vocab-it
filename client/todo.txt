@@ -10,19 +10,10 @@ Features:
 ? allow multiple translations
 ? when a word is deleted show "cancel" button in its place until the next page load to revert back
 
-+ on page refresh check for refresh token and grant new access token (persistent login)
-  - add persistent login to all pages
-- disable all buttons during data fetching
-+ add new word
-+ import CSV
-+ delete all words
-- register words progress
-- add messages for successful login and registration
 - add data sanitizing
+- add messages for successful login and registration
 - check whether lessonStore is needed at all
 
 Bugs/other:
 - do I need both lucide-react and react-icons?
-
-http://localhost:3000/lesson/66cb7c8169e3b395c6965f4a
-http://localhost:3000/vocabularies/66cb7c8169e3b395c6965f4a
+- write tests

@@ -10,28 +10,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { BASE_URL, errorSound, INITIAL_NUMBER, SOUND_VOLUME, successSound } from '@/lib/globals';
-import { useToast } from './ui/use-toast';
-import { useStore } from 'zustand';
+import { BASE_URL, INITIAL_NUMBER } from '@/lib/globals';
 import { usePreferencesStore } from '@/lib/preferencesStore';
-import useSound from 'use-sound';
 import { useAuthStore } from '@/lib/authStore';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/router';
 import useVocabStore from '@/lib/store';
 import useLessonStore from '@/lib/lessonStore';
+import useDisplayPopup from '@/hooks/useDisplayPopup';
 
 export default function DangerZone() {
-  const {toast} = useToast();
-  const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
-  const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
-  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
   const fetchWithAuth = useAuth();
   const {setAccessToken} = useAuthStore(state => state);
   const {setVocabs} = useVocabStore();
   const {updateVolume} = useLessonStore();
   const {setStoredUsername, updateLessonVolume} = usePreferencesStore();
   const router = useRouter();
+  const { displayPopup } = useDisplayPopup();
 
   async function handleAccountDelete() {
     const controller = new AbortController();
@@ -44,11 +39,7 @@ export default function DangerZone() {
         });
 
         if (!res.ok) {
-          toast({
-            variant: 'destructive',
-            description: "Could not delete account",
-          });
-          if (soundOn) playError();
+          displayPopup({ isError: true, msg: "Could not delete account" });
           throw new Error('Failed to delete account');
         }
 
@@ -59,11 +50,7 @@ export default function DangerZone() {
         updateLessonVolume(INITIAL_NUMBER);
         setStoredUsername('');
         
-        toast({
-          variant: 'default',
-          description: "Your account has been deleted",
-        });
-        if (soundOn) playSuccess();
+        displayPopup({ isError: false, msg: "Your account has been deleted" });
         router.push('/');
       } catch (error) {
         console.error(error);

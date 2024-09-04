@@ -27,6 +27,6 @@ vocabRouter.put('/updateWord', updateWord);
 vocabRouter.delete('/deleteWord', deleteWord);
 vocabRouter.put('/deleteWords', deleteAllWords);
 vocabRouter.post('/importCsv', addCSV);
-vocabRouter.put('/updateProgress', updateProgress);
+vocabRouter.patch('/updateProgress', updateProgress);
 
 export default vocabRouter;

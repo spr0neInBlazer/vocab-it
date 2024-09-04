@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Vocabulary from "../models/Vocabulary";
 import { v4 as uuidv4 } from 'uuid';
-import { Word } from "../types";
+import { UserAnswer, Word } from "../types";
 
 async function addWord(req: Request, res: Response) {
   try {
@@ -147,16 +147,18 @@ async function updateProgress(req: Request, res: Response) {
       return res.status(404).json({ msg: 'Vocabulary not found' });
     }
 
-    answers.forEach((w: Word) => {
+    answers.forEach((w: UserAnswer) => {
       const currWord = foundVocab.words.find(word => word._id === w._id);
       if (currWord) {
         currWord.trained = currWord.trained + 1;
-        currWord.progress = getProgressPercentage(currWord.progress, currWord.trained, w.isGuessCorrect);
+        const isGuessCorrect = currWord.word === w.userAnswer;
+        currWord.progress = getProgressPercentage(currWord.progress, currWord.trained, isGuessCorrect);
       }
     });
 
     await foundVocab.save();
-    res.status(200).json({ foundVocab });
+    const { _id, title, words } = foundVocab;
+    res.status(200).json({ _id, title, words });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });

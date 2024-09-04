@@ -13,7 +13,7 @@ async function handleRefreshToken(req: Request, res: Response) {
   try {
     const cookies = req.cookies;
     if (!cookies?.jwt) {
-      console.log({ msg: 'no refresh token', cookies });
+      console.log({ msg: 'no refresh token' });
       return res.sendStatus(401); // Unauthorized
     }
   
@@ -39,7 +39,7 @@ async function handleRefreshToken(req: Request, res: Response) {
         }
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '10s' }
+      { expiresIn: '10m' }
     );
     res.json({ accessToken });
   } catch (error) {

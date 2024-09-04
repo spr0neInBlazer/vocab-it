@@ -29,7 +29,7 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
   const fetchWithAuth = useAuth();
   const refresh = useRefreshToken();
   const { displayPopup } = useDisplayPopup();
-  const [progressColor, setProgressColor] = useState<string>('gray-500');
+  const [progressStatus, setProgressStatus] = useState<string>('absent');
 
   function enterEditWordMode() {
     const isOnlyEdit: boolean = checkSingleEdit();
@@ -138,15 +138,15 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
 
   function getProgressColor() {
     if (word.progress) {
-        if (word.progress < 50) {
-          setProgressColor('red-500');
-        } else if (word.progress >=50 && word.progress < 75) {
-          setProgressColor('yellow-500');
-        } else if (word.progress >= 75) {
-          setProgressColor('green-500');
-        } else {
-          setProgressColor('gray-500');
-        }
+      if (word.progress < 50) {
+        setProgressStatus('poor');
+      } else if (word.progress >= 50 && word.progress < 75) {
+        setProgressStatus('normal');
+      } else if (word.progress >= 75) {
+        setProgressStatus('good');
+      } else {
+        setProgressStatus('absent');
+      }
     }
   }
 
@@ -195,7 +195,18 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
         <div className="flex justify-between my-1 p-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 focus:bg-slate-100 dark:focus:bg-customHighlight2 transition-colors">
           <p className="w-1/2">{word.word}</p>
           <p className="w-1/4 break-words">{word.translation}</p>
-          <div className={`bg-${progressColor} h-4 w-4 rounded-full`}></div>
+          <div 
+            className={`h-4 w-4 border border-slate-500 dark:border-white rounded-full
+            ${progressStatus === 'absent' 
+              ? 'bg-gray-500'
+              : progressStatus === 'poor'
+              ? 'bg-red-500'
+              : progressStatus === 'normal'
+              ? 'bg-yellow-500'
+              : 'bg-green-500'
+            }`} 
+            title={progressStatus}
+          />
           <div className="flex gap-1">
             <button className="text-base" aria-label="edit" onClick={enterEditWordMode}><HiPencilSquare /></button>
             <button className="text-base" aria-label="delete" onClick={deleteWordFromDb}><HiTrash /></button>

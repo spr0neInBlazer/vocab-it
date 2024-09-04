@@ -7,7 +7,7 @@ export const prefix: string = "vi_";
 interface VocabStore {
   vocabs: Vocab[] | [],
   currVocab: Vocab | null,
-  setCurrVocab: (vocab: Vocab) => void,
+  setCurrVocab: (vocab: Vocab | null) => void,
   setVocabs: (vocabs: Vocab[]) => void,
   addVocab: (title: string) => void,
   deleteVocab: (id: string) => void,
@@ -21,7 +21,7 @@ interface VocabStore {
 const useVocabStore = create<VocabStore>(set => ({
   vocabs: [],
   currVocab: null,
-  setCurrVocab: (currVocab: Vocab) => set({ currVocab }),
+  setCurrVocab: (currVocab: Vocab | null) => set({ currVocab }),
   setVocabs: (vocabs: Vocab[]) => set({ vocabs }),
   
   addVocab: (title: string) => {
