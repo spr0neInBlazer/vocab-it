@@ -114,7 +114,7 @@ export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEd
               data-testid="vocab-input"
             />
             <button 
-              className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:focus:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`}
+              className="rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:focus:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded"
               aria-label="create" 
               onClick={createVocab}
             >              

@@ -9,7 +9,7 @@ const ErrorPage: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Account</title>
+        <title>Not found | Vocab-It</title>
       </Head>
 
       <section className="w-11/12 lg:w-3/5 flex flex-col gap-4 items-center justify-center mx-auto mb-10 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">

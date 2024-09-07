@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Vocab } from '@/lib/types';
 import useVocabStore from '@/lib/store';
-import dynamic from 'next/dynamic';
+import { useAuthStore } from '@/lib/authStore';
 
 import VocabListRow from './VocabListRow';
 import { Skeleton } from './ui/skeleton';
-import { HiMiniQuestionMarkCircle } from "react-icons/hi2";
 import { ScrollArea } from './ui/scroll-area';
-import { useAuthStore } from '@/lib/authStore';
-
-const WordsTooltip = dynamic(() => import('./WordsTooltip'), {
-  loading: () => <HiMiniQuestionMarkCircle />
-});
 
 export default function VocabList() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -33,7 +27,6 @@ export default function VocabList() {
           <p className="w-2/5 font-bold text-left pl-2">Title</p>
           <p className="font-bold flex items-center gap-1 justify-start">
             Words
-            <WordsTooltip />
           </p>
         </div>
         <div className="h-[210px] rounded-md border px-2 sm:px-4 py-3">
@@ -61,7 +54,6 @@ export default function VocabList() {
           <p className="w-2/5 font-bold text-left pl-2">Title</p>
           <p className="font-bold flex items-center gap-1 justify-start">
             Words
-            <WordsTooltip />
           </p>
         </div>
         <ScrollArea className="h-[210px] rounded-md border px-2 sm:px-4 py-3">

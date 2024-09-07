@@ -41,7 +41,7 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Vocab It - self-managed vocabularies</title>
+        <title>Vocab-It | self-managed vocabularies</title>
       </Head>
       {/* upper screen */}
       <div>

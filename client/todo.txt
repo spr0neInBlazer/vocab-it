@@ -12,11 +12,11 @@ Features:
 
 
 - do I need nanoid, iconv, jschardet?
-+ check res statutes & req methods of the controllers
-- style sign in/up forms & words table
++ style sign in/up forms & words table
 - prepare app for production (compression, sanitizing, etc.)
 - add messages for successful login and registration
 - optimization
+- delete WordsTooltip if not needed
 
 Bugs/other:
 - write tests

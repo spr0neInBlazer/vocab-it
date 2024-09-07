@@ -161,8 +161,8 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <Link href="/auth/login">Sign In</Link>
-                  <Link href="/auth/register">Sign Up</Link>
+                  <Link className="hover:cursor-pointer text-white hover:text-white/75 mx-2 text-lg" href="/auth/login">Sign In</Link>
+                  <Link className="hover:cursor-pointer text-white hover:text-white/75 mx-2 text-lg" href="/auth/register">Sign Up</Link>
                 </>
               )}
 

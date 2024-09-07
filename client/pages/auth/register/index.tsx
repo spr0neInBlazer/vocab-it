@@ -104,61 +104,71 @@ const Registration: NextPageWithLayout = () => {
       <Head>
         <title>Registration</title>
       </Head>
-      <section>
+      <section className="w-11/12 lg:w-3/5 mx-auto mb-10 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
         <p
+          className="text-red-400 text-center"
           ref={errRef}
           aria-live="assertive"
         >
           {errMsg}
         </p>
-        <form onSubmit={handleSubmit}>
-          <h1>Registration form</h1>
-          <label htmlFor="username">Username:</label>
-          <input
-            className={`${validName ? 'border-white' : 'border-red-500'} border`}
-            ref={userRef}
-            type="text"
-            id="username"
-            required
-            onChange={(e) => setUser(e.target.value)}
-            onFocus={() => setUserFocus(true)}
-            onBlur={() => setUserFocus(false)}
-          />
+        <form
+          className="flex flex-col gap-8" 
+          onSubmit={handleSubmit}
+        >
+          <h1 className='text-2xl mobile:text-3xl md:text-4xl text-center font-semibold dark:text-customText-dark mb-2'>Create an account</h1>
+          <label htmlFor="username">
+            <p>Username:</p>
+            <input
+              className={`${validName ? 'border-white' : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
+              ref={userRef}
+              type="text"
+              id="username"
+              required
+              onChange={(e) => setUser(e.target.value)}
+              onFocus={() => setUserFocus(true)}
+              onBlur={() => setUserFocus(false)}
+            />
+          </label>
 
-          <label htmlFor="password">Password:</label>
-          <input
-            className={`${validPwd ? 'border-white' : 'border-red-500'} border`}
-            type="password"
-            id="password"
-            required
-            value={pwd}
-            onChange={(e) => setPwd(e.target.value)}
-            onFocus={() => setPwdFocus(true)}
-            onBlur={() => setPwdFocus(false)}
-          />
+          <label htmlFor="password">
+            <p>Password:</p>
+            <input
+              className={`${validPwd ? 'border-white' : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
+              type="password"
+              id="password"
+              required
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+              onFocus={() => setPwdFocus(true)}
+              onBlur={() => setPwdFocus(false)}
+            />
+          </label>
 
-          <label htmlFor="confirm-password">Confirm Password:</label>
-          <input
-            className={`${validMatch ? 'border-white' : 'border-red-500'} border`}
-            type="password"
-            id="confirm-password"
-            required
-            value={matchPwd}
-            onChange={(e) => setMatchPwd(e.target.value)}
-            onFocus={() => setMatchFocus(true)}
-            onBlur={() => setMatchFocus(false)}
-          />
+          <label htmlFor="confirm-password">
+            <p>Confirm Password:</p>
+            <input
+              className={`${validMatch ? 'border-white' : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
+              type="password"
+              id="confirm-password"
+              required
+              value={matchPwd}
+              onChange={(e) => setMatchPwd(e.target.value)}
+              onFocus={() => setMatchFocus(true)}
+              onBlur={() => setMatchFocus(false)}
+            />
+          </label>
           <button 
-            className="disabled:text-gray-400"
+            className="rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:focus:bg-hoverBtnBg mobile:text-white cursor-pointer text-lg mobile:px-3 mobile:py-2 mobile:rounded disabled:text-gray-400 disabled:cursor-not-allowed"
             disabled={!validName || !validPwd || !validMatch ? true : false}
           >
             Sign Up
           </button>
         </form>
-        <p>
-          Already registered?<br />
+        <p className="dark:text-customText-dark mt-2">
+          Already have an account?<br />
           <span>
-            <Link href="/auth/login">Sign In</Link>
+            <Link className="underline" href="/auth/login">Sign In</Link>
           </span>
         </p>
       </section>

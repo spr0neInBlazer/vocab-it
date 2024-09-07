@@ -26,10 +26,6 @@ import { useAuthStore } from '@/lib/authStore';
 import useCheckToken from '@/hooks/useCheckToken';
 import RequireAuth from '@/components/RequireAuth';
 
-const WordsTooltip = dynamic(() => import('@/components/WordsTooltip'), {
-  loading: () => <HiMiniQuestionMarkCircle />
-});
-
 const Vocabulary: NextPageWithLayout = () => {
   const router = useRouter();
   const {currVocab, setCurrVocab} = useVocabStore(state => state);
@@ -114,7 +110,7 @@ const Vocabulary: NextPageWithLayout = () => {
   return (
     <RequireAuth allowedRoles={[1305]}>
       <Head>
-        <title>Vocabulary Details</title>
+        <title>Vocabulary | Vocab-It</title>
       </Head>
       <section className="w-11/12 lg:w-3/5 mx-auto mb-6 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight flex flex-col border border-zinc-400 dark:border-zinc-300 shadow-2xl">
         <div className="grid grid-rows-2 sm:grid-cols-3 gap-3 w-full items-start">
@@ -139,7 +135,6 @@ const Vocabulary: NextPageWithLayout = () => {
           <p className="mobile:text-lg">
             {words.length === 1 ? '1 word' : `${words.length} words`}
           </p>
-          <WordsTooltip />
         </div>
         <div className="my-5 flex justify-between items-center">
           {(words.length > 0 && router.query.id) ? (
@@ -162,10 +157,10 @@ const Vocabulary: NextPageWithLayout = () => {
           </div>
         </div>
         <section className="w-full mx-auto">
-          <div className="flex px-6 my-2">
-            <p className="font-bold w-3/5">Word</p>
-            <p className="font-bold">Translation</p>
-            <p className="font-bold">Progress</p>
+          <div className="flex justify-between mobile:px-6 my-2">
+            <p className="text-sm sm:text-base font-bold sm:w-1/3">Word</p>
+            <p className="text-sm sm:text-base font-bold">Translation</p>
+            <p className="text-sm sm:text-base font-bold">Progress</p>
           </div>
           {words.length > 0 ? (
             <ScrollArea className="h-[210px] rounded-md border px-2 sm:px-4 py-3">

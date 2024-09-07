@@ -178,7 +178,7 @@ const Lesson: NextPageWithLayout = () => {
     return (
       <RequireAuth allowedRoles={[1305]}>
         <Head>
-          <title>Lesson</title>
+          <title>Lesson | Vocab-It</title>
         </Head>
         <div className="w-11/12 lg:w-3/5 mx-auto mb-6">
           <LessonResult allAnswers={allAnswers} words={words} />
@@ -203,7 +203,7 @@ const Lesson: NextPageWithLayout = () => {
   return (
     <RequireAuth allowedRoles={[1305]}>
       <Head>
-        <title>Lesson</title>
+        <title>Lesson | Vocab-It</title>
       </Head>
       <div className="w-11/12 lg:w-3/5 mx-auto mb-6">
         <p className="mx-3">{currWord}/{lessonVolume}</p>

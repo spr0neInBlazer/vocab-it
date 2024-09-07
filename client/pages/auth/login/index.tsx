@@ -85,43 +85,59 @@ const Login: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Sign In</title>
+        <title>Log in | Vocab-It</title>
       </Head>
-      <section>
+      <section className="w-11/12 lg:w-3/5 mx-auto mb-10 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
         <p
-          className="text-red-400"
+          className="text-red-400 text-center"
           ref={errRef}
           aria-live="assertive"
         >
           {errMsg}
         </p>
-        <form onSubmit={handleSubmit}>
-          <h1>Sign In Form</h1>
-          <label htmlFor="username">Username:</label>
-          <input
-            ref={userRef}
-            type="text"
-            id="username"
-            required
-            onChange={(e) => setUser(e.target.value)}
-            onFocus={() => setUserFocus(true)}
-            onBlur={() => setUserFocus(false)}
-          />
+        <form
+          className="flex flex-col gap-8" 
+          onSubmit={handleSubmit}
+        >
+          <h1 className='text-2xl mobile:text-3xl md:text-4xl text-center font-semibold dark:text-customText-dark mb-2'>Log in to your account</h1>
+          <label htmlFor="username">
+            <p>Username:</p>
+            <input
+              className="text-lg leading-9 px-2 border rounded w-full sm:w-2/3 lg:w-1/2"
+              ref={userRef}
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter username..."
+              required
+              onChange={(e) => setUser(e.target.value)}
+              onFocus={() => setUserFocus(true)}
+              onBlur={() => setUserFocus(false)}
+            />
+          </label>
 
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            required
-            value={pwd}
-            onChange={(e) => setPwd(e.target.value)}
-          />
-          <button>Sign In</button>
+          <label htmlFor="password">
+            <p>Password:</p>
+            <input
+              className="text-lg leading-9 px-2 border rounded w-full sm:w-2/3 lg:w-1/2"
+              type="password"
+              id="password"
+              placeholder="Enter password..."
+              required
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+            />
+          </label>
+          <button
+            className="rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:focus:bg-hoverBtnBg mobile:text-white cursor-pointer text-lg mobile:px-3 mobile:py-2 mobile:rounded"
+          >
+            Log In
+          </button>
         </form>
-        <p>
+        <p className="dark:text-customText-dark mt-2">
           Don&#39;t have an account?<br />
           <span>
-            <Link href="auth/register">Sign Up</Link>
+            <Link className="underline" href="/auth/register">Sign Up</Link>
           </span>
         </p>
       </section>

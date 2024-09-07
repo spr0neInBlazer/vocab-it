@@ -9,7 +9,7 @@ export default function Footer() {
     >
       <div className="w-11/12 flex-col mobile:flex-row sm:w-4/5 mx-auto flex gap-3 justify-between">
         <div>
-          <p className="text-xl text-center mobile:text-left">Vocab It</p>
+          <p className="text-xl text-center mobile:text-left">Vocab-It</p>
           <p className="text-center mobile:text-left text-sm">Developed by Michael Savych</p>
         </div>
         <div>
