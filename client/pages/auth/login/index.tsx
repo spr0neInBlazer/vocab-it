@@ -18,7 +18,7 @@ const Login: NextPageWithLayout = () => {
   const [userFocus, setUserFocus] = useState<boolean>(false);
   const [pwd, setPwd] = useState<string>('');
   const [errMsg, setErrMsg] = useState<string>('');
-  const {setAccessToken} = useAuthStore(state => state);
+  const setAccessToken = useAuthStore(state => state.setAccessToken);
   const {setStoredUsername} = usePreferencesStore(state => state);
   const router = useRouter();
 
@@ -67,7 +67,6 @@ const Login: NextPageWithLayout = () => {
       setUser('');
       setPwd('');
       router.push('/profile');
-      console.log({ accessToken });
     } catch (error) {
       setErrMsg('No Server Response');
       errRef.current?.focus();

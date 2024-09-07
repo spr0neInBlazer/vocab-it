@@ -79,7 +79,6 @@ const Registration: NextPageWithLayout = () => {
       const decoded = jwtDecode<CustomPayload>(accessToken);
       setStoredUsername(decoded.UserInfo.username);
       router.push('/profile');
-      console.log({ accessToken });
     } catch (error) {
       setErrMsg('No Server Response');
       errRef.current?.focus();

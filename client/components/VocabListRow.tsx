@@ -19,17 +19,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useToast } from './ui/use-toast';
-import { BASE_URL, SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, errorSound } from '@/lib/globals';
 import useAuth from '@/hooks/useAuth';
 import useRefreshToken from '@/hooks/useRefreshToken';
+import useDisplayPopup from '@/hooks/useDisplayPopup';
 
 export default function VocabListRow({ vocab }: { vocab: Vocab }) {
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(vocab.title);
-  const vocabs = useVocabStore(state => state.vocabs);
-  const deleteVocab = useVocabStore(state => state.deleteVocab);
-  const editVocabTitle = useVocabStore(state => state.editVocabTitle);
+  const {vocabs, deleteVocab, editVocabTitle} = useVocabStore(state => state);
   const {
     isEditUsername,
     isEditWordAmount,
@@ -37,12 +35,11 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
     isEditVocabTitle,
     toggleIsEditVocabTitle
   } = useProfileStore(state => state);
-  const {toast} = useToast();
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
-  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
   const fetchWithAuth = useAuth();
   const refresh = useRefreshToken();
+  const { displayPopup } = useDisplayPopup();
 
   // only allow one field editing at a time
   function checkSingleEdit() {
@@ -89,22 +86,14 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
           });
 
           if (!res.ok) {
-            toast({
-              variant: 'destructive',
-              description: "Username could not be updated",
-            });
-            if (soundOn) playError();
+            displayPopup({ isError: true, msg: "Title could not be updated" });
             throw new Error('Failed to update title');
           }
 
           await refresh();
           editVocabTitle(vocab._id, title);
           setIsEditTitle(false);
-          toast({
-            variant: 'default',
-            description: "Vocabulary title has been updated",
-          });
-          if (soundOn) playSuccess();
+          displayPopup({ isError: false, msg: "Vocabulary title has been updated" });
         } catch (error) {
           console.error(error);
         } finally {
@@ -113,10 +102,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
       }
 
       privateUpdate();
-
-      return () => {
-        controller.abort();
-      }
+      return () => controller.abort();
     }
   }
 
@@ -139,31 +125,20 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
         });
 
         if (!res.ok) {
-          toast({
-            variant: 'destructive',
-            description: "Could not delete vocabulary",
-          });
-          if (soundOn) playError();
+          displayPopup({ isError: true, msg: "Could not delete vocabulary" });
           throw new Error('Could not delete vocabulary');
         }
 
         await refresh();
         deleteVocab(vocab._id);
-        toast({
-          variant: 'default',
-          description: "Vocabulary has been deleted",
-        });
-        if (soundOn) playSuccess();
+        displayPopup({ isError: false, msg: "Vocabulary has been deleted" });
       } catch (error) {
         console.error(error);
       }
     }
 
     privateDelete();
-
-    return () => {
-      controller.abort();
-    }
+    return () => controller.abort();
   }
 
   useEffect(() => {

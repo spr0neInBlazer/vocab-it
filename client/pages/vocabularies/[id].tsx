@@ -79,7 +79,6 @@ const Vocabulary: NextPageWithLayout = () => {
         const vocab = await res.json();      
         setCurrVocab(vocab);
         setWords(vocab.words);
-        console.log({ vocab });
       } catch (error) {
         console.error(error);
       }
@@ -187,10 +186,7 @@ const Vocabulary: NextPageWithLayout = () => {
             </div>
           )}
         </section>
-        <VocabAddWordForm
-          id={router.query.id as string}
-          checkSingleEdit={checkSingleEdit}
-        />
+        <VocabAddWordForm checkSingleEdit={checkSingleEdit} />
       </section>
       <Toaster />
       <Footer />

@@ -3,7 +3,7 @@ import useVocabStore from '@/lib/store';
 import useSound from 'use-sound';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
-import { SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, errorSound } from '@/lib/globals';
 
 import {
   DialogContent,
@@ -14,7 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from './ui/button';
-import { useToast } from './ui/use-toast';
+import useAuth from '@/hooks/useAuth';
+import useDisplayPopup from '@/hooks/useDisplayPopup';
 
 type DialogProps = {
   vocabTitle: string,
@@ -24,12 +25,11 @@ type DialogProps = {
 }
 
 export default function NewVocabDialog({ vocabTitle, setVocabTitle, invalidInputMsg, setInvalidInputMsg }: DialogProps) {
-  const vocabs = useVocabStore(state => state.vocabs);
-  const addVocab = useVocabStore(state => state.addVocab);
-  const { toast } = useToast();
+  const {vocabs, setVocabs} = useVocabStore(state => state);
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
-  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
+  const fetchWithAuth = useAuth();
+  const { displayPopup } = useDisplayPopup();
 
   function createVocab(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -38,20 +38,39 @@ export default function NewVocabDialog({ vocabTitle, setVocabTitle, invalidInput
 
     // if the title is empty or only consists of spaces
     if (vocabTitle.length === 0 || !/\S/.test(vocabTitle)) {
-      setInvalidInputMsg('Title is required');
       if (soundOn) playError();
+      setInvalidInputMsg('Title is required');
     } 
     // if there's an existing vocab with the entered title
-    else if (vocabs?.find(v => v.title === vocabTitle)) {
+    else if (vocabs?.some(v => v.title === vocabTitle)) {
       setInvalidInputMsg('A vocabulary with this title already exists');
       if (soundOn) playError();
     } else {
-      addVocab(vocabTitle);
-      toast({
-        variant: 'default',
-        description: "Vocabulary has been successfully created",
-      });
-      if (soundOn) playSuccess();
+      const controller = new AbortController();
+      const privateCreate = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/addVocab`, {
+            method: 'POST',
+            signal: controller.signal,
+            body: JSON.stringify({ title: vocabTitle }),
+            credentials: 'include'
+          });
+
+          if (!res.ok) {
+            displayPopup({isError: true, msg: "Could not create vocabulary"});
+            throw new Error('Could not create vocabulary');
+          }
+
+          const data = await res.json();
+          setVocabs(data.vocabularies);
+          displayPopup({isError: false, msg: "New vocabulary has been added"});
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      privateCreate();
+      return () => controller.abort();
     }
   }
 

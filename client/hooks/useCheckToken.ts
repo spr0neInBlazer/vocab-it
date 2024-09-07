@@ -18,7 +18,6 @@ function useCheckToken() {
       try {
         await refresh();
         if (fetchFn) {
-          console.log('try/catch block');
           await fetchFn();
         }
         setIsTokenChecked(true);

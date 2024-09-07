@@ -14,14 +14,12 @@ import { HiTrash } from "react-icons/hi2";
 import useVocabStore from '@/lib/store';
 import useDisplayPopup from '@/hooks/useDisplayPopup';
 import useAuth from '@/hooks/useAuth';
-import useRefreshToken from '@/hooks/useRefreshToken';
 import { BASE_URL } from '@/lib/globals';
 
 export default function DeleteWordsBtn() {
   const {currVocab, setCurrVocab} = useVocabStore(state => state);
   const { displayPopup } = useDisplayPopup();
   const fetchWithAuth = useAuth();
-  const refresh = useRefreshToken();
 
   function deleteVocabFromDb() {
     const controller = new AbortController();

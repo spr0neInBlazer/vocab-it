@@ -1,9 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Word } from '@/lib/types';
-import jschardet from 'jschardet';
-import iconv from 'iconv-lite';
 import useVocabStore from '@/lib/store';
-import { useToast } from './ui/use-toast';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import { BASE_URL, SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
@@ -14,19 +10,8 @@ import useAuth from '@/hooks/useAuth';
 import useRefreshToken from '@/hooks/useRefreshToken';
 import useDisplayPopup from '@/hooks/useDisplayPopup';
 
-function decodeString(str: string): string {
-  let encoding = jschardet.detect(str).encoding;
-  // add fallback encoding if current is not supported
-  if (encoding === 'x-mac-cyrillic') {
-    encoding = 'utf8';
-  }
-  const decodedStr = iconv.decode(Buffer.from(str, 'binary'), encoding);
-  return decodedStr;
-}
-
 export default function FileForm() {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  // const [importedWords, setImportedWords] = useState<Word[]>([]);
   const { currVocab, setCurrVocab } = useVocabStore(state => state);
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
@@ -55,9 +40,7 @@ export default function FileForm() {
           if (event.target) {
             const words = [];
             const fileContent = event.target.result as string;
-
-            console.log({ fileContent });
-            
+      
             if (fileContent.length === 0) return;
 
             let startIdx = 0;
@@ -83,12 +66,10 @@ export default function FileForm() {
                 // if it's the end of the line
                 let translationStr = fileContent.substring(startIdx, i-1);
                 // if no valid translation, remove last word object
-                // const decodedTranslation: string = decodeString(translationStr);
                 words[words.length - 1].translation = translationStr;
                 startIdx = i+1;
               } else if (i === fileContent.length - 1) {
                 let translationStr = fileContent.substring(startIdx, i+1);
-                // const decodedTranslation: string = decodeString(translationStr);
                 words[words.length - 1].translation = translationStr;
               }
             }

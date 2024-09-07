@@ -15,10 +15,7 @@ import useDisplayPopup from '@/hooks/useDisplayPopup';
 export default function ProfileAddVocabSection({checkSingleEdit}: {checkSingleEdit: CheckSingleEditFunction}) {
   const [newVocab, setNewVocab] = useState<string>('');
   const {vocabs, setVocabs} = useVocabStore(state => state);
-  const {
-    isAddVocab, 
-    toggleIsAddVocab,
-  } = useProfileStore(state => state);
+  const { isAddVocab, toggleIsAddVocab } = useProfileStore(state => state);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });

@@ -22,7 +22,6 @@ import { Skeleton } from './ui/skeleton';
 import { useAuthStore } from '@/lib/authStore';
 import useLogout from '@/hooks/useLogout';
 import { useRouter } from 'next/router';
-import useRefreshToken from '@/hooks/useRefreshToken';
 import useAuth from '@/hooks/useAuth';
 
 const SoundToggleNoSSR = dynamic(() => import('./SoundToggle'), {
@@ -39,7 +38,6 @@ export default function Navbar() {
   const accessToken = useAuthStore(state => state.accessToken);
   const logout = useLogout();
   const router = useRouter();
-  const refresh = useRefreshToken();
   const fetchWithAuth = useAuth();
 
   function resetDialogInput() {
@@ -69,8 +67,6 @@ export default function Navbar() {
   
           const data = await res.json();
           setVocabs(data.vocabularies);
-          // await refresh();
-          console.log('vocabs in navbar fetched');
         } catch (error) {
           console.error(error);
         }
@@ -80,7 +76,6 @@ export default function Navbar() {
   
       return () => {
         controller.abort();
-        console.log('request performed');
         setIsFetching(false);
       }
     }

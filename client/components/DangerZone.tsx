@@ -16,14 +16,12 @@ import { useAuthStore } from '@/lib/authStore';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/router';
 import useVocabStore from '@/lib/store';
-import useLessonStore from '@/lib/lessonStore';
 import useDisplayPopup from '@/hooks/useDisplayPopup';
 
 export default function DangerZone() {
   const fetchWithAuth = useAuth();
   const {setAccessToken} = useAuthStore(state => state);
   const {setVocabs} = useVocabStore();
-  const {updateVolume} = useLessonStore();
   const {setStoredUsername, updateLessonVolume} = usePreferencesStore();
   const router = useRouter();
   const { displayPopup } = useDisplayPopup();
@@ -46,7 +44,6 @@ export default function DangerZone() {
         // set to default settings
         setAccessToken('');
         setVocabs([]);
-        updateVolume(INITIAL_NUMBER);
         updateLessonVolume(INITIAL_NUMBER);
         setStoredUsername('');
         

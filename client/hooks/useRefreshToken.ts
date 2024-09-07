@@ -24,7 +24,6 @@ const useRefreshToken = () => {
       if (storedUsername !== decoded.UserInfo.username) {
         setStoredUsername(decoded.UserInfo.username);
       }
-      console.log({accessToken: data.accessToken});
       return data.accessToken;
     } catch (error) {
       console.error(error);

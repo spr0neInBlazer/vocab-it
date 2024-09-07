@@ -14,7 +14,6 @@ const useLogout = () => {
       setAccessToken('');
       setCurrVocab(null);
       setIsTokenChecked(false);
-      console.log('signed out');
     } catch (error) {
       console.error(error);
     }

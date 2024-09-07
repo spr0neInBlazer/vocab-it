@@ -3,6 +3,11 @@ import { useRouter } from 'next/router';
 import { Word, Answer } from '@/lib/types';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useSound from 'use-sound';
+import { BASE_URL, SOUND_VOLUME, clickSound } from '@/lib/globals';
+import { useAuthStore } from '@/lib/authStore';
+import useCheckToken from '@/hooks/useCheckToken';
+import useVocabStore from '@/lib/store';
+import useAuth from '@/hooks/useAuth';
 
 import Head from 'next/head';
 import Link from 'next/link';
@@ -13,12 +18,7 @@ import { NextPageWithLayout } from '../_app';
 import Layout from '@/components/Layout';
 import EndLessonDialog from '@/components/EndLessonDialog';
 import { Progress } from "@/components/ui/progress"
-import { BASE_URL, SOUND_VOLUME, clickSound } from '@/lib/globals';
 import RequireAuth from '@/components/RequireAuth';
-import { useAuthStore } from '@/lib/authStore';
-import useCheckToken from '@/hooks/useCheckToken';
-import useVocabStore from '@/lib/store';
-import useAuth from '@/hooks/useAuth';
 
 const initialWordIdx: number = 1;
 
@@ -44,7 +44,7 @@ const Lesson: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const [playClick] = useSound(clickSound, { volume: SOUND_VOLUME });
-  const { isTokenChecked, setIsTokenChecked, accessToken } = useAuthStore(state => state);
+  const { isTokenChecked, setIsTokenChecked } = useAuthStore(state => state);
   const fetchWithAuth = useAuth();
   const { checkToken } = useCheckToken();
 

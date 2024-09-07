@@ -14,7 +14,7 @@ import useAuth from '@/hooks/useAuth';
 import useRefreshToken from '@/hooks/useRefreshToken';
 import useDisplayPopup from '@/hooks/useDisplayPopup';
 
-export default function VocabAddWordForm({ id, checkSingleEdit }: { id: string, checkSingleEdit: CheckSingleEditFunction }) {
+export default function VocabAddWordForm({ checkSingleEdit }: { checkSingleEdit: CheckSingleEditFunction }) {
   const [newWord, setNewWord] = useState<string>('');
   const [translation, setTranslation] = useState<string>('');
   const {currVocab, setCurrVocab} = useVocabStore(state => state);

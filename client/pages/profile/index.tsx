@@ -1,6 +1,5 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { NextPageWithLayout } from '../_app';
-import dynamic from 'next/dynamic';
 import Head from "next/head";
 import Layout from '@/components/Layout';
 import Footer from '@/components/Footer';
@@ -8,7 +7,6 @@ import useProfileStore from '@/lib/profileStore';
 import ProfileAddVocabSection from '@/components/ProfileAddVocabSection';
 import ProfileWordSection from '@/components/ProfileWordSection';
 import { Toaster } from '@/components/ui/toaster';
-import { Skeleton } from '@/components/ui/skeleton';
 import RequireAuth from '@/components/RequireAuth';
 import useAuth from '@/hooks/useAuth';
 import { BASE_URL } from '@/lib/globals';
@@ -16,18 +14,7 @@ import useVocabStore from '@/lib/store';
 import DangerZone from '@/components/DangerZone';
 import { useAuthStore } from '@/lib/authStore';
 import useCheckToken from '@/hooks/useCheckToken';
-
-// needs client render because server and client (storage) username values differ
-const NoSSR = dynamic(() => import('@/components/ProfileUsernameSection'), {
-  ssr: false,
-  loading: () => (
-    <div>
-      <h2 className='text-xl mobile:text-2xl md:text-3xl font-bold dark:text-customText-dark mb-4'>Username</h2>
-      <Skeleton className="my-3 w-32 h-[38px] sm:w-2/12" />
-      <div className="h-px w-full dark:bg-mainBg-dark mt-3 mb-5" />
-    </div>
-  )
-});
+import ProfileUsernameSection from '@/components/ProfileUsernameSection';
 
 const Profile: NextPageWithLayout = () => {
   const {
@@ -35,6 +22,7 @@ const Profile: NextPageWithLayout = () => {
     isEditWordAmount,
     isAddVocab,
     isEditVocabTitle,
+    setUsername,
     toggleIsEditUsername,
     toggleIsEditWordAmount,
     toggleIsAddVocab,
@@ -69,6 +57,7 @@ const Profile: NextPageWithLayout = () => {
 
         const data = await res.json();
         setVocabs(data.vocabularies);
+        setUsername(data.username);
       } catch (error) {
         console.error(error);
       }
@@ -103,7 +92,7 @@ const Profile: NextPageWithLayout = () => {
 
       <section className="w-11/12 lg:w-3/5 mx-auto mb-10 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
         <h1 className='text-2xl mobile:text-3xl md:text-4xl text-center font-semibold dark:text-customText-dark mb-4'>My profile</h1>
-        <NoSSR checkSingleEdit={checkSingleEdit} />
+        <ProfileUsernameSection checkSingleEdit={checkSingleEdit} />
         <ProfileAddVocabSection checkSingleEdit={checkSingleEdit} />
         <ProfileWordSection checkSingleEdit={checkSingleEdit} />
         <DangerZone />

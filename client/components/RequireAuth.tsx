@@ -11,7 +11,6 @@ export default function RequireAuth({ allowedRoles, children }: { allowedRoles: 
   useEffect(() => {
     if (isTokenChecked) {
       if (!accessToken) {
-        console.log('accessToken not found');
         router.push('/auth/login');
         return;
       }
