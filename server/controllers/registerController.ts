@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { v4 as uuidv4 } from 'uuid';
 import mongoose from "mongoose";
 
 async function handleNewUser(req: Request, res: Response) {

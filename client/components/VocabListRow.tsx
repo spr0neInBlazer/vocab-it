@@ -76,7 +76,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
       const privateUpdate = async () => {
         try {
           const res = await fetchWithAuth(`${BASE_URL}/vocabs/updateTitle`, {
-            method: 'PUT',
+            method: 'PATCH',
             signal: controller.signal,
             body: JSON.stringify({
               _id: vocab._id,

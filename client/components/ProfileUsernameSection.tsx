@@ -33,7 +33,7 @@ export default function ProfileUsernameSection({ checkSingleEdit }: { checkSingl
       const privateUpdate = async () => {
         try {
           const res = await fetchWithAuth(`${BASE_URL}/profile/updateUsername`, {
-            method: 'PUT',
+            method: 'PATCH',
             signal: controller.signal,
             body: JSON.stringify({ username: usernameInput }),
             credentials: 'include'

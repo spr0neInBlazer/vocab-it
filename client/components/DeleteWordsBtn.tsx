@@ -31,7 +31,7 @@ export default function DeleteWordsBtn() {
         }
 
         const res = await fetchWithAuth(`${BASE_URL}/vocabs/deleteWords`, {
-          method: 'PUT',
+          method: 'PATCH',
           signal: controller.signal,
           body: JSON.stringify({ _id: currVocab._id }),
           credentials: 'include'

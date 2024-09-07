@@ -11,6 +11,7 @@ const useRefreshToken = () => {
   async function refresh() {
     try {
       const res = await fetch(`${BASE_URL}/refresh`, {
+        method: 'POST',
         credentials: 'include'
       });
 

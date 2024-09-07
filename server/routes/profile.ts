@@ -3,14 +3,12 @@ import {
   deleteAccount, 
   getProfile, 
   updateUsername, 
-  // updateWordsPerLesson
 } from '../controllers/profileController';
 
 const profileRouter = express.Router();
 
 profileRouter.get('/', getProfile);
-profileRouter.put('/updateUsername', updateUsername);
-// profileRouter.put('/updateWordsPer', updateWordsPerLesson);
+profileRouter.patch('/updateUsername', updateUsername);
 profileRouter.delete('/deleteAccount', deleteAccount);
 
 export default profileRouter;

@@ -3,6 +3,6 @@ import refreshController from '../controllers/refreshController';
 
 const refreshRouter = express.Router();
 
-refreshRouter.get('/', refreshController);
+refreshRouter.post('/', refreshController);
 
 export default refreshRouter;

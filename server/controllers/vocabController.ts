@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import Vocabulary from "../models/Vocabulary";
 import User from "../models/User";
 
@@ -31,7 +31,6 @@ async function addVocab(req, res: Response) {
     }
 
     const newVocab = await Vocabulary.create({
-      // "_id": uuidv4(),
       "title": title,
       "userId": req.userInfo._id
     });

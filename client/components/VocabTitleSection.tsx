@@ -44,7 +44,7 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
       const privateUpdate = async () => {
         try {
           const res = await fetchWithAuth(`${BASE_URL}/vocabs/updateTitle`, {
-            method: 'PUT',
+            method: 'PATCH',
             signal: controller.signal,
             body: JSON.stringify({ _id: id, title }),
             credentials: 'include'

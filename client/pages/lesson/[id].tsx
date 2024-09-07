@@ -84,7 +84,7 @@ const Lesson: NextPageWithLayout = () => {
       const getVocabData = async () => {
         try {
           const res = await fetchWithAuth(`${BASE_URL}/vocabs/getVocab`, {
-            method: "POST",
+            method: 'POST',
             signal: controller.signal,
             body: JSON.stringify({ _id: router.query.id }),
             credentials: 'include'

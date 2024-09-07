@@ -10,10 +10,9 @@ Features:
 ? allow multiple translations
 ? when a word is deleted show "cancel" button in its place until the next page load to revert back
 
-+ clean stores
-+ check whether lessonStore is needed at all
+
 - do I need nanoid, iconv, jschardet?
-- check res statutes & req methods of the controllers
++ check res statutes & req methods of the controllers
 - style sign in/up forms & words table
 - prepare app for production (compression, sanitizing, etc.)
 - add messages for successful login and registration

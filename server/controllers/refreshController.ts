@@ -5,8 +5,7 @@ import jwt from 'jsonwebtoken';
 interface DecodedPayload {
   _id: string,
   username: string,
-  roles: string[],
-  // wordsPerLesson: number,
+  roles: string[]
 }
 
 async function handleRefreshToken(req: Request, res: Response) {

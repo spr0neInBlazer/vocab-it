@@ -70,7 +70,7 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
       const privateUpdate = async () => {
         try {
           const res = await fetchWithAuth(`${BASE_URL}/vocabs/updateWord`, {
-            method: 'PUT',
+            method: 'PATCH',
             signal: controller.signal,
             body: JSON.stringify({
               vocabId: vocab._id,
@@ -109,7 +109,7 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
       const controller = new AbortController();
       const privateDelete = async () => {
         const res = await fetchWithAuth(`${BASE_URL}/vocabs/deleteWord`, {
-          method: 'DELETE',
+          method: 'PATCH',
           signal: controller.signal,
           body: JSON.stringify({
             vocabId: vocab._id,
