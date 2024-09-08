@@ -4,7 +4,7 @@
   "main": "server.ts",
   "author": "Michael Savych",
   "engines": {
-    "node": ">=20.11.1"
+    "node": ">=v16"
   },
   "scripts": {
     "dev": "nodemon server.ts"
