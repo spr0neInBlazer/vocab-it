@@ -4,6 +4,9 @@ import express, { Application } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import connectDB from './db/connect';
+import compression from 'compression';
+import helmet from 'helmet';
+import RateLimit from 'express-rate-limit';
 import { corsOptions } from './config/corsOptions';
 import credentials from './middleware/credentials';
 import cookieParser from 'cookie-parser';
@@ -21,6 +24,14 @@ const PORT = process.env.PORT || 3500;
 
 connectDB();
 
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 20,
+});
+
+app.use(compression());
+app.use(helmet());
+app.use(limiter);
 app.use(credentials);
 app.use(cors(corsOptions));
 app.use(express.json());

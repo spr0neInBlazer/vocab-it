@@ -13,6 +13,12 @@ const unmuteSound = '/audio/unmute.mp3';
 const arialRounded = localFont({ src: '../public/fonts/arial-rounded-mt.woff2', adjustFontFallback: 'Arial'});
 const atma = localFont({src: '../public/fonts/atma-semibold.woff2', adjustFontFallback: 'Arial'});
 
+const specialSymbols = {
+  FRA: ['à', 'é', 'è', 'ç', 'î', 'ô', 'ù', 'ë', 'ï', 'œ', 'æ'],
+  GER: ['ä', 'ö', 'ü', 'ß', 'é'],
+  SPA: ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', '¿', '¡']
+}
+
 export {
   BASE_URL,
   INITIAL_NUMBER, 
@@ -24,5 +30,6 @@ export {
   successSound,
   errorSound,
   muteSound,
-  unmuteSound
+  unmuteSound,
+  specialSymbols
 };

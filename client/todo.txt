@@ -12,7 +12,6 @@ Features:
 
 
 - do I need nanoid, iconv, jschardet?
-+ style sign in/up forms & words table
 - prepare app for production (compression, sanitizing, etc.)
 - add messages for successful login and registration
 - optimization
