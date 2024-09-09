@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,11 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = __importDefault(require("../models/User"));
+import User from "../models/User";
 function handleLogout(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const cookies = req.cookies;
@@ -21,7 +16,7 @@ function handleLogout(req, res) {
                 return res.sendStatus(204); // No content sent
             }
             const refreshToken = cookies.jwt;
-            const foundUser = yield User_1.default.findOne({ refreshToken }).exec();
+            const foundUser = yield User.findOne({ refreshToken }).exec();
             if (!foundUser) {
                 res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
                 return res.sendStatus(204);
@@ -37,4 +32,4 @@ function handleLogout(req, res) {
         }
     });
 }
-exports.default = handleLogout;
+export default handleLogout;

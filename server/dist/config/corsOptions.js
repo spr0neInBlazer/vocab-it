@@ -1,13 +1,7 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.corsOptions = void 0;
-const allowedOrigins_1 = __importDefault(require("./allowedOrigins"));
-exports.corsOptions = {
+import allowedOrigins from "./allowedOrigins";
+export const corsOptions = {
     origin: (origin, callback) => {
-        if (allowedOrigins_1.default.indexOf(origin || '') !== -1 || !origin) {
+        if (allowedOrigins.indexOf(origin || '') !== -1 || !origin) {
             callback(null, true);
         }
         else {

@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,13 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const User_1 = __importDefault(require("../models/User"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+import User from "../models/User";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 function handleLogin(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -22,11 +17,11 @@ function handleLogin(req, res) {
             if (!username || !pwd) {
                 return res.status(400).json({ 'message': 'Username and password are required' });
             }
-            const foundUser = yield User_1.default.findOne({ username }).exec();
+            const foundUser = yield User.findOne({ username }).exec();
             if (!foundUser) {
                 return res.sendStatus(401); // Unauthorized
             }
-            const match = yield bcrypt_1.default.compare(pwd, foundUser.password);
+            const match = yield bcrypt.compare(pwd, foundUser.password);
             if (!match) {
                 return res.status(400).json({ msg: 'Invalid password' });
             }
@@ -36,14 +31,14 @@ function handleLogin(req, res) {
                 throw new Error('Token secrets are not defined');
             }
             const roles = Object.values(foundUser.roles).filter(Boolean);
-            const accessToken = jsonwebtoken_1.default.sign({
+            const accessToken = jwt.sign({
                 "UserInfo": {
                     "_id": foundUser._id,
                     "username": foundUser.username,
                     "roles": roles
                 }
             }, accessSecret, { expiresIn: '10m' });
-            const refreshToken = jsonwebtoken_1.default.sign({ "_id": foundUser._id }, refreshSecret, { expiresIn: '1d' });
+            const refreshToken = jwt.sign({ "_id": foundUser._id }, refreshSecret, { expiresIn: '1d' });
             foundUser.refreshToken = refreshToken;
             yield foundUser.save();
             res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: "none", secure: true, maxAge: 24 * 60 * 60 * 1000 });
@@ -55,4 +50,4 @@ function handleLogin(req, res) {
         }
     });
 }
-exports.default = handleLogin;
+export default handleLogin;

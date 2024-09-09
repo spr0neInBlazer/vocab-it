@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,18 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.addWord = addWord;
-exports.updateWord = updateWord;
-exports.deleteWord = deleteWord;
-exports.deleteAllWords = deleteAllWords;
-exports.addCSV = addCSV;
-exports.updateProgress = updateProgress;
-const Vocabulary_1 = __importDefault(require("../models/Vocabulary"));
-const uuid_1 = require("uuid");
+import Vocabulary from "../models/Vocabulary";
+import { v4 as uuidv4 } from 'uuid';
 function addWord(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -27,13 +16,13 @@ function addWord(req, res) {
             if (!word || !translation) {
                 return res.status(400).json({ msg: 'Invalid word properties' });
             }
-            const vocabToUpdate = yield Vocabulary_1.default.findById(vocabId).exec();
+            const vocabToUpdate = yield Vocabulary.findById(vocabId).exec();
             const duplicate = vocabToUpdate.words.find(w => w.word === word);
             if (duplicate) {
                 return res.status(409).json({ msg: 'This word is already in the vocabulary' });
             }
             const newWord = {
-                _id: (0, uuid_1.v4)(),
+                _id: uuidv4(),
                 word,
                 translation,
                 trained: 0,
@@ -56,7 +45,7 @@ function updateWord(req, res) {
             if (!word || !translation) {
                 return res.status(400).json({ msg: 'Invalid word properties' });
             }
-            const vocabToUpdate = yield Vocabulary_1.default.findById(vocabId).exec();
+            const vocabToUpdate = yield Vocabulary.findById(vocabId).exec();
             if (!vocabToUpdate) {
                 return res.status(404).json({ msg: 'Vocabulary not found' });
             }
@@ -83,7 +72,7 @@ function deleteWord(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { vocabId, wordId } = req.body;
-            const vocabToUpdate = yield Vocabulary_1.default.findById(vocabId).exec();
+            const vocabToUpdate = yield Vocabulary.findById(vocabId).exec();
             if (!vocabToUpdate) {
                 return res.status(404).json({ msg: 'Vocabulary not found' });
             }
@@ -108,7 +97,7 @@ function deleteAllWords(req, res) {
             if (!req.body._id) {
                 return res.status(400).json({ msg: '_id property not found' });
             }
-            const vocabToUpdate = yield Vocabulary_1.default.findByIdAndUpdate(req.body._id, { words: [] }, { new: true });
+            const vocabToUpdate = yield Vocabulary.findByIdAndUpdate(req.body._id, { words: [] }, { new: true });
             if (!vocabToUpdate) {
                 return res.status(404).json({ msg: 'Vocabulary not found' });
             }
@@ -127,14 +116,14 @@ function addCSV(req, res) {
             if (!words || !Array.isArray(words) || words.length === 0) {
                 return res.status(400).json({ msg: 'Invalid words array' });
             }
-            const foundVocab = yield Vocabulary_1.default.findById(vocabId).exec();
+            const foundVocab = yield Vocabulary.findById(vocabId).exec();
             if (!foundVocab) {
                 return res.status(404).json({ msg: 'Vocabulary not found' });
             }
             // check for invalid word-translation pairs and duplicates
             const validatedWords = words
                 .filter(w => w.word && w.translation && !foundVocab.words.find(fvw => fvw.word === w.word))
-                .map(w => (Object.assign(Object.assign({}, w), { _id: (0, uuid_1.v4)(), progress: 0, times: 0 })));
+                .map(w => (Object.assign(Object.assign({}, w), { _id: uuidv4(), progress: 0, times: 0 })));
             if (validatedWords.length === 0) {
                 return res.status(409).json({ msg: 'No valid new words to add' });
             }
@@ -155,7 +144,7 @@ function updateProgress(req, res) {
             if (!answers || !vocabId) {
                 return res.status(400).json({ msg: 'Invalid data' });
             }
-            const foundVocab = yield Vocabulary_1.default.findById(vocabId).exec();
+            const foundVocab = yield Vocabulary.findById(vocabId).exec();
             if (!foundVocab) {
                 return res.status(404).json({ msg: 'Vocabulary not found' });
             }
@@ -190,3 +179,4 @@ function getProgressPercentage(prev, trained, isCorrect) {
     }
     return result;
 }
+export { addWord, updateWord, deleteWord, deleteAllWords, addCSV, updateProgress };
