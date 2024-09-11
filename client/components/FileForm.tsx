@@ -10,6 +10,11 @@ import useAuth from '@/hooks/useAuth';
 import useRefreshToken from '@/hooks/useRefreshToken';
 import useDisplayPopup from '@/hooks/useDisplayPopup';
 
+interface ImportWords {
+  word: string;
+  translation: string;
+}
+
 export default function FileForm() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { currVocab, setCurrVocab } = useVocabStore(state => state);
@@ -56,7 +61,6 @@ export default function FileForm() {
                 } else {
                   // if it's a valid word
                   let wordStr = fileContent.substring(startIdx, i);
-                  // const decodedWord: string = decodeString(wordStr);
                   const wordObj = {word: wordStr, translation: ''};
                   words.push(wordObj);
                   // if file uses incorrect indentation (', ')
@@ -81,9 +85,9 @@ export default function FileForm() {
     }
   }
 
-  function checkForDuplicateWords(words) {
+  function checkForDuplicateWords(words: ImportWords[]) {
     const wordSet = new Set();
-    const uniqueWords = [];
+    const uniqueWords: ImportWords[] = [];
     for (const word of words) {
       // if there's no duplicates in the file and in the store
       if (!wordSet.has(word.word) && !currVocab?.words.some(w => w.word === word.word)) {
