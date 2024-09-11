@@ -17,6 +17,7 @@ Features:
 - optimization
 - delete WordsTooltip if not needed
 - README
+- deploy the app
 
 Bugs/other:
 - write tests
