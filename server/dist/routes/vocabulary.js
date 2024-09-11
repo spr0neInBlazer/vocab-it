@@ -1,6 +1,6 @@
 import express from 'express';
-import { addVocab, deleteVocab, getVocab, getVocabs, updateTitle } from '../controllers/vocabController';
-import { addCSV, addWord, deleteAllWords, deleteWord, updateProgress, updateWord } from '../controllers/wordController';
+import { addVocab, deleteVocab, getVocab, getVocabs, updateTitle } from '../controllers/vocabController.js';
+import { addCSV, addWord, deleteAllWords, deleteWord, updateProgress, updateWord } from '../controllers/wordController.js';
 const vocabRouter = express.Router();
 vocabRouter.get('/getVocabs', getVocabs);
 vocabRouter.post('/addVocab', addVocab);
