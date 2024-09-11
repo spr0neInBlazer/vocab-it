@@ -16,6 +16,7 @@ Features:
 - add messages for successful login and registration
 - optimization
 - delete WordsTooltip if not needed
+- README
 
 Bugs/other:
 - write tests

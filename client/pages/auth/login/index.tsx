@@ -88,18 +88,18 @@ const Login: NextPageWithLayout = () => {
         <title>Log in | Vocab-It</title>
       </Head>
       <section className="w-11/12 lg:w-3/5 mx-auto mb-10 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
-        <p
-          className="text-red-400 text-center"
-          ref={errRef}
-          aria-live="assertive"
-        >
-          {errMsg}
-        </p>
         <form
           className="flex flex-col gap-8" 
           onSubmit={handleSubmit}
         >
           <h1 className='text-2xl mobile:text-3xl md:text-4xl text-center font-semibold dark:text-customText-dark mb-2'>Log in to your account</h1>
+          <p
+            className="text-red-400 text-center"
+            ref={errRef}
+            aria-live="assertive"
+          >
+            {errMsg}
+          </p>
           <label htmlFor="username">
             <p>Username:</p>
             <input
