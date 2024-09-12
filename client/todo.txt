@@ -3,6 +3,9 @@ Features:
 - sort words
 - add another type of exercise: find a pair
 - add special symbols keyboard for different langs
+- after file import, before sending to server, show preview form with the ability to edit words
+- show overall progress for each vocab
+- show loader during submitting a file
 ? register words learning progress
 ? achievements
 ? graph stats (lessons completion frequency)
@@ -17,7 +20,13 @@ Features:
 - optimization
 - delete WordsTooltip if not needed
 - README
-- deploy the app
+- accessibility
+- better button design
+! RETURN "type": "module", to server/ after development
 
 Bugs/other:
 - write tests
+- reset add word inputs after submission
+- on small screen "Delete Vocab" and "Delete All Words" are indistinguishible
+
+Currently done:

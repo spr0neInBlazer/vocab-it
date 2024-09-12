@@ -136,23 +136,25 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
     }
   }
 
-  function getProgressColor() {
-    if (word.progress) {
-      if (word.progress < 50) {
-        setProgressStatus('poor');
-      } else if (word.progress >= 50 && word.progress < 75) {
-        setProgressStatus('normal');
-      } else if (word.progress >= 75) {
-        setProgressStatus('good');
+
+  useEffect(() => {
+    if (word.trained) {
+      // check explicitly for the type because while word.progress: 0 is falsy to TS, it's a valid value for the logic
+      if (typeof (word.progress) === 'number') {
+        if (word.progress < 50) {
+          setProgressStatus('poor');
+        } else if (word.progress >= 50 && word.progress < 75) {
+          setProgressStatus('normal');
+        } else if (word.progress >= 75) {
+          setProgressStatus('good');
+        }
       } else {
         setProgressStatus('absent');
       }
+    } else {
+      setProgressStatus('absent');
     }
-  }
-
-  useEffect(() => {
-    getProgressColor();
-  }, []);
+  }, [word]);
 
   return (
     <article className="text-sm mobile:text-base">
@@ -195,16 +197,16 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
         <div className="flex justify-between my-1 p-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 focus:bg-slate-100 dark:focus:bg-customHighlight2 transition-colors">
           <p className="w-1/2">{word.word}</p>
           <p className="w-1/4 break-words">{word.translation}</p>
-          <div 
+          <div
             className={`h-4 w-4 border border-slate-500 dark:border-white rounded-full
-            ${progressStatus === 'absent' 
-              ? 'bg-gray-500'
-              : progressStatus === 'poor'
-              ? 'bg-red-500'
-              : progressStatus === 'normal'
-              ? 'bg-yellow-500'
-              : 'bg-green-500'
-            }`} 
+            ${progressStatus === 'absent'
+                ? 'bg-gray-500'
+                : progressStatus === 'poor'
+                  ? 'bg-red-500'
+                  : progressStatus === 'normal'
+                    ? 'bg-yellow-500'
+                    : 'bg-green-500'
+              }`}
             title={progressStatus}
           />
           <div className="flex gap-1">

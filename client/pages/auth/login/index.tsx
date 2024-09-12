@@ -10,6 +10,7 @@ import { jwtDecode } from 'jwt-decode';
 import { CustomPayload } from '@/lib/types';
 import { BASE_URL } from '@/lib/globals';
 import { usePreferencesStore } from '@/lib/preferencesStore';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login: NextPageWithLayout = () => {
   const userRef = useRef<HTMLInputElement | null>(null);
@@ -17,6 +18,7 @@ const Login: NextPageWithLayout = () => {
   const [user, setUser] = useState<string>('');
   const [userFocus, setUserFocus] = useState<boolean>(false);
   const [pwd, setPwd] = useState<string>('');
+  const [showPwd, setShowPwd] = useState(false);
   const [errMsg, setErrMsg] = useState<string>('');
   const setAccessToken = useAuthStore(state => state.setAccessToken);
   const {setStoredUsername} = usePreferencesStore(state => state);
@@ -116,18 +118,23 @@ const Login: NextPageWithLayout = () => {
             />
           </label>
 
-          <label htmlFor="password">
-            <p>Password:</p>
-            <input
-              className="text-lg leading-9 px-2 border rounded w-full sm:w-2/3 lg:w-1/2"
-              type="password"
-              id="password"
-              placeholder="Enter password..."
-              required
-              value={pwd}
-              onChange={(e) => setPwd(e.target.value)}
-            />
-          </label>
+          <div>
+            <label htmlFor="password">
+              <p>Password:</p>
+              <input
+                className="text-lg leading-9 px-2 border rounded w-full sm:w-2/3 lg:w-1/2"
+                type={showPwd ? "text" : "password"}
+                id="password"
+                placeholder="Enter password..."
+                required
+                value={pwd}
+                onChange={(e) => setPwd(e.target.value)}
+              />
+            </label>
+            <button className="ml-4" onClick={() => setShowPwd(!showPwd)}>
+              {showPwd ? <FaEye /> : <FaEyeSlash />}
+            </button>
+          </div>
           <button
             className="rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:focus:bg-hoverBtnBg mobile:text-white cursor-pointer text-lg mobile:px-3 mobile:py-2 mobile:rounded"
           >

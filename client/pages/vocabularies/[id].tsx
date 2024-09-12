@@ -163,7 +163,7 @@ const Vocabulary: NextPageWithLayout = () => {
             <p className="text-sm sm:text-base font-bold">Progress</p>
           </div>
           {words.length > 0 ? (
-            <ScrollArea className="h-[210px] rounded-md border px-2 sm:px-4 py-3">
+            <ScrollArea className="h-[230px] rounded-md border px-2 sm:px-4 py-3">
               {words.map(w => {
                 return (
                   <SingleWord

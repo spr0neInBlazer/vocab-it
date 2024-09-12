@@ -119,7 +119,7 @@ const Home: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="flex justify-center">
-            <Link href={`/profile/profile`}>
+            <Link href={`/auth/register`}>
               <button className="animated-btn bg-secondaryBg-light flex gap-1 items-center rounded-lg py-3 lg:py-4 px-8 font-semibold text-white text-md lg:text-xl transition hover:animated-btn focus:animated-btn hover:scale-105 focus:scale-105">
                 START NOW
               </button>

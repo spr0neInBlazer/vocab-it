@@ -10,25 +10,36 @@ import { useRouter } from 'next/router';
 import { jwtDecode } from 'jwt-decode';
 import { CustomPayload } from '@/lib/types';
 import { usePreferencesStore } from '@/lib/preferencesStore';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import InputRequirement from '@/components/InputRequirement';
 
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const USER_LENGTH_REGEX = /^.{3,16}$/;
+const USER_LETTER_REGEX = /^(?=.*[A-Za-z])[A-Za-z0-9]+$/; // must contain a letter
+const PWD_LENGTH_REGEX = /^.{8,20}$/;
+const PWD_UPPERCASE_REGEX = /[A-Z]+/;
+const PWD_SYMBOL_REGEX = /.*[!@#$%\-\+=_]/;
 
 const Registration: NextPageWithLayout = () => {
   const userRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLParagraphElement | null>(null);
 
   const [user, setUser] = useState('');
-  const [validName, setValidName] = useState(false);
+  const [userLong, setUserLong] = useState(false);
+  const [userHasLetter, setUserHasLetter] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
 
   const [pwd, setPwd] = useState('');
-  const [validPwd, setValidPwd] = useState(false);
   const [pwdFocus, setPwdFocus] = useState(false);
+  const [showPwd, setShowPwd] = useState(false);
+  const [pwdLong, setPwdLong] = useState(false);
+  const [pwdUpperCase, setPwdUpperCase] = useState(false);
+  const [pwdSymbol, setPwdSymbol] = useState(false);
+
 
   const [matchPwd, setMatchPwd] = useState('');
   const [validMatch, setValidMatch] = useState(false);
   const [matchFocus, setMatchFocus] = useState(false);
+  const [confirmPwd, setConfirmPwd] = useState(false);
 
   const [errMsg, setErrMsg] = useState('');
 
@@ -38,8 +49,8 @@ const Registration: NextPageWithLayout = () => {
 
   async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
-    const isUsernameValid = USER_REGEX.test(user);
-    const isPwdValid = PWD_REGEX.test(pwd);
+    const isUsernameValid = USER_LENGTH_REGEX.test(user) && USER_LETTER_REGEX.test(user);
+    const isPwdValid = PWD_LENGTH_REGEX.test(pwd) && PWD_UPPERCASE_REGEX.test(pwd) && PWD_SYMBOL_REGEX.test(pwd);
     if (!isUsernameValid || !isPwdValid) {
       setErrMsg('Invalid Entry');
       return;
@@ -91,10 +102,18 @@ const Registration: NextPageWithLayout = () => {
   }, []);
 
   useEffect(() => {
-    const isNameValid = USER_REGEX.test(user);
-    setValidName(isNameValid);
-    const isPwdValid = PWD_REGEX.test(pwd);
-    setValidPwd(isPwdValid);
+    const isUsernameLong = USER_LENGTH_REGEX.test(user);
+    setUserLong(isUsernameLong);
+    const hasLetter = USER_LETTER_REGEX.test(user);
+    setUserHasLetter(hasLetter);
+    
+    const isPwdLong = PWD_LENGTH_REGEX.test(pwd);
+    setPwdLong(isPwdLong);
+    const hasUpperCase = PWD_UPPERCASE_REGEX.test(pwd);
+    setPwdUpperCase(hasUpperCase);
+    const hasSymbol = PWD_SYMBOL_REGEX.test(pwd);
+    setPwdSymbol(hasSymbol);
+
     const match = pwd === matchPwd;
     setValidMatch(match);
   }, [user, pwd, matchPwd]);
@@ -117,50 +136,82 @@ const Registration: NextPageWithLayout = () => {
           >
             {errMsg}
           </p>
-          <label htmlFor="username">
-            <p>Username:</p>
-            <input
-              className={`${validName ? 'border-white' : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
-              ref={userRef}
-              type="text"
-              id="username"
-              required
-              onChange={(e) => setUser(e.target.value)}
-              onFocus={() => setUserFocus(true)}
-              onBlur={() => setUserFocus(false)}
-            />
-          </label>
+          <div>
+            <label htmlFor="username">
+              <p>Username:</p>
+              <input
+                className={`${ user.length === 0 
+                  ? 'border-white' 
+                  : (userHasLetter && userLong)
+                  ? 'border-green-500'
+                  : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
+                ref={userRef}
+                type="text"
+                id="username"
+                placeholder="Enter username..."
+                required
+                onChange={(e) => setUser(e.target.value)}
+                onFocus={() => setUserFocus(true)}
+                onBlur={() => setUserFocus(false)}
+              />
+            </label>
+            <InputRequirement isInputEmpty={user.length === 0} requirement={userLong} text={'Must be 3-23 characters long'} />
+            <InputRequirement isInputEmpty={user.length === 0} requirement={userHasLetter} text={'Must contain a letter'} />
+          </div>
 
-          <label htmlFor="password">
-            <p>Password:</p>
-            <input
-              className={`${validPwd ? 'border-white' : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
-              type="password"
-              id="password"
-              required
-              value={pwd}
-              onChange={(e) => setPwd(e.target.value)}
-              onFocus={() => setPwdFocus(true)}
-              onBlur={() => setPwdFocus(false)}
-            />
-          </label>
+          <div>
+            <label htmlFor="password">
+              <p>Password:</p>
+              <input
+                className={`${ pwd.length === 0 
+                  ? 'border-white' 
+                  : (pwdLong && pwdSymbol && pwdUpperCase)
+                  ? 'border-green-500'
+                  : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
+                type={showPwd ? "text" : "password"}
+                id="password"
+                required
+                placeholder="Enter password..."
+                value={pwd}
+                onChange={(e) => setPwd(e.target.value)}
+                onFocus={() => setPwdFocus(true)}
+                onBlur={() => setPwdFocus(false)}
+              />
+            </label>
+            <button className="ml-4" type="button" onClick={() => setShowPwd(!showPwd)}>
+              {showPwd ? <FaEye /> : <FaEyeSlash />}
+            </button>
+            <InputRequirement isInputEmpty={pwd.length === 0} requirement={pwdLong} text={'Must be 8-20 characters long'} />
+            <InputRequirement isInputEmpty={pwd.length === 0} requirement={pwdUpperCase} text={'Must contain an uppercase letter'} />
+            <InputRequirement isInputEmpty={pwd.length === 0} requirement={pwdSymbol} text={'Must contain a special symbol'} />
+          </div>
 
-          <label htmlFor="confirm-password">
-            <p>Confirm Password:</p>
-            <input
-              className={`${validMatch ? 'border-white' : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
-              type="password"
-              id="confirm-password"
-              required
-              value={matchPwd}
-              onChange={(e) => setMatchPwd(e.target.value)}
-              onFocus={() => setMatchFocus(true)}
-              onBlur={() => setMatchFocus(false)}
-            />
-          </label>
+          <div>
+            <label htmlFor="confirm-password">
+              <p>Confirm Password:</p>
+              <input
+                className={`${ matchPwd.length === 0
+                  ? 'border-white'
+                  : validMatch 
+                  ? 'border-green-500' 
+                  : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
+                type={confirmPwd ? "text" : "password"}
+                id="confirm-password"
+                required
+                value={matchPwd}
+                placeholder="Confirm password..."
+                onChange={(e) => setMatchPwd(e.target.value)}
+                onFocus={() => setMatchFocus(true)}
+                onBlur={() => setMatchFocus(false)}
+              />
+            </label>
+            <button className="ml-4" type="button" onClick={() => setConfirmPwd(!confirmPwd)}>
+              {confirmPwd ? <FaEye /> : <FaEyeSlash />}
+            </button>
+          </div>
           <button 
             className="rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:focus:bg-hoverBtnBg mobile:text-white cursor-pointer text-lg mobile:px-3 mobile:py-2 mobile:rounded disabled:text-gray-400 disabled:cursor-not-allowed"
-            disabled={!validName || !validPwd || !validMatch ? true : false}
+            disabled={!userHasLetter || !userLong || !pwdLong || !pwdUpperCase || !pwdSymbol || !validMatch ? true : false}
           >
             Sign Up
           </button>
