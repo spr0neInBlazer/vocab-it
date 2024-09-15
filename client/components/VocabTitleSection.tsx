@@ -6,13 +6,11 @@ import useSound from 'use-sound';
 import { BASE_URL, SOUND_VOLUME, errorSound } from '@/lib/globals';
 import useVocabStore from '@/lib/store';
 import useProfileStore from '@/lib/profileStore';
-
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
 import useAuth from '@/hooks/useAuth';
 import useRefreshToken from '@/hooks/useRefreshToken';
 import useDisplayPopup from '@/hooks/useDisplayPopup';
-import { Skeleton } from './ui/skeleton';
 
 export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: { id: string, vocabTitle: string, checkSingleEdit: CheckSingleEditFunction }) {
   const [title, setTitle] = useState<string>(vocabTitle);
@@ -27,7 +25,6 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
   const fetchWithAuth = useAuth();
   const refresh = useRefreshToken();
   const { displayPopup } = useDisplayPopup();
-  // const [isLoading, setIsLoading] = useState(false);
 
   function updateTitle(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -79,20 +76,6 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
       alert('Please finish editing the other field.');
     }
   }
-
-  // useEffect(() => {
-  //   if (title || id) {
-  //     setIsLoading(false);
-  //   } else {
-  //     setIsLoading(true);
-  //   }
-  // }, []);
-
-  // if (isLoading) {
-  //   return (
-  //     <Skeleton className="justify-self-center h-8 mobile:h-9 md:h-10" />
-  //   )
-  // }
 
   if (isEditVocabTitle) {
     return (

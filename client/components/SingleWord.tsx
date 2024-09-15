@@ -194,8 +194,8 @@ export default function SingleWord({ word, vocab, checkSingleEdit }: SingleWordP
           </button>
         </form>
       ) : (
-        <div className="flex justify-between my-1 p-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 focus:bg-slate-100 dark:focus:bg-customHighlight2 transition-colors">
-          <p className="w-1/2">{word.word}</p>
+        <div className="flex justify-between items-center my-1 p-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 focus:bg-slate-100 dark:focus:bg-customHighlight2 transition-colors">
+          <p className="w-2/5">{word.word}</p>
           <p className="w-1/4 break-words">{word.translation}</p>
           <div
             className={`h-4 w-4 border border-slate-500 dark:border-white rounded-full

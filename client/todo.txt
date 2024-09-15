@@ -13,19 +13,18 @@ Features:
 ? allow multiple translations
 ? when a word is deleted show "cancel" button in its place until the next page load to revert back
 
-
+To do:
 - do I need nanoid, iconv, jschardet?
 - prepare app for production (compression, sanitizing, etc.)
 - add messages for successful login and registration
 - optimization
 - delete WordsTooltip if not needed
-- accessibility
+! accessibility
 - better button design
+- for words list on small screens put edit/delete buttons inside a dropdown button "..."
 ! RETURN "type": "module", to server/ after development
 
 Bugs/other:
-! reset add word inputs after submission
 - write tests
-- on small screen "Delete Vocab" and "Delete All Words" are indistinguishible
 
 Currently done:

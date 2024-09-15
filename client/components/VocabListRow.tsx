@@ -27,7 +27,7 @@ import useDisplayPopup from '@/hooks/useDisplayPopup';
 export default function VocabListRow({ vocab }: { vocab: Vocab }) {
   const [isEditTitle, setIsEditTitle] = useState<boolean>(false);
   const [title, setTitle] = useState<string>(vocab.title);
-  const {vocabs, deleteVocab, editVocabTitle} = useVocabStore(state => state);
+  const { vocabs, deleteVocab, editVocabTitle } = useVocabStore(state => state);
   const {
     isEditUsername,
     isEditWordAmount,
@@ -66,7 +66,7 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
     if (title.length === 0 || !/\S/.test(title)) {
       if (soundOn) playError();
       alert('Enter valid title');
-    } 
+    }
     // if there's an existing vocab with new title
     else if (vocabs?.some(v => v._id !== vocab._id && v.title === title)) {
       if (soundOn) playError();
@@ -155,35 +155,35 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
 
   return (
     <article>
-      <div className="flex gap-1 py-3 px-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
+      <div className="flex items-center gap-1 py-3 px-2 rounded-md dark:border-mainBg-dark hover:bg-slate-100 dark:hover:bg-customHighlight2 transition-colors">
         {isEditTitle ? (
           <>
             <div className="w-2/5">
               <form onSubmit={updateTitle}>
-                <input 
-                  className="leading-8 px-2 rounded" 
-                  type="text" 
-                  value={title} 
+                <input
+                  className="leading-8 px-2 rounded"
+                  type="text"
+                  value={title}
                   size={10}
                   maxLength={15}
                   onChange={(e) => setTitle(e.target.value)}
-                  onKeyDown={checkForAbort} 
-                  autoFocus 
+                  onKeyDown={checkForAbort}
+                  autoFocus
                 />
               </form>
             </div>
             <div className="w-10 text-center">{vocab.words ? vocab.words.length : 0}</div>
             <div className="flex gap-2 justify-around grow">
-              <button 
+              <button
                 className={`rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`}
-                aria-label="save" 
+                aria-label="save"
                 onClick={updateTitle}
-              >              
+              >
                 <p className="hidden mobile:inline">Save</p>
-                <HiCheckCircle className="inline mobile:hidden text-btnBg hover:text-hoverBtnBg h-8 w-8" /> 
+                <HiCheckCircle className="inline mobile:hidden text-btnBg hover:text-hoverBtnBg h-8 w-8" />
               </button>
-              <button 
-                className={`rounded-full bg-white mobile:bg-secondaryBg-light mobile:hover:bg-secondaryBg-light/80 mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`} 
+              <button
+                className={`rounded-full bg-white mobile:bg-secondaryBg-light mobile:hover:bg-secondaryBg-light/80 mobile:text-white cursor-pointer mobile:px-3 mobile:py-1 mobile:rounded`}
                 aria-label="cancel"
                 onClick={() => setIsEditTitle(false)}
               >
@@ -195,26 +195,25 @@ export default function VocabListRow({ vocab }: { vocab: Vocab }) {
         ) : (
           <>
             <p className="w-2/5">
-              <Link 
-                href={`/vocabularies/${vocab._id}`} 
-                className="underline hover:text-customText-light/80 dark:hover:text-customText-dark/80"
+              <Link
+                href={`/vocabularies/${vocab._id}`}
+                className="underline hover:text-customText-light/80 dark:hover:text-customText-dark/80 sm:text-lg"
               >
                 {vocab.title}
               </Link>
             </p>
             <p className="w-10 text-center">{vocab.words ? vocab.words.length : 0}</p>
             <div className="grow flex gap-1 justify-around">
-              <button className={`${vocab.words.length > 0 ? 'text-white' : 'text-gray-300 cursor-default'} text-sm sm:text-base rounded py-1 px-3 bg-btnBg hover:bg-hoverBtnBg transition-colors`}>
-                {vocab.words.length > 0 ? (
-                  <Link 
-                    href={`/lesson/${vocab._id}`} 
-                  >
-                    Start <span className="hidden sm:inline">Lesson</span>
-                  </Link>
-                ) : (
-                  <p>Start <span className="hidden sm:inline">Lesson</span></p>
-                )}
-              </button>
+              {vocab.words.length > 0 ? (
+                <Link
+                  className="text-white text-sm sm:text-lg rounded bg-btnBg hover:bg-hoverBtnBg transition-colors py-1 px-3"
+                  href={`/lesson/${vocab._id}`}
+                >
+                  Start <span className="hidden sm:inline">Lesson</span>
+                </Link>
+              ) : (
+                <p className="text-sm sm:text-lg rounded bg-btnBg hover:bg-hoverBtnBg transition-colors py-1 px-3 text-gray-300">Start <span className="hidden sm:inline">Lesson</span></p>
+              )}
               <div className="flex gap-4">
                 <button className="text-lg" aria-label="edit" onClick={enterEditTitleMode}><HiPencilSquare /></button>
                 <AlertDialog>

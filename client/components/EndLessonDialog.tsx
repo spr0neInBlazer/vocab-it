@@ -4,6 +4,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -22,6 +23,7 @@ export default function EndLessonDialog() {
       <AlertDialogContent className="flex flex-col items-center justify-center">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure you want to end this lesson?</AlertDialogTitle>
+          <AlertDialogDescription>End the lesson. All current progress will be lost.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel 

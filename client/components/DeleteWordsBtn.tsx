@@ -15,6 +15,8 @@ import useVocabStore from '@/lib/store';
 import useDisplayPopup from '@/hooks/useDisplayPopup';
 import useAuth from '@/hooks/useAuth';
 import { BASE_URL } from '@/lib/globals';
+import { RxLetterCaseCapitalize } from "react-icons/rx";
+import { TbLetterCase } from "react-icons/tb";
 
 export default function DeleteWordsBtn() {
   const {currVocab, setCurrVocab} = useVocabStore(state => state);
@@ -57,10 +59,10 @@ export default function DeleteWordsBtn() {
   return (
     <AlertDialog>
       <AlertDialogTrigger 
-        className="flex gap-1 items-center rounded-lg py-2 px-3 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg focus:bg-hoverSecondaryBg transition-colors disabled:bg-secondaryBg-light/50 disabled:hover:cursor-not-allowed"
+        className="flex gap-1 items-center rounded-lg py-2 px-3 font-semibold text-white bg-secondaryBg-light hover:bg-hoverSecondaryBg focus:bg-hoverSecondaryBg disabled:bg-secondaryBg-light/50 disabled:hover:cursor-not-allowed transition-all hover:scale-105 focus:ring-2 focus:ring-red-400"
         disabled={currVocab?.words.length === 0}
       >
-        <HiTrash /> Delete <span className="hidden mobile:inline"> All Words</span>
+        <TbLetterCase /> Delete <span className="hidden mobile:inline"> All Words</span>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

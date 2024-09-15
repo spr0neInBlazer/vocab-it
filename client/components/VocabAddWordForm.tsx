@@ -77,14 +77,13 @@ export default function VocabAddWordForm({ checkSingleEdit }: { checkSingleEdit:
           console.error(error);
         } finally {
           setErrorMsg('');
+          setNewWord('');
         }
       }
 
       privateUpdate();
       return () => controller.abort();
     }
-
-    setNewWord('');
     setTranslation('');
   }
 

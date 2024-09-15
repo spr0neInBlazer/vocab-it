@@ -10,7 +10,8 @@ export default function Footer() {
       <div className="w-11/12 flex-col mobile:flex-row sm:w-4/5 mx-auto flex gap-3 justify-between">
         <div>
           <p className="text-xl text-center mobile:text-left">Vocab-It</p>
-          <p className="text-center mobile:text-left text-sm">Developed by Michael Savych</p>
+          <p className="text-center mobile:text-left">A web app for learning languages</p>
+          <p className="text-center mobile:text-left text-sm mt-2">Developed by Michael Savych</p>
         </div>
         <div>
           <h2 className="text-xl font-semibold mb-2">References</h2>
@@ -28,8 +29,8 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link className="flex items-center gap-1 hover:text-white focus:text-white transition-colors" href="https://twitter.com/spronetunes">
-                Twitter <HiOutlineExternalLink />
+              <Link className="flex items-center gap-1 hover:text-white focus:text-white transition-colors" href="https://www.instagram.com/spronescuts/">
+                Instagram <HiOutlineExternalLink />
               </Link>
             </li>
             <li>

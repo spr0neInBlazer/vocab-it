@@ -22,6 +22,7 @@ import DeleteWordsBtn from '@/components/DeleteWordsBtn';
 import { useAuthStore } from '@/lib/authStore';
 import useCheckToken from '@/hooks/useCheckToken';
 import RequireAuth from '@/components/RequireAuth';
+import WordListSkeleton from '@/components/skeletons/WordListSkeleton';
 
 // ideas to try: stale-while-revalidate (swr), static props or setting currVocab to null on page load before updating
 
@@ -123,7 +124,7 @@ const Vocabulary: NextPageWithLayout = () => {
       <Head>
         <title>Vocabulary | Vocab-It</title>
       </Head>
-      <section className="w-11/12 lg:w-3/5 mx-auto mb-6 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight flex flex-col border border-zinc-400 dark:border-zinc-300 shadow-2xl">
+      <section className="w-full mobile:w-11/12 lg:w-3/5 mx-auto mb-6 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight flex flex-col border border-zinc-400 dark:border-zinc-300 shadow-2xl">
         <div className="grid grid-rows-2 sm:grid-cols-3 gap-3 w-full items-start">
           <Link
             className="w-fit flex gap-1 items-center rounded-full py-1 px-3 hover:bg-slate-100 dark:hover:bg-customHighlight2 focus:bg-slate-100 dark:focus:bg-customHighlight2 border border-zinc-400 dark:border-zinc-300"
@@ -149,18 +150,17 @@ const Vocabulary: NextPageWithLayout = () => {
         </div>
         <div className="my-5 flex justify-between items-center">
           {(words.length > 0 && router.query.id) ? (
-            <button className="text-white rounded-lg py-2 px-3 font-semibold bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors">
-              <Link href={`/lesson/${router.query.id}`}>
-                Start Lesson
-              </Link>
-            </button>
+            <Link
+              className="text-white rounded-lg py-2 px-3 font-semibold bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors"
+              href={`/lesson/${router.query.id}`}>
+              Start Lesson
+            </Link>
           ) : (
-            <button
+            <p
               className="rounded-lg py-2 px-3 font-semibold bg-btnBg disabled:bg-btnBg/80 disabled:text-zinc-300 cursor-default transition-colors"
-              disabled
             >
               Start Lesson
-            </button>
+            </p>
           )}
           <div className="flex flex-col gap-4">
             <DeleteVocabBtn />
@@ -174,38 +174,8 @@ const Vocabulary: NextPageWithLayout = () => {
             <p className="text-sm sm:text-base font-bold">Progress</p>
           </div>
           {isLoading
-            ? (
-              <div className="h-[250px] rounded-md border px-2 sm:px-4 py-3">
-                <article className="flex justify-between my-1 p-2">
-                  <Skeleton className="h-6 w-1/2" />
-                  <Skeleton className="h-6 w-1/4" />
-                  <Skeleton className="h-6 w-6" />
-                  <Skeleton className="h-6 w-6" />
-                  <Skeleton className="h-6 w-6" />
-                </article>
-                <article className="flex justify-between my-1 p-2">
-                  <Skeleton className="h-6 w-1/2" />
-                  <Skeleton className="h-6 w-1/4" />
-                  <Skeleton className="h-6 w-6" />
-                  <Skeleton className="h-6 w-6" />
-                  <Skeleton className="h-6 w-6" />
-                </article>
-                <article className="flex justify-between my-1 p-2">
-                  <Skeleton className="h-6 w-1/2" />
-                  <Skeleton className="h-6 w-1/4" />
-                  <Skeleton className="h-6 w-6" />
-                  <Skeleton className="h-6 w-6" />
-                  <Skeleton className="h-6 w-6" />
-                </article>
-                <article className="flex justify-between my-1 p-2">
-                  <Skeleton className="h-6 w-1/2" />
-                  <Skeleton className="h-6 w-1/4" />
-                  <Skeleton className="h-6 w-6" />
-                  <Skeleton className="h-6 w-6" />
-                  <Skeleton className="h-6 w-6" />
-                </article>
-              </div>
-            ) : (
+            ? <WordListSkeleton />
+            : (
               words.length > 0 ? (
                 <ScrollArea className="h-[250px] rounded-md border px-2 sm:px-4 py-3">
                   {words.map(w => {

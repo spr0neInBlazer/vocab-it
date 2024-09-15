@@ -12,8 +12,8 @@ const useLogout = () => {
         credentials: 'include'
       });
       setAccessToken('');
-      setCurrVocab(null);
       setIsTokenChecked(false);
+      setCurrVocab(null);
     } catch (error) {
       console.error(error);
     }
