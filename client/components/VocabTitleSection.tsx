@@ -1,17 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CheckSingleEditFunction } from '@/lib/types';
 import { useStore } from 'zustand';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useSound from 'use-sound';
-import { BASE_URL, SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, errorSound } from '@/lib/globals';
 import useVocabStore from '@/lib/store';
-import { useToast } from './ui/use-toast';
 import useProfileStore from '@/lib/profileStore';
 
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
 import useAuth from '@/hooks/useAuth';
 import useRefreshToken from '@/hooks/useRefreshToken';
+import useDisplayPopup from '@/hooks/useDisplayPopup';
+import { Skeleton } from './ui/skeleton';
 
 export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: { id: string, vocabTitle: string, checkSingleEdit: CheckSingleEditFunction }) {
   const [title, setTitle] = useState<string>(vocabTitle);
@@ -23,10 +24,10 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
   const {isEditVocabTitle, toggleIsEditVocabTitle} = useProfileStore(state => state);
   const soundOn = useStore(usePreferencesStore, (state) => state.soundOn);
   const [playError] = useSound(errorSound, { volume: SOUND_VOLUME });
-  const [playSuccess] = useSound(successSound, { volume: SOUND_VOLUME });
-  const { toast } = useToast();
   const fetchWithAuth = useAuth();
   const refresh = useRefreshToken();
+  const { displayPopup } = useDisplayPopup();
+  // const [isLoading, setIsLoading] = useState(false);
 
   function updateTitle(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -51,34 +52,21 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
           });
 
           if (!res.ok) {
-            toast({
-              variant: 'destructive',
-              description: "Username could not be updated",
-              duration: 1500
-            });
-            if (soundOn) playError();
+            displayPopup({isError: true, msg: "Username could not be updated"});
             throw new Error('Failed to update title');
           }
 
           await refresh();
           editVocabTitle(id, title);
           toggleIsEditVocabTitle(); // to false
-          toast({
-            variant: 'default',
-            description: "Vocabulary title has been updated",
-            duration: 1500
-          });
-          if (soundOn) playSuccess();
+          displayPopup({isError: true, msg: "Vocabulary title has been updated"});
         } catch (error) {
           console.error(error);
         }
       }
 
       privateUpdate();
-
-      return () => {
-        controller.abort();
-      }
+      return () => controller.abort();
     }
   }
 
@@ -91,6 +79,20 @@ export default function VocabTitleSection({ id, vocabTitle, checkSingleEdit }: {
       alert('Please finish editing the other field.');
     }
   }
+
+  // useEffect(() => {
+  //   if (title || id) {
+  //     setIsLoading(false);
+  //   } else {
+  //     setIsLoading(true);
+  //   }
+  // }, []);
+
+  // if (isLoading) {
+  //   return (
+  //     <Skeleton className="justify-self-center h-8 mobile:h-9 md:h-10" />
+  //   )
+  // }
 
   if (isEditVocabTitle) {
     return (

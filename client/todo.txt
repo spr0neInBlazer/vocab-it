@@ -19,14 +19,13 @@ Features:
 - add messages for successful login and registration
 - optimization
 - delete WordsTooltip if not needed
-- README
 - accessibility
 - better button design
 ! RETURN "type": "module", to server/ after development
 
 Bugs/other:
+! reset add word inputs after submission
 - write tests
-- reset add word inputs after submission
 - on small screen "Delete Vocab" and "Delete All Words" are indistinguishible
 
 Currently done:

@@ -77,7 +77,8 @@ const Lesson: NextPageWithLayout = () => {
 
   // get vocab by default
   useEffect(() => {
-    if (!currVocab) {
+    if (router.query.id !== currVocab?._id) {
+      setIsLoading(true);
       setIsTokenChecked(false);
       const controller = new AbortController();
 
@@ -96,17 +97,18 @@ const Lesson: NextPageWithLayout = () => {
 
           const vocab = await res.json();
           setCurrVocab(vocab);
+          setWords(vocab.words);
+          setIsLoading(false);
         } catch (error) {
           console.error(error);
         }
       }
 
       checkToken(getVocabData);
-
       return () => controller.abort();
     }
   }, [router, currVocab]);
-  
+
   useEffect(() => {
     if (preferenceStore) {
       setLessonVolume(preferenceStore.lessonVolume);
@@ -124,13 +126,13 @@ const Lesson: NextPageWithLayout = () => {
     }
   }, [lessonVolume, currVocab]);
 
-  useEffect(() => {
-    if (words.length > 0) {
-      setIsLoading(false);
-    } else {
-      setIsLoading(true)
-    }
-  }, [words]);
+  // useEffect(() => {
+  //   if (words.length > 0) {
+  //     setIsLoading(false);
+  //   } else {
+  //     setIsLoading(true)
+  //   }
+  // }, [words]);
 
   // lesson end
   useEffect(() => {
@@ -172,6 +174,14 @@ const Lesson: NextPageWithLayout = () => {
       return () => controller.abort();
     }
   }, [router, currWord, lessonVolume]);
+
+  useEffect(() => {
+    // only fetch data if vocab is different from the last one
+    if (router.query.id !== currVocab?._id) {
+      setIsLoading(true);
+      setCurrVocab(null);
+    }
+  }, []);
 
   // end of lesson
   if (currWord > lessonVolume) {

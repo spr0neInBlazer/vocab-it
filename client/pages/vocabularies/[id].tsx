@@ -4,8 +4,6 @@ import useVocabStore from '@/lib/store';
 import { Vocab, Word } from '@/lib/types';
 import { BASE_URL } from '@/lib/globals';
 import useProfileStore from '@/lib/profileStore';
-import dynamic from 'next/dynamic';
-
 import { NextPageWithLayout } from '../_app';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -18,7 +16,6 @@ import Footer from '@/components/Footer';
 import { Toaster } from '@/components/ui/toaster';
 import VocabTitleSection from '@/components/VocabTitleSection';
 import { Skeleton } from '@/components/ui/skeleton';
-import { HiMiniQuestionMarkCircle } from "react-icons/hi2";
 import useAuth from '@/hooks/useAuth';
 import DeleteVocabBtn from '@/components/DeleteVocabBtn';
 import DeleteWordsBtn from '@/components/DeleteWordsBtn';
@@ -26,9 +23,12 @@ import { useAuthStore } from '@/lib/authStore';
 import useCheckToken from '@/hooks/useCheckToken';
 import RequireAuth from '@/components/RequireAuth';
 
+// ideas to try: stale-while-revalidate (swr), static props or setting currVocab to null on page load before updating
+
 const Vocabulary: NextPageWithLayout = () => {
   const router = useRouter();
-  const {currVocab, setCurrVocab} = useVocabStore(state => state);
+  const vocabId = useState(router.query.id);
+  const { currVocab, setCurrVocab } = useVocabStore(state => state);
   const [words, setWords] = useState<Word[]>([]);
   const {
     isEditUsername,
@@ -45,8 +45,9 @@ const Vocabulary: NextPageWithLayout = () => {
     toggleIsEditVocabTitle
   } = useProfileStore(state => state);
   const fetchWithAuth = useAuth();
-  const {setIsTokenChecked} = useAuthStore(state => state);
-  const {checkToken} = useCheckToken();
+  const { setIsTokenChecked } = useAuthStore(state => state);
+  const { checkToken } = useCheckToken();
+  const [isLoading, setIsLoading] = useState(false);
 
   function checkSingleEdit() {
     if (isAddWord || isEditWord || isEditVocabTitle) {
@@ -56,33 +57,37 @@ const Vocabulary: NextPageWithLayout = () => {
   }
 
   useEffect(() => {
-    setIsTokenChecked(false);
-    const controller = new AbortController();
+    // only fetch data if vocab is different from the last one
+    if (router.query.id !== currVocab?._id) {
+      setIsLoading(true);
+      setIsTokenChecked(false);
+      const controller = new AbortController();
 
-    const getVocabData = async () => {
-      try {
-        const res = await fetchWithAuth(`${BASE_URL}/vocabs/getVocab`, {
-          method: 'POST',
-          signal: controller.signal,
-          body: JSON.stringify({ _id: router.query.id}),
-          credentials: 'include'
-        });
+      const getVocabData = async () => {
+        try {
+          const res = await fetchWithAuth(`${BASE_URL}/vocabs/getVocab`, {
+            method: 'POST',
+            signal: controller.signal,
+            body: JSON.stringify({ _id: router.query.id }),
+            credentials: 'include'
+          });
 
-        if (!res.ok) {
-          throw new Error('Failed to fetch vocab data');
+          if (!res.ok) {
+            throw new Error('Failed to fetch vocab data');
+          }
+
+          const vocab = await res.json();
+          setCurrVocab(vocab);
+          setWords(vocab.words);
+          setIsLoading(false);
+        } catch (error) {
+          console.error(error);
         }
-
-        const vocab = await res.json();      
-        setCurrVocab(vocab);
-        setWords(vocab.words);
-      } catch (error) {
-        console.error(error);
       }
+
+      checkToken(getVocabData);
+      return () => controller.abort();
     }
-
-    checkToken(getVocabData);
-
-    return () => controller.abort();
   }, [router]);
 
   useEffect(() => {
@@ -90,6 +95,12 @@ const Vocabulary: NextPageWithLayout = () => {
   }, [currVocab]);
 
   useEffect(() => {
+    // only fetch data if vocab is different from the last one
+    if (router.query.id !== currVocab?._id) {
+      setIsLoading(true);
+      setCurrVocab(null);
+    }
+
     // reset all active edit modes 
     switch (true) {
       case isEditUsername:
@@ -120,14 +131,14 @@ const Vocabulary: NextPageWithLayout = () => {
           >
             <HiArrowLongLeft /> Profile
           </Link>
-          {currVocab ? (
+          {!isLoading && currVocab ? (
             <VocabTitleSection
               id={currVocab._id}
               vocabTitle={currVocab.title}
               checkSingleEdit={checkSingleEdit}
             />
           ) : (
-            <Skeleton className="justify-self-center h-8 mobile:h-9 md:h-10" />
+            <Skeleton className="justify-self-center block h-8 w-2/3 mobile:h-9 md:h-10" />
           )}
         </div>
 
@@ -162,24 +173,59 @@ const Vocabulary: NextPageWithLayout = () => {
             <p className="text-sm sm:text-base font-bold">Translation</p>
             <p className="text-sm sm:text-base font-bold">Progress</p>
           </div>
-          {words.length > 0 ? (
-            <ScrollArea className="h-[230px] rounded-md border px-2 sm:px-4 py-3">
-              {words.map(w => {
-                return (
-                  <SingleWord
-                    key={w._id}
-                    word={w}
-                    vocab={currVocab as Vocab}
-                    checkSingleEdit={checkSingleEdit}
-                  />
-                )
-              })}
-            </ScrollArea>
-          ) : (
-            <div className="h-[210px] flex justify-center items-center rounded-md border">
-              <p className="text-xl font-bold">No words</p>
-            </div>
-          )}
+          {isLoading
+            ? (
+              <div className="h-[250px] rounded-md border px-2 sm:px-4 py-3">
+                <article className="flex justify-between my-1 p-2">
+                  <Skeleton className="h-6 w-1/2" />
+                  <Skeleton className="h-6 w-1/4" />
+                  <Skeleton className="h-6 w-6" />
+                  <Skeleton className="h-6 w-6" />
+                  <Skeleton className="h-6 w-6" />
+                </article>
+                <article className="flex justify-between my-1 p-2">
+                  <Skeleton className="h-6 w-1/2" />
+                  <Skeleton className="h-6 w-1/4" />
+                  <Skeleton className="h-6 w-6" />
+                  <Skeleton className="h-6 w-6" />
+                  <Skeleton className="h-6 w-6" />
+                </article>
+                <article className="flex justify-between my-1 p-2">
+                  <Skeleton className="h-6 w-1/2" />
+                  <Skeleton className="h-6 w-1/4" />
+                  <Skeleton className="h-6 w-6" />
+                  <Skeleton className="h-6 w-6" />
+                  <Skeleton className="h-6 w-6" />
+                </article>
+                <article className="flex justify-between my-1 p-2">
+                  <Skeleton className="h-6 w-1/2" />
+                  <Skeleton className="h-6 w-1/4" />
+                  <Skeleton className="h-6 w-6" />
+                  <Skeleton className="h-6 w-6" />
+                  <Skeleton className="h-6 w-6" />
+                </article>
+              </div>
+            ) : (
+              words.length > 0 ? (
+                <ScrollArea className="h-[250px] rounded-md border px-2 sm:px-4 py-3">
+                  {words.map(w => {
+                    return (
+                      <SingleWord
+                        key={w._id}
+                        word={w}
+                        vocab={currVocab as Vocab}
+                        checkSingleEdit={checkSingleEdit}
+                      />
+                    )
+                  })}
+                </ScrollArea>
+              ) : (
+                <div className="h-[250px] flex justify-center items-center rounded-md border">
+                  <p className="text-xl font-bold">No words</p>
+                </div>
+              )
+            )
+          }
         </section>
         <VocabAddWordForm checkSingleEdit={checkSingleEdit} />
       </section>

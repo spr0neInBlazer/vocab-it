@@ -131,7 +131,7 @@ const Login: NextPageWithLayout = () => {
                 onChange={(e) => setPwd(e.target.value)}
               />
             </label>
-            <button className="ml-4" onClick={() => setShowPwd(!showPwd)}>
+            <button className="ml-4" type="button" onClick={() => setShowPwd(!showPwd)}>
               {showPwd ? <FaEye /> : <FaEyeSlash />}
             </button>
           </div>

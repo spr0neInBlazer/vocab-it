@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import useVocabStore from '@/lib/store';
-import { CheckSingleEditFunction, Word } from '@/lib/types';
+import { CheckSingleEditFunction } from '@/lib/types';
 import { BASE_URL, SOUND_VOLUME, errorSound } from '@/lib/globals';
 import useSound from 'use-sound';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useProfileStore from '@/lib/profileStore';
 import { useStore } from 'zustand';
-
 import { Label } from '@/components/ui/label';
 import { HiPlus } from "react-icons/hi2";
 import FileForm from './FileForm';
@@ -159,8 +158,9 @@ export default function VocabAddWordForm({ checkSingleEdit }: { checkSingleEdit:
   return (
     <div className="w-full flex flex-col justify-center items-center">
       <button
-        className="flex gap-1 items-center justify-center w-full mobile:w-3/4 rounded-lg mt-5 py-2 px-3 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors"
+        className="flex gap-1 items-center justify-center w-full mobile:w-3/4 rounded-lg mt-5 py-2 px-3 font-semibold text-white bg-btnBg hover:bg-hoverBtnBg focus:bg-hoverBtnBg transition-colors disabled:text-gray-300 disabled:cursor-default"
         onClick={enterAddWordMode}
+        disabled={!currVocab}
       >
         <HiPlus /> Add Word
       </button>
