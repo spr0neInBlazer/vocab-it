@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import { Word, Answer } from '@/lib/types';
 import { usePreferencesStore } from '@/lib/preferencesStore';
@@ -47,6 +47,7 @@ const Lesson: NextPageWithLayout = () => {
   const { isTokenChecked, setIsTokenChecked } = useAuthStore(state => state);
   const fetchWithAuth = useAuth();
   const { checkToken } = useCheckToken();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   function submitAnswer(e: React.SyntheticEvent) {
     e.preventDefault();
@@ -126,14 +127,6 @@ const Lesson: NextPageWithLayout = () => {
     }
   }, [lessonVolume, currVocab]);
 
-  // useEffect(() => {
-  //   if (words.length > 0) {
-  //     setIsLoading(false);
-  //   } else {
-  //     setIsLoading(true)
-  //   }
-  // }, [words]);
-
   // lesson end
   useEffect(() => {
     if (currWord !== initialWordIdx && currWord > lessonVolume) {
@@ -182,6 +175,12 @@ const Lesson: NextPageWithLayout = () => {
       setCurrVocab(null);
     }
   }, []);
+
+  useEffect(() => {
+    if (inputRef.current && isTokenChecked && !isLoading) {
+      inputRef.current.focus();
+    }
+  }, [isLoading, isTokenChecked])
 
   // end of lesson
   if (currWord > lessonVolume) {
@@ -247,12 +246,14 @@ const Lesson: NextPageWithLayout = () => {
             </div>
             <form className="my-3 flex justify-center" onSubmit={submitAnswer}>
               <input
+                ref={inputRef}
                 className="text-2xl leading-10 text-center rounded border border-zinc-400 w-full mobile:w-auto"
                 type="text"
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 placeholder="Your answer"
                 autoFocus
+                spellCheck="false"
                 disabled={!isTokenChecked || isLoading}
               />
             </form>

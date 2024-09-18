@@ -23,6 +23,7 @@ import { useAuthStore } from '@/lib/authStore';
 import useLogout from '@/hooks/useLogout';
 import { useRouter } from 'next/router';
 import useAuth from '@/hooks/useAuth';
+import useCheckToken from '@/hooks/useCheckToken';
 
 const SoundToggleNoSSR = dynamic(() => import('./SoundToggle'), {
   loading: () => <Skeleton className="w-11 h-11 ml-1 rounded-full" />
@@ -35,7 +36,8 @@ export default function Navbar() {
   const [invalidInputMsg, setInvalidInputMsg] = useState<string>('');
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const { setTheme } = useTheme();
-  const accessToken = useAuthStore(state => state.accessToken);
+  const { accessToken, isTokenChecked, setIsTokenChecked } = useAuthStore(state => state);
+  const {checkToken} = useCheckToken();
   const logout = useLogout();
   const router = useRouter();
   const fetchWithAuth = useAuth();
@@ -88,6 +90,16 @@ export default function Navbar() {
       setIsFetching(true);
     }
   }, [vocabs]);
+
+  // check if user is logged in, but hasn't visited any protected routes yet
+  useEffect(() => {
+    if (!isTokenChecked) {
+      setIsFetching(true);
+      setIsTokenChecked(false);
+      checkToken();
+      setIsFetching(false);
+    }
+  }, []);
 
   return (
     <nav className="bg-secondaryBg-light dark:bg-secondaryBg-dark py-2 sm:py-5 absolute top-0 left-0 right-0 transition-colors">
@@ -160,10 +172,18 @@ export default function Navbar() {
                   </MenubarMenu>
                 </>
               ) : (
-                <>
-                  <Link className="hover:cursor-pointer text-white hover:text-white/75 mx-2 text-lg" href="/auth/login">Sign In</Link>
-                  <Link className="hover:cursor-pointer text-white hover:text-white/75 mx-2 text-lg" href="/auth/register">Sign Up</Link>
-                </>
+                isFetching 
+                ? (
+                  <>
+                    <Skeleton className="w-11 h-11 ml-1 rounded-full" />
+                    <Skeleton className="w-11 h-11 ml-1 rounded-full" />
+                  </>
+                ) : (
+                  <>
+                    <Link className="hover:cursor-pointer text-white hover:text-white/75 mx-2 text-lg" href="/auth/login">Sign In</Link>
+                    <Link className="hover:cursor-pointer text-white hover:text-white/75 mx-2 text-lg" href="/auth/register">Sign Up</Link>
+                  </>
+                )
               )}
 
               <MenubarMenu>
