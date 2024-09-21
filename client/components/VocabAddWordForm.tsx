@@ -78,6 +78,7 @@ export default function VocabAddWordForm({ checkSingleEdit }: { checkSingleEdit:
         } finally {
           setErrorMsg('');
           setNewWord('');
+          setTranslation('');
         }
       }
 
