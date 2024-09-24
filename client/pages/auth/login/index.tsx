@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import React, { ReactElement, SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { CustomPayload } from '@/lib/types';
-import { BASE_URL } from '@/lib/globals';
+import { BASE_URL, PWD_MAX_LENGTH, PWD_MIN_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@/lib/globals';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -21,19 +21,21 @@ const Login: NextPageWithLayout = () => {
   const [showPwd, setShowPwd] = useState(false);
   const [errMsg, setErrMsg] = useState<string>('');
   const setAccessToken = useAuthStore(state => state.setAccessToken);
-  const {setStoredUsername} = usePreferencesStore(state => state);
+  const { setStoredUsername } = usePreferencesStore(state => state);
   const router = useRouter();
 
   async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
 
     try {
+      const trimmedUsername = user.trim();
+      const trimmedPwd = pwd.trim();
       const res = await fetch(`${BASE_URL}/auth`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username: user, pwd }),
+        body: JSON.stringify({ username: trimmedUsername, pwd: trimmedPwd }),
         credentials: 'include'
       });
 
@@ -91,7 +93,7 @@ const Login: NextPageWithLayout = () => {
       </Head>
       <section className="w-11/12 lg:w-3/5 mx-auto mb-10 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
         <form
-          className="flex flex-col gap-8" 
+          className="flex flex-col gap-8"
           onSubmit={handleSubmit}
         >
           <h1 className='text-2xl mobile:text-3xl md:text-4xl text-center font-semibold dark:text-customText-dark mb-2'>Log in to your account</h1>
@@ -115,6 +117,8 @@ const Login: NextPageWithLayout = () => {
               onChange={(e) => setUser(e.target.value)}
               onFocus={() => setUserFocus(true)}
               onBlur={() => setUserFocus(false)}
+              minLength={USERNAME_MIN_LENGTH}
+              maxLength={USERNAME_MAX_LENGTH}
             />
           </label>
 
@@ -128,6 +132,8 @@ const Login: NextPageWithLayout = () => {
                 placeholder="Enter password..."
                 required
                 value={pwd}
+                minLength={PWD_MIN_LENGTH}
+                maxLength={PWD_MAX_LENGTH}
                 onChange={(e) => setPwd(e.target.value)}
               />
             </label>

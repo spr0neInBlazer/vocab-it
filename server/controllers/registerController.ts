@@ -4,10 +4,21 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import mongoose from "mongoose";
 
+const USER_REGEX = /^(?=.*[A-Za-z])[A-Za-z0-9]{3,16}$/;
+const PWD_REGEX = /^(?=.*[A-Z])(?=.*[!@#$%\-\+=_]).{8,20}$/;
+
 async function handleNewUser(req: Request, res: Response) {
   const { username, pwd } = req.body;
   if (!username || !pwd) {
     return res.status(400).json({ 'message': 'Username and password are required'});
+  }
+
+  if (USER_REGEX.test(username)) {
+    return res.status(400).json({ 'message': 'Invalid username'});
+  }
+
+  if (PWD_REGEX.test(pwd)) {
+    return res.status(400).json({ 'message': 'Invalid password'});
   }
 
   const duplicate = await User.findOne({ username }).exec();

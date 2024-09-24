@@ -7,6 +7,7 @@ import connectDB from './db/connect';
 import compression from 'compression';
 import helmet from 'helmet';
 import RateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
 import { corsOptions } from './config/corsOptions';
 import credentials from './middleware/credentials';
 import cookieParser from 'cookie-parser';
@@ -32,6 +33,7 @@ const limiter = RateLimit({
 app.use(compression());
 app.use(helmet());
 app.use(limiter);
+app.use(mongoSanitize());
 app.use(credentials);
 app.use(cors(corsOptions));
 app.use(express.json());

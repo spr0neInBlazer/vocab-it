@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Footer from '@/components/Footer';
 import Layout from '@/components/Layout';
 import Link from 'next/link';
-import { BASE_URL } from '@/lib/globals';
+import { BASE_URL, PWD_MAX_LENGTH, PWD_MIN_LENGTH, USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@/lib/globals';
 import { useAuthStore } from '@/lib/authStore';
 import { useRouter } from 'next/router';
 import { jwtDecode } from 'jwt-decode';
@@ -43,8 +43,8 @@ const Registration: NextPageWithLayout = () => {
 
   const [errMsg, setErrMsg] = useState('');
 
-  const {setAccessToken} = useAuthStore(state => state);
-  const {setStoredUsername} = usePreferencesStore();
+  const { setAccessToken } = useAuthStore(state => state);
+  const { setStoredUsername } = usePreferencesStore();
   const router = useRouter();
 
   async function handleSubmit(e: SyntheticEvent) {
@@ -57,12 +57,14 @@ const Registration: NextPageWithLayout = () => {
     }
 
     try {
+      const trimmedUsername = user.trim();
+      const trimmedPwd = pwd.trim();
       const res = await fetch(`${BASE_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username: user, pwd }),
+        body: JSON.stringify({ username: trimmedUsername, pwd: trimmedPwd }),
         credentials: 'include'
       });
 
@@ -106,7 +108,7 @@ const Registration: NextPageWithLayout = () => {
     setUserLong(isUsernameLong);
     const hasLetter = USER_LETTER_REGEX.test(user);
     setUserHasLetter(hasLetter);
-    
+
     const isPwdLong = PWD_LENGTH_REGEX.test(pwd);
     setPwdLong(isPwdLong);
     const hasUpperCase = PWD_UPPERCASE_REGEX.test(pwd);
@@ -125,7 +127,7 @@ const Registration: NextPageWithLayout = () => {
       </Head>
       <section className="w-11/12 lg:w-3/5 mx-auto mb-10 py-5 px-4 sm:px-8 rounded-3xl bg-white text-customText-light dark:text-customText-dark dark:bg-customHighlight border border-zinc-400 dark:border-zinc-300 shadow-2xl">
         <form
-          className="flex flex-col gap-8" 
+          className="flex flex-col gap-8"
           onSubmit={handleSubmit}
         >
           <h1 className='text-2xl mobile:text-3xl md:text-4xl text-center font-semibold dark:text-customText-dark mb-2'>Create an account</h1>
@@ -140,22 +142,24 @@ const Registration: NextPageWithLayout = () => {
             <label htmlFor="username">
               <p>Username:</p>
               <input
-                className={`${ user.length === 0 
-                  ? 'border-white' 
+                className={`${user.length === 0
+                  ? 'border-white'
                   : (userHasLetter && userLong)
-                  ? 'border-green-500'
-                  : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
+                    ? 'border-green-500'
+                    : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
                 ref={userRef}
                 type="text"
                 id="username"
                 placeholder="Enter username..."
                 required
+                minLength={USERNAME_MIN_LENGTH}
+                maxLength={USERNAME_MAX_LENGTH}
                 onChange={(e) => setUser(e.target.value)}
                 onFocus={() => setUserFocus(true)}
                 onBlur={() => setUserFocus(false)}
               />
             </label>
-            <InputRequirement isInputEmpty={user.length === 0} requirement={userLong} text={'Must be 3-23 characters long'} />
+            <InputRequirement isInputEmpty={user.length === 0} requirement={userLong} text={`Must be ${USERNAME_MIN_LENGTH}-${USERNAME_MAX_LENGTH} characters long`} />
             <InputRequirement isInputEmpty={user.length === 0} requirement={userHasLetter} text={'Must contain a letter'} />
           </div>
 
@@ -163,16 +167,18 @@ const Registration: NextPageWithLayout = () => {
             <label htmlFor="password">
               <p>Password:</p>
               <input
-                className={`${ pwd.length === 0 
-                  ? 'border-white' 
+                className={`${pwd.length === 0
+                  ? 'border-white'
                   : (pwdLong && pwdSymbol && pwdUpperCase)
-                  ? 'border-green-500'
-                  : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
+                    ? 'border-green-500'
+                    : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
                 type={showPwd ? "text" : "password"}
                 id="password"
                 required
                 placeholder="Enter password..."
                 value={pwd}
+                minLength={PWD_MIN_LENGTH}
+                maxLength={PWD_MAX_LENGTH}
                 onChange={(e) => setPwd(e.target.value)}
                 onFocus={() => setPwdFocus(true)}
                 onBlur={() => setPwdFocus(false)}
@@ -181,7 +187,7 @@ const Registration: NextPageWithLayout = () => {
             <button className="ml-4" type="button" onClick={() => setShowPwd(!showPwd)}>
               {showPwd ? <FaEye /> : <FaEyeSlash />}
             </button>
-            <InputRequirement isInputEmpty={pwd.length === 0} requirement={pwdLong} text={'Must be 8-20 characters long'} />
+            <InputRequirement isInputEmpty={pwd.length === 0} requirement={pwdLong} text={`Must be ${PWD_MIN_LENGTH}-${PWD_MAX_LENGTH} characters long`} />
             <InputRequirement isInputEmpty={pwd.length === 0} requirement={pwdUpperCase} text={'Must contain an uppercase letter'} />
             <InputRequirement isInputEmpty={pwd.length === 0} requirement={pwdSymbol} text={'Must contain a special symbol'} />
           </div>
@@ -190,11 +196,11 @@ const Registration: NextPageWithLayout = () => {
             <label htmlFor="confirm-password">
               <p>Confirm Password:</p>
               <input
-                className={`${ matchPwd.length === 0
+                className={`${matchPwd.length === 0
                   ? 'border-white'
-                  : validMatch 
-                  ? 'border-green-500' 
-                  : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
+                  : validMatch
+                    ? 'border-green-500'
+                    : 'border-red-500'} border text-lg leading-9 px-2 rounded w-full sm:w-2/3 lg:w-1/2`}
                 type={confirmPwd ? "text" : "password"}
                 id="confirm-password"
                 required
@@ -209,7 +215,7 @@ const Registration: NextPageWithLayout = () => {
               {confirmPwd ? <FaEye /> : <FaEyeSlash />}
             </button>
           </div>
-          <button 
+          <button
             className="rounded-full bg-white mobile:bg-btnBg mobile:hover:bg-hoverBtnBg mobile:focus:bg-hoverBtnBg mobile:text-white cursor-pointer text-lg mobile:px-3 mobile:py-2 mobile:rounded disabled:text-gray-400 disabled:cursor-not-allowed"
             disabled={!userHasLetter || !userLong || !pwdLong || !pwdUpperCase || !pwdSymbol || !validMatch ? true : false}
           >

@@ -14,8 +14,7 @@ Features:
 ? when a word is deleted show "cancel" button in its place until the next page load to revert back
 
 To do:
-- do I need nanoid, iconv, jschardet?
-- prepare app for production (compression, sanitizing, etc.)
+- do I need nanoid?
 - add messages for successful login and registration
 - optimization
 - delete WordsTooltip if not needed

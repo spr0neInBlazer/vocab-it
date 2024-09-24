@@ -6,9 +6,10 @@ import { usePreferencesStore } from '@/lib/preferencesStore';
 import { useToast } from './ui/use-toast';
 import useSound from 'use-sound';
 import { SOUND_VOLUME, errorSound, successSound } from '@/lib/globals';
-
 import { Button } from '@/components/ui/button';
 import { HiPencilSquare } from "react-icons/hi2";
+
+const MAX_WORDS = 200;
 
 export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: CheckSingleEditFunction}) {
   const [wordsPerLesson, setWordsPerLesson] = useState<number>(0);
@@ -25,7 +26,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
   function updateWordsAmount(e: React.SyntheticEvent) {
     e.preventDefault();
     if (!isNaN(wordsPerLesson) && wordsPerLesson % 1 === 0 
-      && wordsPerLesson > 0 && preferenceStore) {
+      && wordsPerLesson > 0 && preferenceStore && wordsPerLesson <= MAX_WORDS) {
       preferenceStore.updateLessonVolume(wordsPerLesson);
       toggleIsEditWordAmount(); // to false
       toast({
@@ -79,6 +80,7 @@ export default function ProfileWordSection({checkSingleEdit}: {checkSingleEdit: 
               onKeyDown={checkForAbort}
               size={5}
               maxLength={3}
+              max={MAX_WORDS}
               autoFocus 
             />
             <Button 

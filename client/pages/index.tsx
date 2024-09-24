@@ -9,6 +9,11 @@ import Link from 'next/link';
 import {HiOutlineArrowDownCircle, HiOutlineArrowUpCircle} from "react-icons/hi2";
 import HomeLayout from '@/components/HomeLayout';
 import Navbar from '@/components/Navbar';
+import { disableReactDevTools } from '@fvilers/disable-react-devtools';
+
+if (process.env.NODE_ENV === 'production') {
+  disableReactDevTools();
+}
 
 const Home: NextPageWithLayout = () => {
   const { theme } = useTheme();

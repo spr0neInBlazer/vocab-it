@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { NextPageWithLayout } from '../_app';
 import Head from "next/head";
 import Layout from '@/components/Layout';
