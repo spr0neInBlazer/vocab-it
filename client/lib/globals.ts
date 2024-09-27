@@ -22,7 +22,7 @@ const arialRounded = localFont({ src: '../public/fonts/arial-rounded-mt.woff2', 
 const atma = localFont({src: '../public/fonts/atma-semibold.woff2', adjustFontFallback: 'Arial'});
 
 const specialSymbols = {
-  FRA: ['à', 'é', 'è', 'ç', 'î', 'ô', 'ù', 'ë', 'ï', 'œ', 'æ'],
+  FRA: ['à', 'â', 'é', 'è', 'ê', 'ç', 'î', 'ô', 'ù', 'ë', 'ï', 'œ', 'æ'],
   GER: ['ä', 'ö', 'ü', 'ß', 'é'],
   SPA: ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', '¿', '¡']
 }

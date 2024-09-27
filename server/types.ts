@@ -29,3 +29,5 @@ export interface CustomRequest extends Request {
     username: string
   }
 }
+
+export type LangCodes = 'FRA' | 'GER' | 'SPA' | 'default';

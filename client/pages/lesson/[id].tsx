@@ -3,12 +3,11 @@ import { useRouter } from 'next/router';
 import { Word, Answer } from '@/lib/types';
 import { usePreferencesStore } from '@/lib/preferencesStore';
 import useSound from 'use-sound';
-import { BASE_URL, SOUND_VOLUME, clickSound } from '@/lib/globals';
+import { BASE_URL, SOUND_VOLUME, clickSound, specialSymbols } from '@/lib/globals';
 import { useAuthStore } from '@/lib/authStore';
 import useCheckToken from '@/hooks/useCheckToken';
 import useVocabStore from '@/lib/store';
 import useAuth from '@/hooks/useAuth';
-
 import Head from 'next/head';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -19,6 +18,8 @@ import Layout from '@/components/Layout';
 import EndLessonDialog from '@/components/EndLessonDialog';
 import { Progress } from "@/components/ui/progress"
 import RequireAuth from '@/components/RequireAuth';
+import SpecialCharsKeys from '@/components/SpecialCharsKeys';
+import { BsCapslock, BsCapslockFill } from "react-icons/bs";
 
 const initialWordIdx: number = 1;
 
@@ -34,14 +35,15 @@ function randomizeWords(array: Word[], volume: number): Word[] {
 }
 
 const Lesson: NextPageWithLayout = () => {
-  const preferenceStore = usePreferencesStore(state => state);
   const [lessonVolume, setLessonVolume] = useState<number>(0);
-  const [words, setWords] = useState<Word[]>([]);
-  const { currVocab, setCurrVocab } = useVocabStore(state => state);
   const [currWord, setCurrWord] = useState<number>(initialWordIdx);
+  const [words, setWords] = useState<Word[]>([]);
   const [answer, setAnswer] = useState<string>('');
   const [allAnswers, setAllAnswers] = useState<Answer[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isUpperCase, setIsUpperCase] = useState(false);
+  const preferenceStore = usePreferencesStore(state => state);
+  const { currVocab, setCurrVocab } = useVocabStore(state => state);
   const router = useRouter();
   const [playClick] = useSound(clickSound, { volume: SOUND_VOLUME });
   const { isTokenChecked, setIsTokenChecked } = useAuthStore(state => state);
@@ -76,9 +78,15 @@ const Lesson: NextPageWithLayout = () => {
     }
   }
 
+  function handleSpecialKeyClick(key: string) {
+    setAnswer((prev: string) => prev + (isUpperCase ? key.toUpperCase() : key))
+    inputRef.current && inputRef.current.focus();
+  }
+
   // get vocab by default
   useEffect(() => {
     if (router.query.id !== currVocab?._id) {
+      console.log('ids are different');
       setIsLoading(true);
       setIsTokenChecked(false);
       const controller = new AbortController();
@@ -276,6 +284,29 @@ const Lesson: NextPageWithLayout = () => {
             OK
           </button>
         </div>
+        {currVocab?.lang && Object.getOwnPropertyNames(specialSymbols).includes(currVocab.lang) && (
+          <section className="flex justify-center gap-2 flex-wrap mt-3">
+            {currVocab?.lang !== 'default' && (
+              <button
+                className="px-3 py-2 bg-gray-300 text-customText-light rounded-md shadow-md font-mono text-xl font-semibold transition-all duration-100 ease-in-out hover:bg-gray-400"
+                onClick={() => setIsUpperCase(!isUpperCase)}
+                type="button"
+              >
+                {isUpperCase ? <BsCapslockFill /> : <BsCapslock />}
+              </button>
+            )}
+            {currVocab?.lang && currVocab.lang !== 'default' && specialSymbols[currVocab?.lang].map(k => {
+              return <button
+                key={k}
+                className="px-3 py-2 bg-gray-300 text-customText-light rounded-md shadow-md font-mono text-xl font-semibold transition-all duration-100 ease-in-out hover:bg-gray-400"
+                type="button"
+                onClick={() => handleSpecialKeyClick(k)}
+              >
+                {isUpperCase ? k.toUpperCase() : k}
+              </button>
+            })}
+          </section>
+        )}
       </div>
     </RequireAuth>
   )

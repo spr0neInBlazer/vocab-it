@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { MAX_WORDS } from '@/lib/globals';
 import {
   Popover,
   PopoverContent,
@@ -13,7 +12,7 @@ import {
 } from "@/components/ui/tooltip";
 import { HiMiniQuestionMarkCircle } from "react-icons/hi2";
 
-export default function WordsTooltip() {
+export default function CustomTooltip({text}: {text: string}) {
   const [isTouchScreen, setIsTouchScreen]= useState<boolean>(false);
 
   useEffect(() => {
@@ -32,8 +31,8 @@ export default function WordsTooltip() {
         <PopoverTrigger aria-label="tooltip for touch screens">
           <HiMiniQuestionMarkCircle />
         </PopoverTrigger>
-        <PopoverContent className="dark:border-customHighlight dark:bg-mainBg-dark">
-          <p className="font-thin text-sm italic"> <span className="not-italic">Recommended:</span> <span className="font-semibold">{MAX_WORDS}</span> words max per 1 vocabulary</p>
+        <PopoverContent className="dark:border-customHighlight dark:bg-mainBg-dark max-w-[50%]">
+          <p className="font-thin text-sm italic">{text}</p>
         </PopoverContent>
       </Popover>
     )
@@ -45,8 +44,8 @@ export default function WordsTooltip() {
         <TooltipTrigger className="cursor-default" aria-label="tooltip">
           <HiMiniQuestionMarkCircle />
         </TooltipTrigger>
-        <TooltipContent className="dark:border-customHighlight dark:bg-mainBg-dark">
-          <p className="font-thin text-sm italic"> <span className="not-italic">Recommended:</span> <span className="font-semibold">{MAX_WORDS}</span> words max per 1 vocabulary</p>
+        <TooltipContent className="dark:border-customHighlight dark:bg-mainBg-dark max-w-[50%]">
+          <p className="font-thin text-sm italic">{text}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

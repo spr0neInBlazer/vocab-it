@@ -26,7 +26,6 @@ Users can learn words by completing lessons in the form of flash cards.
 The website is fully working, but I plan on gradually adding more features in the future.
 - "Show first letter" button to lessons
 - different types of exercises (find a pair, etc.)
-- special symbols keyboard for different langs
 - allow adding multiple translations
 - graph stats
 - achievements

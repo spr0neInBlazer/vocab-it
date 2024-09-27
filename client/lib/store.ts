@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import { Vocab } from "./types";
 
-export const prefix: string = "vi_";
-
 interface VocabStore {
   vocabs: Vocab[] | [],
   currVocab: Vocab | null,

@@ -23,8 +23,7 @@ import { useAuthStore } from '@/lib/authStore';
 import useCheckToken from '@/hooks/useCheckToken';
 import RequireAuth from '@/components/RequireAuth';
 import WordListSkeleton from '@/components/skeletons/WordListSkeleton';
-
-// ideas to try: stale-while-revalidate (swr), static props or setting currVocab to null on page load before updating
+import SelectLang from '@/components/SelectLang';
 
 const Vocabulary: NextPageWithLayout = () => {
   const router = useRouter();
@@ -78,6 +77,7 @@ const Vocabulary: NextPageWithLayout = () => {
           }
 
           const vocab = await res.json();
+          console.log(vocab);
           setCurrVocab(vocab);
           setWords(vocab.words);
           setIsLoading(false);
@@ -148,6 +148,7 @@ const Vocabulary: NextPageWithLayout = () => {
             {words.length === 1 ? '1 word' : `${words.length} words`}
           </p>
         </div>
+        <SelectLang />
         <div className="my-5 flex justify-between items-center">
           {(words.length > 0 && router.query.id) ? (
             <Link

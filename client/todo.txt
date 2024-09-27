@@ -2,7 +2,6 @@ Features:
 - add "Show first letter" button to lessons
 - sort words
 - add another type of exercise: find a pair
-- add special symbols keyboard for different langs
 - after file import, before sending to server, show preview form with the ability to edit words
 - show overall progress for each vocab
 - show loader during submitting a file
@@ -17,7 +16,6 @@ To do:
 - do I need nanoid?
 - add messages for successful login and registration
 - optimization
-- delete WordsTooltip if not needed
 ! accessibility
 - better button design
 - for words list on small screens put edit/delete buttons inside a dropdown button "..."
@@ -27,3 +25,5 @@ Bugs/other:
 - write tests
 
 Currently done:
++ add special symbols keyboard for different langs
++ add explanation tip to language select 

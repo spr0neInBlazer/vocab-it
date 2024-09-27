@@ -1,6 +1,7 @@
 import { Response } from "express";
 import Vocabulary from "../models/Vocabulary";
 import User from "../models/User";
+import { LangCodes } from "../types";
 
 async function getVocabs(req, res: Response) {
   try {
@@ -39,7 +40,7 @@ async function addVocab(req, res: Response) {
     foundUser.vocabularies = updatedVocabs;
     await foundUser.save();
     await foundUser.populate('vocabularies');
-    res.status(201).json({ 
+    return res.status(201).json({ 
       vocabularies: foundUser.vocabularies
     });
   } catch (error) {
@@ -55,8 +56,8 @@ async function getVocab(req, res: Response) {
       return res.status(400).json({ msg: 'Vocabulary not found' });
     }
 
-    const { _id, title, words } = foundVocab;
-    res.status(200).json({ _id, title, words });
+    const { _id, title, words, lang } = foundVocab;
+    return res.status(200).json({ _id, title, words, lang });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });
@@ -80,7 +81,29 @@ async function updateTitle(req, res: Response) {
       return res.status(409).json({ msg: 'Invalid vocab ID' });
     }
 
-    res.sendStatus(204);
+    return res.sendStatus(204);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: error.message });
+  }
+}
+
+const validLangCodes: LangCodes[] = ['FRA', 'GER', 'SPA', 'default'];
+
+async function updateLang(req, res: Response) {
+  try {
+    const { vocabId, updatedLang } = req.body;
+    if (!validLangCodes.includes(updatedLang)) {
+      return res.status(400).json({ msg: 'Invalid title property' });
+    }
+
+    const vocabToUpdate = await Vocabulary.findByIdAndUpdate(vocabId, { lang: updatedLang }, { new: true });
+    if (!vocabToUpdate) {
+      return res.status(409).json({ msg: 'Invalid vocab ID' });
+    }
+
+    const { _id, title, words, lang } = vocabToUpdate;
+    return res.status(200).json({ _id, title, words, lang });
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: error.message });
@@ -107,5 +130,6 @@ export {
   addVocab,
   getVocab,
   updateTitle,
+  updateLang,
   deleteVocab
 }

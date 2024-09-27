@@ -7,10 +7,13 @@ export interface Word {
   isGuessCorrect?: boolean
 }
 
+export type LangCodes = 'FRA' | 'GER' | 'SPA' | 'default';
+
 export interface Vocab {
   _id: string,
   title: string,
-  words: Word[]
+  words: Word[],
+  lang?: LangCodes
 }
 
 export interface VocabStore {

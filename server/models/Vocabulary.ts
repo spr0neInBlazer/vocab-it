@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
-import { Word } from "../types";
+import { LangCodes, Word } from "../types";
 
 const wordSchema = new Schema<Word>({
   _id: {
@@ -24,11 +24,11 @@ const wordSchema = new Schema<Word>({
   }
 });
 
-
 interface Vocabulary {
   title: string;
   words: Word[];
   userId: Types.ObjectId;
+  lang: LangCodes;
 }
 
 const vocabSchema = new Schema<Vocabulary>({
@@ -43,6 +43,10 @@ const vocabSchema = new Schema<Vocabulary>({
   userId: {
     type: Schema.Types.ObjectId, 
     ref: 'User'
+  },
+  lang: {
+    type: String,
+    default: 'default'
   }
 });
 

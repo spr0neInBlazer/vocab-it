@@ -4,6 +4,7 @@ import {
   deleteVocab, 
   getVocab, 
   getVocabs, 
+  updateLang, 
   updateTitle
 } from '../controllers/vocabController';
 import { 
@@ -21,6 +22,7 @@ vocabRouter.get('/getVocabs', getVocabs);
 vocabRouter.post('/addVocab', addVocab);
 vocabRouter.post('/getVocab', getVocab);
 vocabRouter.patch('/updateTitle', updateTitle);
+vocabRouter.patch('/updateLang', updateLang);
 vocabRouter.delete('/deleteVocab', deleteVocab);
 vocabRouter.post('/addWord', addWord);
 vocabRouter.patch('/updateWord', updateWord);
